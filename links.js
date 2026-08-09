@@ -16,7 +16,7 @@
 var PRODUTOS = {
 
   mat1: {
-    checkout: "COLE-AQUI",
+    checkout: "https://pay.kiwify.com.br/BRUOjDP",
     preco: "34,90"
   },
 
