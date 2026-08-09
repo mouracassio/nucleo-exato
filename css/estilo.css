@@ -1,0 +1,107 @@
+:root{
+  --verde:#1F9D66; --verde-esc:#157347; --grafite:#333F48; --escuro:#2B333A;
+  --claro:#F4F8F5; --borda:#DCE7E0; --texto:#3A444B; --suave:#6B7480;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Calibri,-apple-system,"Segoe UI",system-ui,sans-serif;color:var(--texto);
+  line-height:1.65;background:#fff;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:Cambria,Georgia,serif;color:var(--grafite);line-height:1.25}
+a{color:var(--verde-esc)}
+.wrap{max-width:960px;margin:0 auto;padding:0 22px}
+
+/* topo fixo */
+.barra{background:#fff;border-bottom:1px solid var(--borda);position:sticky;top:0;z-index:20}
+.barra .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:14px}
+.marca{display:flex;align-items:center;gap:11px;text-decoration:none}
+.mk{width:34px;height:24px;position:relative;flex:none}
+.mk i{position:absolute;width:9px;height:9px;display:block}
+.mk .a{left:0;top:0;background:var(--verde)}
+.mk .b{left:12px;top:0;background:var(--verde)}
+.mk .c{left:24px;top:0;background:#8FDABC}
+.mk .d{left:12px;top:12px;background:#D9DEE1}
+.marca span{font-family:Cambria,Georgia,serif;font-weight:700;color:var(--grafite);font-size:17px}
+.barra nav a{margin-left:20px;font-size:15px;text-decoration:none;color:var(--suave)}
+.barra nav a:hover{color:var(--verde-esc)}
+@media(max-width:640px){.barra nav{display:none}}
+
+header.hero{background:var(--escuro);color:#fff;padding:58px 0 52px}
+header.hero h1{color:#fff;font-size:clamp(30px,5.2vw,50px);letter-spacing:-.5px}
+header.hero .kick{color:#8FD9BC;font-size:13px;letter-spacing:2.5px;text-transform:uppercase;
+  font-weight:700;margin-bottom:14px}
+header.hero p.lead{color:#D9DEE1;font-size:clamp(17px,2.4vw,21px);margin-top:16px;max-width:660px}
+.selos{display:flex;flex-wrap:wrap;gap:9px;margin-top:26px}
+.selo{border:1px solid #4A555E;color:#D9DEE1;border-radius:999px;padding:7px 15px;font-size:14px}
+
+.cta{display:inline-block;background:var(--verde);color:#fff;text-decoration:none;
+  font-size:19px;font-weight:700;padding:17px 38px;border-radius:10px;margin-top:30px;
+  box-shadow:0 6px 18px rgba(31,157,102,.32);transition:transform .15s,background .15s;
+  text-align:center}
+.cta:hover{background:var(--verde-esc);transform:translateY(-2px)}
+.cta small{display:block;font-weight:400;font-size:13px;opacity:.92;margin-top:3px}
+.cta.off{background:#8A9299;box-shadow:none;cursor:default;pointer-events:none}
+
+section{padding:58px 0}
+section.alt{background:var(--claro);border-top:1px solid var(--borda);border-bottom:1px solid var(--borda)}
+h2{font-size:clamp(24px,3.6vw,33px);margin-bottom:12px}
+.intro{color:var(--suave);font-size:17px;margin-bottom:32px;max-width:680px}
+p+p{margin-top:14px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));gap:22px}
+.card{background:#fff;border:1px solid var(--borda);border-radius:12px;padding:26px}
+.card h3{font-size:19px;margin-bottom:9px;color:var(--verde-esc)}
+.card p{font-size:16px}
+
+figure{margin:32px 0 0}
+figure img{width:100%;height:auto;border-radius:12px;border:1px solid var(--borda);display:block}
+figcaption{font-size:14px;color:var(--suave);margin-top:10px;text-align:center}
+.duas{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:32px}
+.duas img{width:100%;height:auto;border-radius:12px;border:1px solid var(--borda);display:block}
+@media(max-width:620px){.duas{grid-template-columns:1fr}}
+
+ul.lista{list-style:none;margin-top:8px}
+ul.lista li{padding-left:28px;position:relative;margin-bottom:11px;font-size:16px}
+ul.lista li::before{content:"";position:absolute;left:0;top:8px;width:11px;height:11px;
+  background:var(--verde);border-radius:3px}
+
+.preco{text-align:center;background:var(--escuro);color:#fff;border-radius:16px;padding:44px 26px}
+.preco .valor{font-family:Cambria,Georgia,serif;font-size:56px;color:#fff;line-height:1}
+.preco .valor span{font-size:23px;vertical-align:super;margin-right:4px}
+.preco p{color:#D9DEE1;margin-top:12px}
+.preco .cta{margin-top:24px}
+
+.autor{display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap}
+.autor .txt{flex:1;min-width:260px}
+.frase{font-family:Cambria,Georgia,serif;font-size:18px;color:var(--grafite);margin-top:18px}
+
+.faq details{border-bottom:1px solid var(--borda);padding:16px 0}
+.faq summary{cursor:pointer;font-weight:700;color:var(--grafite);font-size:17px;list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::before{content:"+ ";color:var(--verde)}
+.faq details[open] summary::before{content:"– "}
+.faq p{margin-top:10px;font-size:16px}
+
+/* catalogo */
+.produtos{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:24px;margin-top:34px}
+.prod{border:1px solid var(--borda);border-radius:14px;overflow:hidden;background:#fff;
+  display:flex;flex-direction:column;transition:box-shadow .15s,transform .15s}
+.prod:hover{box-shadow:0 10px 26px rgba(20,40,30,.10);transform:translateY(-2px)}
+.prod img{width:100%;display:block;border-bottom:1px solid var(--borda)}
+.prod .txt{padding:22px 22px 24px;display:flex;flex-direction:column;flex:1}
+.prod h3{font-size:20px;margin-bottom:8px}
+.prod p{font-size:15.5px;color:var(--suave);flex:1}
+.prod .rod{display:flex;align-items:center;justify-content:space-between;margin-top:18px;gap:12px}
+.prod .val{font-family:Cambria,Georgia,serif;font-size:25px;color:var(--grafite);white-space:nowrap}
+.prod .bt{background:var(--verde);color:#fff;text-decoration:none;font-weight:700;font-size:16px;
+  padding:11px 20px;border-radius:9px;white-space:nowrap}
+.prod .bt:hover{background:var(--verde-esc)}
+.prod .bt.off{background:#8A9299;pointer-events:none}
+.prod .ver{display:block;margin-top:12px;font-size:15px;text-decoration:none}
+
+footer{background:var(--grafite);color:#AEB8C0;padding:34px 0;font-size:14px;text-align:center}
+footer a{color:#8FD9BC}
+footer .frase{color:#D9DEE1;font-size:15px;margin-bottom:8px}
+.aviso{font-size:14px;color:var(--suave);margin-top:16px;text-align:center}
+
+.autor .retrato{width:210px;height:210px;border-radius:14px;object-fit:cover;flex:none;
+  border:1px solid var(--borda);box-shadow:0 6px 20px rgba(20,40,30,.12)}
+@media(max-width:620px){.autor .retrato{width:150px;height:150px}}
