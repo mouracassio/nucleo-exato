@@ -105,3 +105,101 @@ footer .frase{color:#D9DEE1;font-size:15px;margin-bottom:8px}
 .autor .retrato{width:210px;height:210px;border-radius:14px;object-fit:cover;flex:none;
   border:1px solid var(--borda);box-shadow:0 6px 20px rgba(20,40,30,.12)}
 @media(max-width:620px){.autor .retrato{width:150px;height:150px}}
+
+.produtos .prod{max-width:560px}
+h3.frente{font-size:21px;color:var(--verde-esc);margin:38px 0 0;letter-spacing:.3px}
+h3.frente::after{content:"";display:block;width:52px;height:3px;background:var(--verde);margin-top:8px}
+
+/* =========================================================================
+   ACRÉSCIMOS DO SITE EM DUAS METADES (Loja + Serviços) — 15/08/2026
+   ========================================================================= */
+
+/* menu: com 5 itens ele não pode mais sumir no celular; vira faixa rolável */
+.barra nav{display:flex;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none}
+.barra nav::-webkit-scrollbar{display:none}
+.barra nav a{white-space:nowrap}
+.barra nav a.aqui{color:var(--verde-esc);font-weight:700}
+.marca span{white-space:nowrap}
+@media(max-width:700px){
+  /* no celular a marca fica em cima e o menu ganha a linha inteira, rolando de lado */
+  .barra .wrap{display:block;height:auto;padding-top:10px;padding-bottom:6px}
+  .barra nav{display:flex;margin-top:8px;padding-bottom:6px}
+  .barra nav a{margin-left:0;margin-right:18px;font-size:14.5px}
+  .barra nav a:last-child{margin-right:0}
+  .marca span{font-size:16px}
+}
+
+/* botão secundário — "Pedir orçamento" e afins */
+.cta.linha{background:transparent;border:2px solid var(--verde);color:var(--verde-esc);
+  box-shadow:none}
+.cta.linha:hover{background:var(--verde);color:#fff}
+header.hero .cta.linha{border-color:#8FD9BC;color:#fff}
+header.hero .cta.linha:hover{background:#8FD9BC;color:var(--escuro)}
+
+/* as duas metades, na home */
+.metades{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:34px}
+@media(max-width:720px){.metades{grid-template-columns:1fr}}
+.metade{border:1px solid var(--borda);border-radius:16px;padding:30px 28px 32px;background:#fff;
+  display:flex;flex-direction:column}
+.metade .rot{font-size:12.5px;letter-spacing:2.2px;text-transform:uppercase;font-weight:700;
+  color:var(--verde-esc);margin-bottom:10px}
+.metade h3{font-size:24px;margin-bottom:10px}
+.metade p{font-size:16px;color:var(--suave);flex:1}
+.metade ul.lista{margin:16px 0 22px}
+.metade ul.lista li{font-size:15.5px;margin-bottom:8px;color:var(--texto)}
+.metade .cta{margin-top:0;font-size:17px;padding:14px 28px}
+
+/* tabela de serviços */
+.tab{width:100%;border-collapse:collapse;margin-top:26px;font-size:16px}
+.tab th{text-align:left;background:var(--claro);color:var(--grafite);font-family:Cambria,Georgia,serif;
+  font-size:16px;padding:13px 16px;border-bottom:2px solid var(--verde)}
+.tab td{padding:14px 16px;border-bottom:1px solid var(--borda);vertical-align:top}
+.tab tr:nth-child(even) td{background:#FBFDFC}
+.tab td b{color:var(--grafite)}
+@media(max-width:680px){
+  .tab,.tab tbody,.tab tr,.tab td{display:block;width:100%}
+  .tab thead{display:none}
+  .tab tr{border:1px solid var(--borda);border-radius:12px;margin-bottom:14px;padding:4px 0}
+  .tab td{border:0;padding:9px 16px}
+  .tab tr:nth-child(even) td{background:transparent}
+  .tab td::before{content:attr(data-rot);display:block;font-size:12px;letter-spacing:1.4px;
+    text-transform:uppercase;color:var(--verde-esc);font-weight:700;margin-bottom:3px}
+}
+
+/* selo "em breve" e afins */
+.tag{display:inline-block;font-size:12px;letter-spacing:1.6px;text-transform:uppercase;
+  font-weight:700;padding:4px 11px;border-radius:999px;vertical-align:middle;margin-left:9px}
+.tag.breve{background:#EFF3F1;color:var(--suave);border:1px solid var(--borda)}
+.tag.novo{background:#E3F5EC;color:var(--verde-esc);border:1px solid #B9E4CF}
+
+/* caixa de responsabilidade técnica / avisos honestos */
+.nota{border-left:4px solid var(--verde);background:var(--claro);border-radius:0 12px 12px 0;
+  padding:20px 24px;margin-top:28px;font-size:15.5px}
+.nota b{color:var(--grafite)}
+.nota.cinza{border-left-color:#B7C0C7;background:#F7F9FA;color:var(--suave)}
+
+/* bloco de contato */
+.contato-cx{background:var(--escuro);color:#fff;border-radius:16px;padding:40px 30px;text-align:center}
+.contato-cx h3{color:#fff;font-size:25px;margin-bottom:10px}
+.contato-cx p{color:#D9DEE1;max-width:520px;margin:0 auto}
+.contato-cx .cta{margin-top:24px}
+.contato-cx .alt{margin-top:18px;font-size:15px;color:#AEB8C0}
+.contato-cx .alt a{color:#8FD9BC}
+
+/* rodapé novo, com os dois registros */
+footer .regs{margin-top:6px;font-size:13.5px;color:#8E99A3}
+footer .links{margin-top:14px}
+footer .links a{margin:0 9px;white-space:nowrap}
+
+/* cartão de frente do catálogo (com estado "em breve") */
+.frente-breve{border:1px dashed var(--borda);border-radius:14px;padding:26px;margin-top:22px;
+  background:#FBFDFC;color:var(--suave);font-size:16px}
+.frente-breve b{color:var(--grafite)}
+
+/* grades com contagem fixa, para o último cartão não ficar sozinho */
+.grid.dois{grid-template-columns:1fr 1fr}
+@media(max-width:720px){.grid.dois{grid-template-columns:1fr}}
+.produtos.tres{grid-template-columns:repeat(3,1fr)}
+@media(max-width:900px){.produtos.tres{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.produtos.tres{grid-template-columns:1fr}}

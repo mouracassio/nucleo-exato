@@ -1,20 +1,76 @@
-# A sua loja — como publicar e como manter
+# O site da Núcleo Exato — como publicar e como manter
 
-Esta pasta é um **site pronto**. São páginas em HTML puro: não precisa de servidor, banco de dados
-nem programa nenhum rodando. É só colocar no ar.
+> **v2 · 15/08/2026.** O site deixou de ser só uma loja: agora tem duas metades, **Loja** e
+> **Serviços**. A versão anterior deste arquivo (de 10/08, quando o site ainda era o catálogo
+> do Prof. Cássio Moura) está na `_Quarentena`.
+
+Esta pasta é um **site pronto**. São páginas em HTML puro: não precisa de servidor, banco de
+dados nem programa nenhum rodando. É só colocar no ar.
 
 ```
-index.html                ← o catálogo (é ESTE o link que vai na bio do Instagram)
-matematica-1ano.html      ← página de vendas do 1º ano
+index.html                       ← a HOME (quem somos, as duas metades)
+loja.html                        ← o catálogo  ⚠️ era este o antigo index.html
+servicos.html                    ← as três áreas de serviço
+servicos-seguranca-do-trabalho.html
+servicos-meio-ambiente.html      ← curta de propósito: espera a revisão do Bruno
+servicos-educacao.html
+quem-assina.html                 ← os dois sócios, com os registros no CREA
+contato.html                     ← WhatsApp e e-mail
+
+matematica-1ano.html             ← páginas de venda dos 6 produtos
 matematica-2ano.html
 matematica-3ano.html
 matematica-combo.html
 planilha-de-notas.html
 niosh.html
-links.js                  ← ⚠️ É AQUI que ficam os links da Kiwify
+
+links.js                         ← ⚠️ É AQUI que ficam os links da Kiwify E o WhatsApp
 css/estilo.css
-img/                      ← as artes (as mesmas dos anúncios)
+img/                             ← as artes
 ```
+
+**São 14 páginas.** O menu de todas elas é o mesmo: `Início · Loja · Serviços · Quem assina ·
+Contato`.
+
+---
+
+## O único arquivo que você mexe: `links.js`
+
+Ele tem duas partes.
+
+### Parte 1 — os checkouts da Kiwify
+
+```js
+mat1: {
+  checkout: "https://pay.kiwify.com.br/BRUOjDP",
+  preco: "34,90"
+},
+```
+
+Troque `COLE-AQUI` pelo link de checkout e, se quiser, ajuste o preço. **Só isso.** A home, o
+catálogo e a página do produto passam a apontar para o lugar certo, tudo de uma vez.
+
+> **Proteção:** enquanto o link estiver como `COLE-AQUI`, o botão daquele produto aparece cinza,
+> escrito **"Em breve"**, e não deixa ninguém clicar. Você nunca publica um botão quebrado.
+
+### Parte 2 — o contato
+
+```js
+var CONTATO = {
+  whatsapp: "5534996931121",
+  email: "moura.cassio@outlook.com"
+};
+```
+
+O número é o do **WhatsApp comercial da empresa** (hoje o do Bruno), só com números, começando
+por `55` + DDD. Todos os botões **"Pedir orçamento"** do site abrem a conversa com a mensagem já
+escrita, e a mensagem diz de qual área veio o pedido ("...orçamento de Segurança do Trabalho").
+
+> Se um dia o número sair do arquivo (voltar a `COLE-AQUI`), esses botões passam a abrir o
+> **e-mail** em vez do WhatsApp. O site nunca fica sem contato.
+
+O e-mail aparece escrito por extenso em vários lugares do site, e todos saem daqui — trocou em
+`links.js`, trocou no site inteiro.
 
 ---
 
@@ -24,71 +80,50 @@ Existem **dois links diferentes** na Kiwify e é importante não confundir:
 
 | Link | Como é | Para que serve |
 |---|---|---|
-| **Checkout** | `https://pay.kiwify.com.br/xxxxx` | A tela de pagamento. **É este que vai nos botões do site.** |
+| **Checkout** | `https://pay.kiwify.com.br/xxxxx` | A tela de pagamento. **É este que vai no `links.js`.** |
 | **Página de vendas** | um campo dentro do produto, na aba Geral | O endereço que a Kiwify mostra como "site do produto" |
 
-Hoje, no produto da planilha, esse campo **"Página de vendas" está apontando para o Mercado Livre**.
-Depois de publicar esta loja, troque por `https://seu-endereco.vercel.app/planilha-de-notas.html`.
-Faça o mesmo em cada produto novo.
+Endereços finais da "Página de vendas" de cada produto:
+
+```
+https://nucleoexato.com.br/matematica-1ano.html
+https://nucleoexato.com.br/matematica-2ano.html
+https://nucleoexato.com.br/matematica-3ano.html
+https://nucleoexato.com.br/matematica-combo.html
+https://nucleoexato.com.br/planilha-de-notas.html
+https://nucleoexato.com.br/niosh.html
+```
 
 O caminho da venda fica assim:
 
-> Instagram / WhatsApp / grupo de professores → **`index.html`** (catálogo) →
-> página do produto → botão **Comprar** → **checkout da Kiwify** → acesso liberado na hora.
+> Instagram / WhatsApp / grupo de professores → **`nucleoexato.com.br`** (home) → **Loja** →
+> página do produto → botão **Comprar agora** → **checkout da Kiwify** → acesso liberado na hora.
+
+E o caminho do serviço:
+
+> **`nucleoexato.com.br`** → **Serviços** → a área → botão **Pedir orçamento** → WhatsApp.
 
 ---
 
-## Passo 1 — pegar os links de checkout
+## Publicar
 
-Para cada produto criado na Kiwify: **Produtos → o produto → Links → copiar o link de checkout**
-(o que começa com `pay.kiwify.com.br`).
+O site já está no GitHub e conectado à Vercel. Para atualizar: **Add file → Upload files**,
+arrastar os arquivos alterados, escrever a mensagem do commit e confirmar. A Vercel republica
+sozinha em menos de um minuto.
 
-## Passo 2 — colar em `links.js`
+O passo a passo completo da renomeação (repositório, projeto na Vercel, domínio e DNS) está em
+`00_Empresa/TROCAR NOMES - GitHub, Vercel e Kiwify.md`.
 
-Abra `links.js` em qualquer editor de texto. Você vai ver isto:
-
-```js
-mat1: {
-  checkout: "COLE-AQUI",
-  preco: "34,90"
-},
-```
-
-Troque `COLE-AQUI` pelo link e, se quiser, ajuste o preço. **Só isso.** O catálogo e a página do
-produto passam a apontar para o lugar certo, os dois de uma vez.
-
-> **Proteção**: enquanto o link estiver como `COLE-AQUI`, o botão daquele produto aparece cinza,
-> escrito **"Em breve"**, e não deixa ninguém clicar. Você nunca vai publicar um botão quebrado.
-> Hoje só a planilha está com o link real; os outros cinco estão em "Em breve".
-
-## Passo 3 — publicar na Vercel
-
-Você já tem conta, então tem dois caminhos. **O primeiro é o melhor a longo prazo.**
-
-### Caminho A — pelo GitHub (recomendado)
-
-1. No GitHub, crie um repositório novo, por exemplo `loja-cassio-moura`, e marque como **público**.
-2. Na tela do repositório vazio, clique em **uploading an existing file** e arraste **o conteúdo
-   desta pasta** (o `index.html` tem que ficar na raiz do repositório, não dentro de outra pasta).
-3. Na Vercel: **Add New → Project → Import** o repositório.
-4. Em Framework Preset escolha **Other**. Deixe os campos de build vazios. **Deploy**.
-5. Em menos de um minuto sai o endereço: `loja-cassio-moura.vercel.app`.
-
-Daí em diante, cada vez que você mudar o `links.js` no GitHub, **a Vercel republica sozinha**.
-
-### Caminho B — arrastar a pasta
-
-Na Vercel, **Add New → Project → Deploy from a folder** (ou instale o `vercel` no terminal e rode
-`vercel` dentro desta pasta). Funciona igual, mas cada atualização é um envio manual.
-
-## Passo 4 — conferir antes de divulgar
+## Conferir antes de divulgar
 
 Abra o endereço numa **janela anônima** e veja:
 
-1. O catálogo abre e mostra os seis produtos?
-2. Clicando em "Ver tudo o que vem", a página do produto abre?
-3. O botão de comprar leva para o **checkout da Kiwify**, com o preço certo?
-4. No celular está legível? (é só abrir o mesmo link no seu telefone)
+1. A home abre, com as duas metades?
+2. **Loja** mostra os seis produtos, com preço?
+3. Cada botão **Comprar agora** leva para o checkout certo da Kiwify?
+4. Cada botão **Pedir orçamento** abre o WhatsApp com a mensagem escrita?
+5. **Serviços**, **Quem assina** e **Contato** abrem, sem link quebrado?
+6. No celular está legível? (é só abrir o mesmo link no telefone)
 
 ---
 
@@ -97,24 +132,27 @@ Abra o endereço numa **janela anônima** e veja:
 | O que você quer mudar | Onde mexer |
 |---|---|
 | Link de checkout ou preço | `links.js` |
-| Texto de uma página | o `.html` daquele produto, num editor de texto |
+| Número do WhatsApp ou e-mail | `links.js`, no bloco `CONTATO` |
+| Texto de uma página | o `.html` dela, num editor de texto |
 | Uma arte | troque o arquivo dentro de `img/`, mantendo o mesmo nome |
-| Acrescentar um produto novo | copie um `.html` parecido, renomeie, ajuste o texto e acrescente o produto em `links.js` e no `index.html` |
-
-## Um domínio próprio, se um dia quiser
-
-Um domínio tipo `cassiomoura.com.br` custa cerca de R$ 40 por ano no registro.br. Depois é só
-apontar para a Vercel em **Settings → Domains**. O site continua o mesmo; muda só o endereço —
-e o link fica bem melhor de dizer em voz alta numa formação de professores.
+| Acrescentar um produto | copie um `.html` parecido, renomeie, ajuste o texto e acrescente o produto em `links.js` e em `loja.html` |
+| Acrescentar um serviço | copie `servicos-educacao.html`, ajuste, e acrescente o cartão em `servicos.html` |
 
 ---
 
-## Onde divulgar o link do catálogo
+## O que está deliberadamente incompleto
 
-- **Bio do Instagram** — é o único link que você tem lá; use o do catálogo, não o de um produto só.
-- **Grupos de professores no WhatsApp** — melhor mandar a página do produto específico.
-- **Chat do Mercado Livre**, para quem já comprou de você — a mensagem pronta está em
-  `Como publicar/MENSAGEM POS-VENDA - copiar e colar no chat.md`.
-- **Assinatura de e-mail** e o rodapé dos seus materiais gratuitos.
+Não é esquecimento — está esperando decisão ou revisão:
 
-*"Tudo que é verdadeiro respeita o tempo." — Eng. Prof. Cássio Moura · 2026*
+- **`servicos-meio-ambiente.html`** só tem o nome, o registro e um "em breve". A relação de
+  serviços do Bruno **não vai ao ar sem ele ler**. O texto pronto está fora do site, em
+  `00_Empresa/PENDENTE - Meio Ambiente e perfil do Bruno (esperando revisao).md`.
+- **`quem-assina.html`** traz do Bruno só nome, formação e CREA — tudo conferível no conselho.
+  O perfil descritivo (tempo de atuação, ARTs, cargo no conselho) está no mesmo arquivo acima.
+- **Serviço em nome da empresa**: enquanto a Núcleo Exato não tiver CNPJ + registro no CREA-MG,
+  o site diz que quem assina é **o engenheiro, pessoa física, com ART individual**. Está escrito
+  assim em todas as páginas de serviço. Não mudar isso antes de resolver a trava.
+- **E-mail próprio da empresa** (`contato@nucleoexato.com.br`): com o domínio registrado dá para
+  ter. Enquanto não tem, o site mostra o e-mail de suporte da Kiwify.
+
+*"Tudo que é verdadeiro respeita o tempo."* — **Eng. Prof. Cássio Moura** · 2026
