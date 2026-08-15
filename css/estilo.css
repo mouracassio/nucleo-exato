@@ -274,3 +274,8 @@ footer .links a{margin:0 9px;white-space:nowrap}
 .destaque h3{font-size:clamp(21px,3vw,27px);margin-bottom:10px}
 .destaque p{font-size:16.5px;max-width:720px}
 .destaque .cta{margin-top:22px;font-size:17px;padding:14px 30px}
+
+/* título de seção com etiqueta ao lado (loja / serviços na home) */
+.secao-topo{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.secao-topo h2{margin-bottom:0}
+.secao-topo .tag{margin-left:0}
