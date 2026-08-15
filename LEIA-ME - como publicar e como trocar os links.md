@@ -1,57 +1,56 @@
 # O site da Núcleo Exato — como publicar e como manter
 
-> **v2 · 15/08/2026.** O site deixou de ser só uma loja: agora tem duas metades, **Loja** e
-> **Serviços**. A versão anterior deste arquivo (de 10/08, quando o site ainda era o catálogo
-> do Prof. Cássio Moura) está na `_Quarentena`.
+> **v4 · 15/08/2026 (fim da tarde).** O site é **uma empresa de engenharia com cinco áreas**.
+> A frente de Segurança do Trabalho começa só com treinamento e palestra — documentação (PGR,
+> AET, laudos) ficou para depois, e o texto está guardado em
+> `00_Empresa/ESCOPO ADIADO - documentacao de Seguranca do Trabalho.md`.
+> As versões anteriores deste arquivo estão na `_Quarentena`.
 
-Esta pasta é um **site pronto**. São páginas em HTML puro: não precisa de servidor, banco de
-dados nem programa nenhum rodando. É só colocar no ar.
+Site em HTML puro: não precisa de servidor, banco de dados nem programa rodando.
 
 ```
-index.html                       ← a HOME (quem somos, as duas metades)
-loja.html                        ← o catálogo  ⚠️ era este o antigo index.html
-servicos.html                    ← as três áreas de serviço
-servicos-seguranca-do-trabalho.html
-servicos-meio-ambiente.html      ← curta de propósito: espera a revisão do Bruno
-servicos-educacao.html
-quem-assina.html                 ← os dois sócios, com os registros no CREA
-contato.html                     ← WhatsApp e e-mail
+index.html                            ← a home
+servicos.html                         ← as cinco áreas
+servicos-treinamentos.html            ← SSMA e qualidade, todos com certificado
+servicos-palestras.html               ← SIPAT, palestra avulsa, escola
+servicos-meio-ambiente.html           ← licenciamento, estudos, outorga, PGRS
+servicos-qualidade.html               ← 5S, PDCA, processos, indicadores
+servicos-educacao.html                ← material sob encomenda e formação
+materiais.html                        ← o catálogo de material pronto
+quem-somos.html                       ← os dois engenheiros e os registros
+contato.html                          ← o formulário de orçamento
 
-matematica-1ano.html             ← páginas de venda dos 6 produtos
+matematica-1ano.html                  ← as 6 páginas de venda
 matematica-2ano.html
 matematica-3ano.html
 matematica-combo.html
 planilha-de-notas.html
 niosh.html
 
-links.js                         ← ⚠️ É AQUI que ficam os links da Kiwify E o WhatsApp
+loja.html · quem-assina.html          ← redirecionam para os nomes novos, não apagar
+servicos-seguranca-do-trabalho.html   ← redireciona para Treinamentos, não apagar
+links.js                              ← ⚠️ É AQUI que você mexe
 css/estilo.css
-img/                             ← as artes
+img/
 ```
 
-**São 14 páginas.** O menu de todas elas é o mesmo: `Início · Loja · Serviços · Quem assina ·
-Contato`.
+**19 páginas.** Menu de todas: `Início · Serviços · Materiais · Quem somos · Contato`.
+
+> Os dois arquivos `loja.html` e `quem-assina.html` são só redirecionadores de uma linha. Existem
+> porque esses endereços já circularam. **Não apague** — link antigo que alguém salvou continua
+> funcionando por causa deles.
 
 ---
 
 ## O único arquivo que você mexe: `links.js`
 
-Ele tem duas partes.
-
 ### Parte 1 — os checkouts da Kiwify
 
-```js
-mat1: {
-  checkout: "https://pay.kiwify.com.br/BRUOjDP",
-  preco: "34,90"
-},
-```
+Troque `COLE-AQUI` pelo link de checkout. A home, o catálogo e a página do produto passam a
+apontar para o lugar certo, tudo de uma vez.
 
-Troque `COLE-AQUI` pelo link de checkout e, se quiser, ajuste o preço. **Só isso.** A home, o
-catálogo e a página do produto passam a apontar para o lugar certo, tudo de uma vez.
-
-> **Proteção:** enquanto o link estiver como `COLE-AQUI`, o botão daquele produto aparece cinza,
-> escrito **"Em breve"**, e não deixa ninguém clicar. Você nunca publica um botão quebrado.
+> **Proteção:** enquanto estiver `COLE-AQUI`, o botão fica cinza escrito "Em breve" e não deixa
+> clicar. Você nunca publica botão quebrado.
 
 ### Parte 2 — o contato
 
@@ -62,28 +61,37 @@ var CONTATO = {
 };
 ```
 
-O número é o do **WhatsApp comercial da empresa** (hoje o do Bruno), só com números, começando
-por `55` + DDD. Todos os botões **"Pedir orçamento"** do site abrem a conversa com a mensagem já
-escrita, e a mensagem diz de qual área veio o pedido ("...orçamento de Segurança do Trabalho").
+Só números, começando por `55` + DDD. Trocou aqui, trocou no site inteiro — inclusive no
+formulário de orçamento e no e-mail que aparece escrito em várias páginas.
 
-> Se um dia o número sair do arquivo (voltar a `COLE-AQUI`), esses botões passam a abrir o
-> **e-mail** em vez do WhatsApp. O site nunca fica sem contato.
+---
 
-O e-mail aparece escrito por extenso em vários lugares do site, e todos saem daqui — trocou em
-`links.js`, trocou no site inteiro.
+## Como funciona o formulário de orçamento
+
+Está em `contato.html` e **não usa servidor nenhum**. Funciona assim:
+
+1. O visitante preenche seis campos: nome, empresa, cidade, contato, área e necessidade.
+   Quatro são obrigatórios (nome, contato, área, necessidade).
+2. Conforme digita, uma caixa tracejada mostra a **prévia exata** da mensagem que vai sair.
+3. O botão "Enviar pelo WhatsApp" fica **cinza e travado** até os obrigatórios estarem
+   preenchidos. Aí ele acende e abre o WhatsApp com o texto já escrito.
+4. Tem também um botão de e-mail, que faz o mesmo abrindo o programa de e-mail.
+
+**Nada é guardado.** O site não tem banco de dados: a mensagem só existe no WhatsApp depois que
+a pessoa aperta enviar.
+
+**Atalho útil:** os botões "Pedir orçamento" das páginas de área levam para
+`contato.html?area=qualidade` — e o formulário já abre com a área escolhida. Os valores são
+`treinamentos`, `palestras`, `meio-ambiente`, `qualidade`, `educacao`.
 
 ---
 
 ## Como isso conversa com a Kiwify
 
-Existem **dois links diferentes** na Kiwify e é importante não confundir:
-
 | Link | Como é | Para que serve |
 |---|---|---|
 | **Checkout** | `https://pay.kiwify.com.br/xxxxx` | A tela de pagamento. **É este que vai no `links.js`.** |
-| **Página de vendas** | um campo dentro do produto, na aba Geral | O endereço que a Kiwify mostra como "site do produto" |
-
-Endereços finais da "Página de vendas" de cada produto:
+| **Página de vendas** | campo dentro do produto, aba Geral | O endereço que a Kiwify mostra como site do produto |
 
 ```
 https://nucleoexato.com.br/matematica-1ano.html
@@ -94,65 +102,68 @@ https://nucleoexato.com.br/planilha-de-notas.html
 https://nucleoexato.com.br/niosh.html
 ```
 
-O caminho da venda fica assim:
-
-> Instagram / WhatsApp / grupo de professores → **`nucleoexato.com.br`** (home) → **Loja** →
-> página do produto → botão **Comprar agora** → **checkout da Kiwify** → acesso liberado na hora.
-
-E o caminho do serviço:
-
-> **`nucleoexato.com.br`** → **Serviços** → a área → botão **Pedir orçamento** → WhatsApp.
-
 ---
 
 ## Publicar
 
-O site já está no GitHub e conectado à Vercel. Para atualizar: **Add file → Upload files**,
-arrastar os arquivos alterados, escrever a mensagem do commit e confirmar. A Vercel republica
-sozinha em menos de um minuto.
-
-O passo a passo completo da renomeação (repositório, projeto na Vercel, domínio e DNS) está em
-`00_Empresa/TROCAR NOMES - GitHub, Vercel e Kiwify.md`.
+GitHub → **Add file → Upload files** → arrastar os arquivos alterados → mensagem do commit →
+**Commit changes**. A Vercel republica sozinha em menos de um minuto.
 
 ## Conferir antes de divulgar
 
-Abra o endereço numa **janela anônima** e veja:
-
-1. A home abre, com as duas metades?
-2. **Loja** mostra os seis produtos, com preço?
-3. Cada botão **Comprar agora** leva para o checkout certo da Kiwify?
-4. Cada botão **Pedir orçamento** abre o WhatsApp com a mensagem escrita?
-5. **Serviços**, **Quem assina** e **Contato** abrem, sem link quebrado?
-6. No celular está legível? (é só abrir o mesmo link no telefone)
+1. A home abre e mostra as cinco áreas?
+2. **Materiais** mostra os seis produtos com preço?
+3. Cada **Comprar agora** leva ao checkout certo?
+4. No **Contato**, o botão do WhatsApp começa cinza e acende ao preencher?
+5. A prévia mostra exatamente o que você digitou?
+6. No celular está legível?
 
 ---
 
 ## Como mudar as coisas depois
 
-| O que você quer mudar | Onde mexer |
+| O que mudar | Onde |
 |---|---|
-| Link de checkout ou preço | `links.js` |
-| Número do WhatsApp ou e-mail | `links.js`, no bloco `CONTATO` |
-| Texto de uma página | o `.html` dela, num editor de texto |
-| Uma arte | troque o arquivo dentro de `img/`, mantendo o mesmo nome |
-| Acrescentar um produto | copie um `.html` parecido, renomeie, ajuste o texto e acrescente o produto em `links.js` e em `loja.html` |
-| Acrescentar um serviço | copie `servicos-educacao.html`, ajuste, e acrescente o cartão em `servicos.html` |
+| Checkout ou preço | `links.js` |
+| WhatsApp ou e-mail | `links.js`, bloco `CONTATO` |
+| Texto de uma área | o `servicos-*.html` dela |
+| Acrescentar uma área | copie um `servicos-*.html`, ajuste, e acrescente o bloco em `servicos.html`, o cartão na home e a opção no `<select>` do `contato.html` |
+| Uma arte | troque o arquivo em `img/`, mantendo o nome |
+| Acrescentar um produto | copie um `.html` de produto, e acrescente em `links.js` e em `materiais.html` |
 
 ---
 
-## O que está deliberadamente incompleto
+## Decisões de escrita que valem manter
 
-Não é esquecimento — está esperando decisão ou revisão:
+Foram custosas, não desfaça sem motivo:
 
-- **`servicos-meio-ambiente.html`** só tem o nome, o registro e um "em breve". A relação de
-  serviços do Bruno **não vai ao ar sem ele ler**. O texto pronto está fora do site, em
-  `00_Empresa/PENDENTE - Meio Ambiente e perfil do Bruno (esperando revisao).md`.
-- **`quem-assina.html`** traz do Bruno só nome, formação e CREA — tudo conferível no conselho.
-  O perfil descritivo (tempo de atuação, ARTs, cargo no conselho) está no mesmo arquivo acima.
-- **Serviço em nome da empresa**: enquanto a Núcleo Exato não tiver CNPJ + registro no CREA-MG,
-  o site diz que quem assina é **o engenheiro, pessoa física, com ART individual**. Está escrito
-  assim em todas as páginas de serviço. Não mudar isso antes de resolver a trava.
-- **E-mail próprio da empresa** (`contato@nucleoexato.com.br`): com o domínio registrado dá para
-  ter. Enquanto não tem, o site mostra o e-mail de suporte da Kiwify.
+- **Não dividimos território.** O site não diz "fulano assina esta área". A empresa tem duas
+  formações de engenharia e as duas atendem. No lugar disso, uma linha técnica sem nome:
+  *"Todo trabalho técnico sai com ART e responsabilidade de engenheiro registrado no CREA-MG."*
+- **Não anunciamos status que não dá para provar.** Nada de "em breve" ou "em desenvolvimento"
+  sem que exista mesmo alguma coisa em produção. E nada de estatística de mercado sem fonte.
+- **Dizemos o que ainda não fazemos.** Duas vezes: os treinamentos que exigem estrutura prática
+  e a documentação de SST. Isso não é fraqueza — é o que faz o resto do site ser acreditado.
+- **Promessa por produto, nunca no texto geral.** "Sem marca d'água" vale para a Matemática e
+  não vale para o NIOSH. O texto do catálogo diz isso com essa precisão.
+- **Os números do CREA aparecem em todas as páginas**, no rodapé. É o que separa a empresa de
+  quem vende PGR sem engenheiro, e é conferível na consulta pública do conselho.
+
+## O que continua pendente
+
+- **Registro da empresa no CREA-MG** — enquanto não existir, o serviço é prestado e assinado
+  por engenheiro pessoa física, com ART individual. É por isso que a linha técnica do site fala
+  em "engenheiro registrado", e não em "a Núcleo Exato".
+- **Acúmulo com o cargo público** — regra do estatuto do servidor de MG, a conferir antes de
+  ampliar a divulgação.
+- **E-mail próprio da empresa** (`contato@nucleoexato.com.br`) — com o domínio dá para ter.
+  Enquanto não tem, o site mostra o e-mail de suporte da Kiwify.
+- **A lista de serviços de Meio Ambiente** saiu do escopo de 14/08. Confira se sai ou entra
+  alguma coisa.
+- **Documentação de Segurança do Trabalho** (PGR, AET, LTCAT) está fora do escopo por decisão
+  de 15/08. O site diz isso com todas as letras, em `servicos.html`. O texto pronto para quando
+  voltar está em `00_Empresa/ESCOPO ADIADO - documentacao de Seguranca do Trabalho.md`.
+- **Treinamentos que exigem estrutura prática** (NR-10, NR-33, NR-35, NR-11, NR-12, NR-13) estão
+  declarados como fora da lista, na página de Treinamentos. Quando algum entrar, tire-o de lá.
 
 *"Tudo que é verdadeiro respeita o tempo."* — **Eng. Prof. Cássio Moura** · 2026

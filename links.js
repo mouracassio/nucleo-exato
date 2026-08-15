@@ -134,5 +134,113 @@ var CONTATO = {
       var zaps = document.querySelectorAll("[data-so-com-zap]");
       for (var z = 0; z < zaps.length; z++) { zaps[z].style.display = ""; }
     }
+
+    /* ----------------------------------------------------------------
+       FORMULÁRIO DE ORÇAMENTO (só roda na página de contato)
+       Monta a mensagem, mostra a prévia e só então libera o envio.
+       ---------------------------------------------------------------- */
+    var form = document.getElementById("orc");
+    if (!form) return;
+
+    var campos = {
+      nome:        document.getElementById("f-nome"),
+      empresa:     document.getElementById("f-empresa"),
+      cidade:      document.getElementById("f-cidade"),
+      contato:     document.getElementById("f-contato"),
+      area:        document.getElementById("f-area"),
+      necessidade: document.getElementById("f-necessidade")
+    };
+    var obrigatorios = ["nome", "contato", "area", "necessidade"];
+    var previa  = document.getElementById("previa-txt");
+    var botao   = document.getElementById("f-enviar");
+    var sub     = document.getElementById("f-sub");
+    var botaoML = document.getElementById("f-email");
+
+    /* a área pode vir escolhida pelo link: contato.html?area=qualidade */
+    (function preSelecionaArea() {
+      var m = window.location.search.match(/[?&]area=([^&]+)/);
+      if (!m) return;
+      var alvo = decodeURIComponent(m[1]).replace(/-/g, " ").toLowerCase();
+      var ops = campos.area.options;
+      for (var i = 0; i < ops.length; i++) {
+        var txt = ops[i].value
+          .replace(/&[a-z]+;/g, "")
+          .normalize ? ops[i].text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+                     : ops[i].text.toLowerCase();
+        if (txt.indexOf(alvo.split(" ")[0]) !== -1 && alvo.split(" ")[0].length > 3) {
+          campos.area.selectedIndex = i;
+          break;
+        }
+      }
+    })();
+
+    function valor(k) {
+      var v = campos[k] ? campos[k].value : "";
+      return (v || "").replace(/\s+/g, " ").trim();
+    }
+
+    function completo() {
+      for (var i = 0; i < obrigatorios.length; i++) {
+        if (!valor(obrigatorios[i])) return false;
+      }
+      return true;
+    }
+
+    function montaMensagem() {
+      var l = [];
+      l.push("Olá! Vim pelo site da Núcleo Exato e gostaria de um orçamento.");
+      l.push("");
+      l.push("Nome: " + (valor("nome") || "—"));
+      if (valor("empresa")) l.push("Empresa: " + valor("empresa"));
+      if (valor("cidade"))  l.push("Cidade: " + valor("cidade"));
+      l.push("Contato: " + (valor("contato") || "—"));
+      l.push("Área: " + (valor("area") || "—"));
+      l.push("");
+      l.push("Necessidade:");
+      l.push(valor("necessidade") || "—");
+      return l.join("\n");
+    }
+
+    function atualiza() {
+      var pronto = completo();
+      previa.textContent = (valor("nome") || valor("necessidade") || valor("contato"))
+        ? montaMensagem()
+        : "Preencha os campos acima e a mensagem aparece aqui.";
+
+      if (pronto) {
+        botao.classList.remove("off");
+        botao.setAttribute("aria-disabled", "false");
+        sub.textContent = "abre o WhatsApp com esta mensagem";
+        if (temZap()) {
+          botao.setAttribute("href", "https://wa.me/" + soNumeros(CONTATO.whatsapp) +
+                                     "?text=" + encodeURIComponent(montaMensagem()));
+          botao.setAttribute("target", "_blank");
+          botao.setAttribute("rel", "noopener");
+        } else {
+          botao.setAttribute("href", "mailto:" + CONTATO.email +
+            "?subject=" + encodeURIComponent("Orçamento — " + valor("area")) +
+            "&body=" + encodeURIComponent(montaMensagem()));
+        }
+        botaoML.setAttribute("href", "mailto:" + CONTATO.email +
+          "?subject=" + encodeURIComponent("Orçamento — " + valor("area")) +
+          "&body=" + encodeURIComponent(montaMensagem()));
+        botaoML.classList.remove("off");
+      } else {
+        botao.classList.add("off");
+        botao.setAttribute("aria-disabled", "true");
+        botao.removeAttribute("href");
+        sub.textContent = "preencha os campos marcados com *";
+        botaoML.classList.add("off");
+        botaoML.removeAttribute("href");
+      }
+    }
+
+    for (var k in campos) {
+      if (!campos[k]) continue;
+      campos[k].addEventListener("input", atualiza);
+      campos[k].addEventListener("change", atualiza);
+    }
+    form.addEventListener("submit", function (e) { e.preventDefault(); });
+    atualiza();
   });
 })();

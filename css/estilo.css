@@ -203,3 +203,74 @@ footer .links a{margin:0 9px;white-space:nowrap}
 .produtos.tres{grid-template-columns:repeat(3,1fr)}
 @media(max-width:900px){.produtos.tres{grid-template-columns:1fr 1fr}}
 @media(max-width:620px){.produtos.tres{grid-template-columns:1fr}}
+
+/* =========================================================================
+   REVISÃO 15/08/2026 (tarde) — seis áreas, formulário de orçamento
+   ========================================================================= */
+
+/* blocos de área no hub de serviços */
+.areas{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:34px}
+@media(max-width:760px){.areas{grid-template-columns:1fr}}
+.area{border:1px solid var(--borda);border-radius:14px;padding:26px 26px 22px;background:#fff;
+  display:flex;flex-direction:column}
+.area-h h3{font-size:21px;margin-bottom:8px}
+.area-h h3 a{color:var(--grafite);text-decoration:none}
+.area-h h3 a:hover{color:var(--verde-esc)}
+.area-h{border-bottom:3px solid var(--verde);padding-bottom:10px;margin-bottom:14px;
+  display:inline-block;align-self:flex-start}
+.area>p{color:var(--suave);font-size:16px}
+.area ul.lista{margin-top:14px;flex:1}
+.area ul.lista li{font-size:15px;margin-bottom:7px}
+.area ul.lista li::before{top:6px;width:9px;height:9px}
+.area .mais{margin-top:16px;font-size:15.5px}
+.area .mais a{text-decoration:none;font-weight:700}
+
+.card h3 a{color:inherit;text-decoration:none}
+.card h3 a:hover{text-decoration:underline}
+
+/* ---------------- formulário de orçamento ---------------- */
+.form-cx{border:1px solid var(--borda);border-radius:16px;padding:32px 30px;background:#fff;
+  box-shadow:0 10px 30px rgba(20,40,30,.06)}
+@media(max-width:620px){.form-cx{padding:24px 20px}}
+.campos{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:680px){.campos{grid-template-columns:1fr}}
+.campo{display:flex;flex-direction:column;gap:6px}
+.campo.largo{grid-column:1 / -1}
+.campo>span{font-size:14.5px;font-weight:700;color:var(--grafite)}
+.campo .ob{color:#C0392B;font-weight:700}
+.campo input,.campo select,.campo textarea{
+  font-family:inherit;font-size:16px;color:var(--texto);background:#fff;
+  border:1px solid var(--borda);border-radius:10px;padding:12px 14px;width:100%;
+  transition:border-color .15s,box-shadow .15s}
+.campo textarea{resize:vertical;min-height:84px;line-height:1.5}
+.campo input:focus,.campo select:focus,.campo textarea:focus{
+  outline:none;border-color:var(--verde);box-shadow:0 0 0 3px rgba(31,157,102,.15)}
+.campo input::placeholder,.campo textarea::placeholder{color:#A8B2B9}
+
+/* prévia */
+.previa{margin-top:26px;border:1px dashed var(--verde);border-radius:12px;background:var(--claro);
+  padding:18px 20px}
+.previa-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.previa-h .rot{font-size:12.5px;letter-spacing:1.8px;text-transform:uppercase;font-weight:700;
+  color:var(--verde-esc)}
+.previa-h .dica{font-size:13.5px;color:var(--suave)}
+.previa pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;
+  line-height:1.6;color:var(--grafite);white-space:pre-wrap;word-wrap:break-word;margin:0}
+
+.acoes{display:flex;gap:14px;flex-wrap:wrap;margin-top:24px}
+.acoes .cta{margin-top:0}
+.acoes .cta.off{background:#B7C0C7;box-shadow:none;pointer-events:none;color:#fff}
+.acoes .cta.linha.off{background:transparent;border-color:#CFD6DB;color:#A8B2B9;pointer-events:none}
+.rodape-form{margin-top:20px;font-size:13.5px;color:var(--suave)}
+
+/* faixa de destaque (NR-01 riscos psicossociais) */
+.destaque{border:1px solid var(--verde);border-left:6px solid var(--verde);border-radius:0 16px 16px 0;
+  background:linear-gradient(180deg,#F2FAF6 0%,#FFFFFF 100%);padding:30px 32px 32px;
+  box-shadow:0 8px 24px rgba(20,40,30,.07)}
+@media(max-width:620px){.destaque{padding:24px 20px 26px}}
+.destaque-rot{display:inline-block;font-size:12px;letter-spacing:1.8px;text-transform:uppercase;
+  font-weight:700;color:#fff;background:var(--verde-esc);padding:5px 12px;border-radius:999px;
+  margin-bottom:14px}
+.destaque h3{font-size:clamp(21px,3vw,27px);margin-bottom:10px}
+.destaque p{font-size:16.5px;max-width:720px}
+.destaque .cta{margin-top:22px;font-size:17px;padding:14px 30px}
