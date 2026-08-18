@@ -166,4 +166,4 @@ Foram custosas, não desfaça sem motivo:
 - **Treinamentos que exigem estrutura prática** (NR-10, NR-33, NR-35, NR-11, NR-12, NR-13) estão
   declarados como fora da lista, na página de Treinamentos. Quando algum entrar, tire-o de lá.
 
-*"Tudo que é verdadeiro respeita o tempo."* — **Eng. Prof. Cássio Moura** · 2026
+*"Tudo que é verdadeiro respeita o tempo."* — **Prof. Eng. Cássio Moura** · 2026
