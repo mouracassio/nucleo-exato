@@ -1,0 +1,374 @@
+{
+  "versao": 3,
+  "geradoEm": "2026-08-16",
+  "observacao": "Fonte unica do site nucleoexato.com.br. Editado pelo painel.html. E so texto: se precisar, da para consertar aqui num editor comum.",
+  "contato": {
+    "whatsapp": "5534996931121",
+    "email": "moura.cassio@outlook.com"
+  },
+  "banners": [
+    {
+      "id": "nr01",
+      "ativo": true,
+      "arquivado": false,
+      "rot": "Novo na NR-01 · fiscalização desde 26/05/2026",
+      "titulo": "Riscos psicossociais: a sua equipe já foi treinada?",
+      "texto": "Desde 26 de maio de 2026 o gerenciamento de riscos psicossociais entrou na fiscalização da NR-01. É um treinamento que não exige estrutura prática nenhuma: uma sala, a equipe e conteúdo bem feito.",
+      "botao": "Ver o treinamento",
+      "sub": "certificado incluído, como em todos",
+      "link": "servicos-treinamentos.html"
+    },
+    {
+      "id": "loja",
+      "ativo": true,
+      "arquivado": false,
+      "rot": "Loja · acesso imediato",
+      "titulo": "Material pronto, editável, com acesso na hora",
+      "texto": "Apostila técnica, material didático e ferramentas de trabalho. Arquivos abertos em Word, PowerPoint e Excel, com 7 dias de garantia.",
+      "botao": "Ver a loja",
+      "sub": "preço na tela, entrega automática",
+      "link": "materiais.html"
+    },
+    {
+      "id": "sipat",
+      "ativo": true,
+      "arquivado": false,
+      "rot": "Palestras e SIPAT",
+      "titulo": "SIPAT completa, com quem escreve o próprio conteúdo",
+      "texto": "Dez temas de saúde, segurança e meio ambiente. Programação fechada com você, e conteúdo escrito aqui — não comprado pronto.",
+      "botao": "Ver os temas",
+      "sub": "proposta escrita, prazo por etapa",
+      "link": "servicos-palestras.html"
+    }
+  ],
+  "home": {
+    "hero": {
+      "kick": "Núcleo Exato · Engenharia e Educação Técnica",
+      "titulo": "Engenheiros que ensinam, e escrevem o próprio material",
+      "lead": "Duas coisas, na mesma casa: uma <b>loja</b> de material técnico e didático, pronto para comprar e usar hoje; e <b>serviços</b> de engenharia sob orçamento — treinamento, palestra, licenciamento ambiental e qualidade. Tudo escrito por nós, com registro no CREA-MG.",
+      "btn1": {
+        "texto": "Ver a loja",
+        "sub": "acesso na hora",
+        "link": "materiais.html"
+      },
+      "btn2": {
+        "texto": "Pedir orçamento",
+        "sub": "serviços, formulário de 1 minuto",
+        "link": "contato.html?area="
+      }
+    },
+    "ordem": [
+      "servicos",
+      "loja"
+    ],
+    "loja": {
+      "titulo": "A loja — material pronto, preço na tela",
+      "tag": "compra imediata",
+      "intro": "Você compra, recebe na hora e usa. Arquivos editáveis em Word, PowerPoint e Excel, produzidos por nós e usados antes de virarem produto. 7 dias de garantia.",
+      "quantos": 3,
+      "linkTexto": "Ver a loja completa, com tudo o que vem em cada material →"
+    },
+    "servicos": {
+      "titulo": "Os serviços — engenharia sob orçamento",
+      "tag": "sob contrato",
+      "intro": "Cinco áreas, uma empresa. Aqui não tem botão de comprar: tem conversa, proposta escrita e prazo por etapa. Começamos pela capacitação — treinamento e palestra — porque é onde a equipe muda de comportamento e o resultado aparece mais rápido.",
+      "linkTexto": "Ver as cinco áreas"
+    },
+    "diferenciais": {
+      "titulo": "O que nos diferencia",
+      "itens": [
+        {
+          "titulo": "Registro que se confere",
+          "texto": "Dois engenheiros registrados no CREA-MG, com os números escritos em toda página deste site. Você confere na consulta pública do conselho <b>antes</b> de comprar ou contratar."
+        },
+        {
+          "titulo": "Conteúdo de autoria própria",
+          "texto": "Não revendemos apostila de terceiro nem pacote de slides comprado pronto. Treinamento, palestra e material didático são escritos aqui, do texto oficial da norma — e por isso respondem pergunta difícil na hora."
+        },
+        {
+          "titulo": "Engenharia e sala de aula na mesma equipe",
+          "texto": "Há professor da rede estadual em exercício aqui dentro. Treinamento técnico bem dado é aula bem dada — ritmo, exemplo e avaliação são ofício de quem dá aula."
+        },
+        {
+          "titulo": "A loja é a nossa amostra",
+          "texto": "Antes de contratar um serviço, você pode comprar uma amostra do nosso material e ver o padrão com os próprios olhos. Poucos escritórios técnicos conseguem oferecer isso."
+        }
+      ]
+    },
+    "quemSomos": {
+      "titulo": "Quem somos",
+      "intro": "Dois engenheiros registrados no CREA-MG. O material e os documentos que saem daqui têm nome, registro e rosto de quem os produziu.",
+      "socios": [
+        {
+          "nome": "Eng. Cássio Resende de Moura",
+          "texto": "Engenheiro de Produção e Engenheiro de Segurança do Trabalho (<b>CREA-MG 401683</b>), licenciado em Matemática. Professor da rede estadual de Minas Gerais.",
+          "foto": "img/cassio.jpg"
+        },
+        {
+          "nome": "Eng. Bruno Antonio de Lourdes",
+          "texto": "Engenheiro Ambiental e Sanitarista (<b>CREA-MG 230605/D</b>).",
+          "foto": "img/bruno.jpg"
+        }
+      ],
+      "linkTexto": "Conhecer a empresa →"
+    },
+    "contatoFinal": {
+      "titulo": "Conte o que você precisa",
+      "texto": "Para serviço, orçamento e material sob encomenda. Você vê a mensagem antes de enviar.",
+      "botao": "Pedir orçamento",
+      "sub": "leva ao formulário, 1 minuto",
+      "link": "contato.html?area="
+    }
+  },
+  "topos": {
+    "materiais": {
+      "kick": "Loja · material pronto",
+      "titulo": "A loja: material pronto, editável, com acesso na hora",
+      "lead": "O que a gente produz para uso próprio e publica: apostila técnica, material didático e ferramentas de trabalho. Preço na tela, entrega automática, arquivos abertos em Word, PowerPoint e Excel.",
+      "selos": [
+        "acesso imediato",
+        "arquivos editáveis",
+        "7 dias de garantia"
+      ]
+    },
+    "servicos": {
+      "kick": "Serviços",
+      "titulo": "Cinco áreas, uma empresa, o mesmo cuidado",
+      "lead": "Capacitação em saúde, segurança e meio ambiente, engenharia ambiental, qualidade e produtividade e material didático. Trabalho sob contrato, com conversa antes e proposta escrita com prazo por etapa.",
+      "botao": "Pedir orçamento",
+      "sub": "resposta pelo WhatsApp"
+    }
+  },
+  "produtos": [
+    {
+      "id": "niosh",
+      "ativo": true,
+      "arquivado": false,
+      "destaqueHome": true,
+      "nome": "Equação do NIOSH — Ergonomia",
+      "resumo": "Apostila de 91 páginas, guia rápido de 33 e calculadora em Excel. Versões do aluno e do professor.",
+      "preco": "59,90",
+      "capa": "img/capa-niosh.jpg",
+      "alt": "Equação do NIOSH",
+      "pagina": "niosh.html",
+      "destino": {
+        "tipo": "kiwify",
+        "checkout": "https://pay.kiwify.com.br/BFF2tJd",
+        "area": ""
+      },
+      "video": "",
+      "categoria": "seguranca-do-trabalho",
+      "sub": ""
+    },
+    {
+      "id": "mat1",
+      "ativo": true,
+      "arquivado": false,
+      "destaqueHome": true,
+      "nome": "Matemática — 1º ano",
+      "resumo": "48 aulas em Word, 48 slides, 48 atividades e 48 planos de aula. Conjuntos, funções, progressões e lógica.",
+      "preco": "34,90",
+      "capa": "img/capa-mat1.jpg",
+      "alt": "Matemática 1º ano",
+      "pagina": "matematica-1ano.html",
+      "destino": {
+        "tipo": "kiwify",
+        "checkout": "https://pay.kiwify.com.br/BRUOjDP",
+        "area": ""
+      },
+      "video": "",
+      "categoria": "educacao",
+      "sub": ""
+    },
+    {
+      "id": "mat2",
+      "ativo": true,
+      "arquivado": false,
+      "destaqueHome": false,
+      "nome": "Matemática — 2º ano",
+      "resumo": "37 aulas com slide, atividade e plano de aula. Matrizes, combinatória, probabilidade, trigonometria e geometria espacial.",
+      "preco": "34,90",
+      "capa": "img/capa-mat2.jpg",
+      "alt": "Matemática 2º ano",
+      "pagina": "matematica-2ano.html",
+      "destino": {
+        "tipo": "kiwify",
+        "checkout": "https://pay.kiwify.com.br/izUs4JT",
+        "area": ""
+      },
+      "video": "",
+      "categoria": "educacao",
+      "sub": ""
+    },
+    {
+      "id": "mat3",
+      "ativo": true,
+      "arquivado": false,
+      "destaqueHome": false,
+      "nome": "Matemática — 3º ano",
+      "resumo": "38 aulas com slide, atividade e plano de aula. Geometria analítica, complexos, polinômios e matemática financeira.",
+      "preco": "34,90",
+      "capa": "img/capa-mat3.jpg",
+      "alt": "Matemática 3º ano",
+      "pagina": "matematica-3ano.html",
+      "destino": {
+        "tipo": "kiwify",
+        "checkout": "https://pay.kiwify.com.br/7LegsJT",
+        "area": ""
+      },
+      "video": "",
+      "categoria": "educacao",
+      "sub": ""
+    },
+    {
+      "id": "combo",
+      "ativo": true,
+      "arquivado": false,
+      "destaqueHome": true,
+      "nome": "Combo — os três anos",
+      "resumo": "1º, 2º e 3º ano completos: 123 aulas, 124 apresentações e 123 planos de aula, no mesmo padrão.",
+      "preco": "79,90",
+      "capa": "img/capa-combo.jpg",
+      "alt": "Combo três anos",
+      "pagina": "matematica-combo.html",
+      "destino": {
+        "tipo": "kiwify",
+        "checkout": "https://pay.kiwify.com.br/MqMD7iJ",
+        "area": ""
+      },
+      "video": "",
+      "categoria": "educacao",
+      "sub": ""
+    },
+    {
+      "id": "planilha",
+      "ativo": true,
+      "arquivado": false,
+      "destaqueHome": false,
+      "nome": "Planilha de Notas Trimestral",
+      "resumo": "5 turmas, 3 trimestres e resultado final. Você digita a nota; médias e recuperações saem sozinhas.",
+      "preco": "29,90",
+      "capa": "img/capa-planilha.jpg",
+      "alt": "Planilha de Notas",
+      "pagina": "planilha-de-notas.html",
+      "destino": {
+        "tipo": "kiwify",
+        "checkout": "https://pay.kiwify.com.br/tKkVv1A",
+        "area": ""
+      },
+      "video": "",
+      "categoria": "educacao",
+      "sub": ""
+    }
+  ],
+  "servicos": [
+    {
+      "id": "treinamentos",
+      "ativo": true,
+      "arquivado": false,
+      "nome": "Treinamentos",
+      "resumo": "Treinamentos de saúde, segurança, meio ambiente e qualidade — conteúdo de autoria própria e certificado em todos.",
+      "pagina": "servicos-treinamentos.html",
+      "slug": "treinamentos",
+      "itens": [
+        "Riscos psicossociais e saúde mental — NR-01",
+        "NR-01 na prática — ordem de serviço, direitos e deveres",
+        "CIPA — NR-05",
+        "EPI — NR-06",
+        "Ergonomia — NR-17",
+        "Sinalização e noções de incêndio — NR-23 e NR-26",
+        "Integração de segurança (admissional)",
+        "DDS — formação de quem conduz"
+      ]
+    },
+    {
+      "id": "palestras",
+      "ativo": true,
+      "arquivado": false,
+      "nome": "Palestras e SIPAT",
+      "resumo": "Saúde, segurança e meio ambiente: SIPAT completa, palestra avulsa e programação para escola.",
+      "pagina": "servicos-palestras.html",
+      "slug": "palestras",
+      "itens": [
+        "SIPAT completa",
+        "Saúde mental no trabalho",
+        "Percepção de risco",
+        "Ergonomia e prevenção de LER/DORT",
+        "EPI — o que ele protege e o que não protege",
+        "Saúde do trabalhador: sono, alimentação e turno",
+        "Resíduos, água e energia",
+        "Meio ambiente: o que é licenciamento e por que te afeta"
+      ]
+    },
+    {
+      "id": "meio-ambiente",
+      "ativo": true,
+      "arquivado": false,
+      "nome": "Meio Ambiente e Saneamento",
+      "resumo": "Licenciamento, estudos e projetos ambientais, do enquadramento ao protocolo, com acompanhamento do processo.",
+      "pagina": "servicos-meio-ambiente.html",
+      "slug": "meio-ambiente",
+      "itens": [
+        "Licenciamento ambiental",
+        "Estudos ambientais",
+        "Outorga de uso de água",
+        "PGRS — Plano de Gerenciamento de Resíduos Sólidos",
+        "Projetos de saneamento",
+        "Regularização ambiental rural",
+        "Inventário de GEE",
+        "ISO 14001"
+      ]
+    },
+    {
+      "id": "qualidade",
+      "ativo": true,
+      "arquivado": false,
+      "nome": "Qualidade e Produtividade",
+      "resumo": "Engenharia de produção aplicada ao chão de fábrica: 5S, PDCA, padronização de processo e indicadores.",
+      "pagina": "servicos-qualidade.html",
+      "slug": "qualidade",
+      "itens": [
+        "Implantação de 5S",
+        "Ciclo PDCA e melhoria contínua",
+        "Mapeamento e padronização de processos",
+        "Indicadores e gestão à vista",
+        "Análise e solução de problemas",
+        "Arranjo físico, tempos e métodos",
+        "Preparação para ISO 9001"
+      ]
+    },
+    {
+      "id": "educacao",
+      "ativo": true,
+      "arquivado": false,
+      "nome": "Educação e Material Didático",
+      "resumo": "Material sob encomenda, formação de professores e assessoria de coordenação de curso técnico.",
+      "pagina": "servicos-educacao.html",
+      "slug": "educacao",
+      "itens": [
+        "Material didático sob encomenda",
+        "Formação de professores",
+        "Assessoria de coordenação",
+        "Material técnico para empresa"
+      ]
+    }
+  ],
+  "categorias": [
+    {
+      "id": "seguranca-do-trabalho",
+      "nome": "Segurança do Trabalho",
+      "intro": "Material técnico produzido a partir do texto oficial da norma.",
+      "ativo": true,
+      "arquivado": false,
+      "subs": []
+    },
+    {
+      "id": "educacao",
+      "nome": "Educação",
+      "intro": "Material de sala de aula, usado antes de virar produto: as aulas foram dadas, as atividades aplicadas e os planos entregues à coordenação.",
+      "ativo": true,
+      "arquivado": false,
+      "subs": []
+    }
+  ]
+}

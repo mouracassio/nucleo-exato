@@ -1,0 +1,2569 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel de controle — Núcleo Exato</title>
+
+<!-- =========================================================================
+     PAINEL DE CONTROLE DO SITE — Núcleo Exato
+     v1 · 16/08/2026
+
+     O QUE ISTO É
+     Um arquivo só. Sem servidor, sem banco de dados, sem login, sem biblioteca
+     de terceiro. Abre no navegador, você mexe, e ele GERA OS ARQUIVOS do site
+     para você baixar e subir no GitHub — o mesmo gesto de sempre.
+
+     O QUE ELE NÃO FAZ, DE PROPÓSITO
+     - Não publica nada sozinho. Quem publica é você, pelo GitHub.
+     - Não guarda senha, token nem chave. Não tem o que roubar aqui.
+     - Não apaga produto. O botão "Arquivar" tira do site e guarda.
+
+     SE ESTE ARQUIVO QUEBRAR
+     É HTML e JavaScript comum, sem dependência nenhuma. Abre em qualquer
+     editor de texto e conserta. E mesmo que ele suma, o site continua no ar:
+     ele não faz parte do site, só produz os arquivos dele.
+
+     "Tudo que é verdadeiro respeita o tempo." — Prof. Eng. Cássio Moura
+     ========================================================================= -->
+
+<style>
+:root{
+  --verde:#1F9D66; --verde-esc:#157347; --grafite:#333F48; --escuro:#2B333A;
+  --claro:#F4F8F5; --borda:#DCE7E0; --texto:#3A444B; --suave:#6B7480;
+  --amarelo:#FFF8DC; --amarelo-b:#E8D9A0; --vermelho:#8B0000;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Calibri,-apple-system,"Segoe UI",system-ui,sans-serif;color:var(--texto);
+  line-height:1.6;background:#F7F9FA;-webkit-font-smoothing:antialiased;padding-bottom:60px}
+h1,h2,h3,h4{font-family:Cambria,Georgia,serif;color:var(--grafite);line-height:1.25}
+a{color:var(--verde-esc)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+
+/* ---------- topo ---------- */
+.topo{background:#fff;border-bottom:1px solid var(--borda);position:sticky;top:0;z-index:30;
+  box-shadow:0 1px 4px rgba(20,40,30,.05)}
+.topo .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px;flex-wrap:wrap}
+.marca{display:flex;align-items:center;gap:11px}
+.mk{width:34px;height:24px;position:relative;flex:none}
+.mk i{position:absolute;width:9px;height:9px;display:block}
+.mk .a{left:0;top:0;background:var(--verde)}
+.mk .b{left:12px;top:0;background:var(--verde)}
+.mk .c{left:24px;top:0;background:#8FDABC}
+.mk .d{left:12px;top:12px;background:#D9DEE1}
+.marca b{font-family:Cambria,Georgia,serif;color:var(--grafite);font-size:17px;font-weight:700}
+.marca small{display:block;font-family:Calibri,sans-serif;font-size:12.5px;color:var(--suave);
+  font-weight:400;letter-spacing:.3px}
+
+/* ---------- abas ---------- */
+.abas{display:flex;gap:4px;flex-wrap:wrap}
+.abas button{font-family:inherit;font-size:15px;color:var(--suave);background:transparent;
+  border:0;border-bottom:3px solid transparent;padding:8px 14px;cursor:pointer;border-radius:6px 6px 0 0}
+.abas button:hover{color:var(--verde-esc);background:var(--claro)}
+.abas button.on{color:var(--verde-esc);border-bottom-color:var(--verde);font-weight:700}
+
+/* ---------- faixa de estado ---------- */
+.estado{background:var(--claro);border-bottom:1px solid var(--borda);padding:11px 0;font-size:14.5px}
+.estado .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.estado .pt{width:9px;height:9px;border-radius:50%;background:var(--verde);flex:none}
+.estado.suja{background:#FFF6E8;border-bottom-color:var(--amarelo-b)}
+.estado.suja .pt{background:#C87F0A}
+.estado b{color:var(--grafite)}
+
+/* ---------- caixas ---------- */
+main{padding:26px 0}
+.painel{display:none}
+.painel.on{display:block}
+.cx{background:#fff;border:1px solid var(--borda);border-radius:14px;padding:24px;margin-bottom:20px}
+.cx>h2{font-size:22px;margin-bottom:6px}
+.cx>.sub{color:var(--suave);font-size:15px;margin-bottom:18px}
+
+/* ---------- lista ---------- */
+.linha{display:flex;align-items:center;gap:14px;padding:13px 14px;border:1px solid var(--borda);
+  border-radius:11px;margin-bottom:9px;background:#fff;transition:border-color .12s}
+.linha:hover{border-color:#BBD3C5}
+.linha.desligada{background:#FAFBFB;border-style:dashed}
+.linha.desligada .nm{color:var(--suave)}
+.linha .cap{width:52px;height:52px;object-fit:cover;border-radius:7px;border:1px solid var(--borda);flex:none;background:var(--claro)}
+.linha .meio{flex:1;min-width:150px}
+.linha .nm{font-family:Cambria,Georgia,serif;font-size:17px;color:var(--grafite);font-weight:700}
+.linha .det{font-size:13.5px;color:var(--suave);margin-top:2px}
+.linha .acs{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+
+.eti{display:inline-block;font-size:11.5px;letter-spacing:1.2px;text-transform:uppercase;
+  font-weight:700;padding:3px 9px;border-radius:999px;vertical-align:middle}
+.eti.no-ar{background:#E3F5EC;color:var(--verde-esc);border:1px solid #B9E4CF}
+.eti.off{background:#EFF3F1;color:var(--suave);border:1px solid var(--borda)}
+.eti.arq{background:#F1ECE4;color:#8A6D3B;border:1px solid #E0D5C2}
+.eti.aviso{background:#FDECEA;color:var(--vermelho);border:1px solid #F2C4BE}
+
+button.b{font-family:inherit;font-size:14px;padding:7px 13px;border-radius:8px;cursor:pointer;
+  border:1px solid var(--borda);background:#fff;color:var(--grafite);white-space:nowrap;
+  transition:background .12s,border-color .12s}
+button.b:hover{background:var(--claro);border-color:#BBD3C5}
+button.b.pri{background:var(--verde);border-color:var(--verde);color:#fff;font-weight:700}
+button.b.pri:hover{background:var(--verde-esc);border-color:var(--verde-esc)}
+button.b.mini{padding:5px 9px;font-size:13px}
+button.b.perigo{color:var(--vermelho);border-color:#E8C9C4}
+button.b.perigo:hover{background:#FDECEA}
+button.b:disabled{opacity:.4;cursor:not-allowed}
+
+/* ---------- formulário ---------- */
+.campos{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:860px){.campos{grid-template-columns:1fr}}
+.campo{display:flex;flex-direction:column;gap:5px}
+.campo.largo{grid-column:1/-1}
+.campo>label{font-size:14px;font-weight:700;color:var(--grafite)}
+.campo .ob{color:var(--vermelho)}
+.campo .aj{font-size:13px;color:var(--suave);font-weight:400}
+.campo input,.campo select,.campo textarea{
+  font-family:inherit;font-size:15.5px;color:var(--texto);
+  background:var(--amarelo);border:1px solid var(--amarelo-b);border-radius:9px;
+  padding:11px 13px;width:100%;transition:border-color .12s,box-shadow .12s}
+.campo textarea{resize:vertical;min-height:74px;line-height:1.5}
+.campo input:focus,.campo select:focus,.campo textarea:focus{
+  outline:none;border-color:var(--verde);box-shadow:0 0 0 3px rgba(31,157,102,.15)}
+.campo input:disabled{background:#F1F3F4;border-color:var(--borda);color:var(--suave)}
+.campo input::placeholder,.campo textarea::placeholder{color:#B3A87F}
+
+.radios{display:flex;gap:10px;flex-wrap:wrap}
+.radios label{display:flex;align-items:center;gap:7px;border:1px solid var(--borda);border-radius:9px;
+  padding:10px 14px;cursor:pointer;font-size:15px;background:#fff;flex:1;min-width:190px}
+.radios label:hover{border-color:#BBD3C5;background:var(--claro)}
+.radios input{width:auto;background:none;border:0;padding:0;accent-color:var(--verde)}
+.radios label.sel{border-color:var(--verde);background:#F2FAF6;font-weight:700;color:var(--verde-esc)}
+
+.aviso-cx{border-left:4px solid var(--verde);background:var(--claro);border-radius:0 10px 10px 0;
+  padding:14px 18px;margin-top:16px;font-size:14.5px}
+.aviso-cx.alerta{border-left-color:#C87F0A;background:#FFF6E8}
+.aviso-cx.erro{border-left-color:var(--vermelho);background:#FDECEA}
+.aviso-cx b{color:var(--grafite)}
+
+/* ---------- prévia ---------- */
+.previa-cx{border:1px dashed var(--verde);border-radius:12px;background:var(--claro);padding:20px}
+.previa-cx>.rot{font-size:12px;letter-spacing:1.8px;text-transform:uppercase;font-weight:700;
+  color:var(--verde-esc);margin-bottom:14px}
+.p-prod{border:1px solid var(--borda);border-radius:14px;overflow:hidden;background:#fff;
+  display:flex;flex-direction:column;max-width:340px}
+.p-prod img.pc{width:100%;display:block;border-bottom:1px solid var(--borda);aspect-ratio:1050/720;
+  object-fit:cover;background:var(--claro)}
+.p-prod .txt{padding:20px;display:flex;flex-direction:column;flex:1}
+.p-prod h3{font-size:19px;margin-bottom:7px}
+.p-prod p{font-size:15px;color:var(--suave);flex:1}
+.p-prod .rod{display:flex;align-items:center;justify-content:space-between;margin-top:16px;gap:12px}
+.p-prod .val{font-family:Cambria,Georgia,serif;font-size:24px;color:var(--grafite);white-space:nowrap}
+.p-prod .bt{background:var(--verde);color:#fff;font-weight:700;font-size:15px;padding:10px 18px;
+  border-radius:9px;white-space:nowrap;text-decoration:none}
+.p-prod .bt.off{background:#8A9299}
+.p-prod .ver{display:block;margin-top:11px;font-size:14.5px;color:var(--verde-esc);text-decoration:none}
+.p-prod .video{display:flex;align-items:center;gap:11px;margin-top:13px;padding:9px;
+  border:1px solid var(--borda);border-radius:10px;background:#FBFDFC;text-decoration:none}
+.p-prod .video .thumb{width:84px;height:48px;border-radius:6px;flex:none;position:relative;
+  background:#DCE7E0 center/cover no-repeat;overflow:hidden}
+.p-prod .video .thumb::after{content:"";position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%);width:0;height:0;border-left:13px solid #fff;
+  border-top:9px solid transparent;border-bottom:9px solid transparent;
+  filter:drop-shadow(0 1px 3px rgba(0,0,0,.6))}
+.p-prod .video .vt{font-size:14px;font-weight:700;color:var(--verde-esc);line-height:1.3}
+.p-prod .video .vs{display:block;font-weight:400;font-size:12.5px;color:var(--suave)}
+
+/* ---------- gerar ---------- */
+.arqs{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:8px}
+.arq{border:1px solid var(--borda);border-radius:12px;padding:18px;background:#fff}
+.arq h4{font-size:15px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color:var(--verde-esc);margin-bottom:5px}
+.arq p{font-size:13.5px;color:var(--suave);margin-bottom:13px;min-height:56px}
+.arq button{width:100%}
+.passos{counter-reset:p}
+.passos li{list-style:none;padding-left:38px;position:relative;margin-bottom:13px;font-size:15.5px}
+.passos li::before{counter-increment:p;content:counter(p);position:absolute;left:0;top:0;
+  width:26px;height:26px;border-radius:50%;background:var(--verde);color:#fff;font-weight:700;
+  font-size:14px;display:flex;align-items:center;justify-content:center}
+
+/* ---------- rodapé ---------- */
+.rodape{text-align:center;color:var(--suave);font-size:13.5px;padding:26px 0 10px}
+.rodape .fr{font-family:Cambria,Georgia,serif;font-size:15px;color:var(--grafite)}
+
+.oculto{display:none!important}
+.escondido-arq{opacity:.55}
+
+/* categorias e subcategorias */
+.cat-bloco{border:1px solid var(--borda);border-radius:12px;margin-bottom:14px;overflow:hidden}
+.cat-bloco.desligada{background:#FAFBFB;border-style:dashed}
+.cat-cab{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--claro);
+  flex-wrap:wrap}
+.cat-bloco.desligada .cat-cab{background:#F4F6F6}
+.cat-cab .nm{font-family:Cambria,Georgia,serif;font-size:18px;color:var(--grafite);font-weight:700}
+.cat-cab .det{font-size:13.5px;color:var(--suave);margin-top:2px}
+.cat-cab .meio{flex:1;min-width:160px}
+.subs{padding:10px 16px 14px 40px;border-left:3px solid var(--verde);margin-left:16px}
+.sub-linha{display:flex;align-items:center;gap:12px;padding:9px 12px;border:1px solid var(--borda);
+  border-radius:9px;margin-bottom:7px;background:#fff;flex-wrap:wrap}
+.sub-linha.desligada{background:#FAFBFB;border-style:dashed}
+.sub-linha .nm{font-size:15.5px;color:var(--grafite);font-weight:700}
+.sub-linha .meio{flex:1;min-width:140px}
+.subs .vazio{font-size:14px;color:var(--suave);padding:4px 0 8px}
+</style>
+</head>
+<body>
+
+<div class="topo"><div class="wrap">
+  <div class="marca">
+    <span class="mk"><i class="a"></i><i class="b"></i><i class="c"></i><i class="d"></i></span>
+    <span><b>Núcleo Exato</b><small>painel de controle do site</small></span>
+  </div>
+  <div class="abas">
+    <button class="on" data-aba="home">Página inicial</button>
+    <button data-aba="banners">Banners</button>
+    <button data-aba="categorias">Categorias</button>
+    <button data-aba="produtos">Produtos</button>
+    <button data-aba="servicos">Serviços</button>
+    <button data-aba="contato">Contato</button>
+    <button data-aba="publicar">Publicar</button>
+  </div>
+</div></div>
+
+<div class="estado" id="estado"><div class="wrap">
+  <span class="pt"></span>
+  <span id="estado-txt">Carregando…</span>
+  <span style="flex:1"></span>
+  <button class="b mini" id="bt-abrir">Abrir um conteudo.json</button>
+  <input type="file" id="file-json" accept=".json,application/json" class="oculto">
+</div></div>
+
+<main class="wrap">
+
+<!-- ========================== PÁGINA INICIAL ========================== -->
+<section class="painel on" id="pn-home">
+
+  <div class="cx">
+    <h2>O topo da página inicial</h2>
+    <p class="sub">A primeira coisa que o cliente lê. Aceita <b>&lt;b&gt;texto&lt;/b&gt;</b> para negrito.</p>
+    <div id="h-hero-aviso"></div>
+    <div class="campos">
+      <div class="campo largo">
+        <label>Linha de cima <span class="aj">— a frase pequena em verde acima do título</span></label>
+        <input id="h-kick">
+      </div>
+      <div class="campo largo">
+        <label>Título <span class="ob">*</span></label>
+        <input id="h-titulo">
+      </div>
+      <div class="campo largo">
+        <label>Chamada <span class="ob">*</span></label>
+        <textarea id="h-lead" style="min-height:96px"></textarea>
+      </div>
+      <div class="campo"><label>Botão 1 — texto</label><input id="h-b1t"></div>
+      <div class="campo"><label>Botão 1 — linha de baixo</label><input id="h-b1s"></div>
+      <div class="campo"><label>Botão 1 — para onde vai</label><input id="h-b1l"></div>
+      <div class="campo"><label>Botão 2 — texto</label><input id="h-b2t"></div>
+      <div class="campo"><label>Botão 2 — linha de baixo</label><input id="h-b2s"></div>
+      <div class="campo"><label>Botão 2 — para onde vai</label><input id="h-b2l"></div>
+    </div>
+  </div>
+
+  <div class="cx">
+    <h2>Loja e Serviços na página inicial</h2>
+    <p class="sub">É aqui que se conserta o desequilíbrio: hoje a loja aparece primeiro, com seis capas escuras, e os serviços viram apêndice.</p>
+
+    <div class="campo largo" style="margin-bottom:20px">
+      <label>Quem aparece primeiro <span class="ob">*</span></label>
+      <div class="radios">
+        <label id="lb-ord-s"><input type="radio" name="ordem" value="servicos"> Serviços primeiro</label>
+        <label id="lb-ord-l"><input type="radio" name="ordem" value="loja"> Loja primeiro</label>
+      </div>
+      <span class="aj">Com os serviços primeiro, quem chega vê a empresa de engenharia antes da prateleira de apostilas.</span>
+    </div>
+
+    <h3 style="font-size:17px;margin:22px 0 10px">A seção da Loja</h3>
+    <div class="campos">
+      <div class="campo"><label>Título</label><input id="h-lj-t"></div>
+      <div class="campo"><label>Etiqueta ao lado</label><input id="h-lj-tag"></div>
+      <div class="campo largo"><label>Texto de apresentação</label><textarea id="h-lj-i"></textarea></div>
+      <div class="campo">
+        <label>Quantos produtos mostrar <span class="aj">— o resto fica na página da Loja</span></label>
+        <input id="h-lj-q" type="number" min="0" max="24">
+      </div>
+      <div class="campo"><label>Texto do link para a loja completa</label><input id="h-lj-l"></div>
+    </div>
+    <div class="aviso-cx" id="h-lj-aviso"></div>
+
+    <h3 style="font-size:17px;margin:26px 0 10px">A seção dos Serviços</h3>
+    <div class="campos">
+      <div class="campo"><label>Título</label><input id="h-sv-t"></div>
+      <div class="campo"><label>Etiqueta ao lado</label><input id="h-sv-tag"></div>
+      <div class="campo largo"><label>Texto de apresentação</label><textarea id="h-sv-i"></textarea></div>
+      <div class="campo"><label>Texto do botão para as cinco áreas</label><input id="h-sv-l"></div>
+    </div>
+    <div class="aviso-cx">
+      Os cartões de serviço na página inicial passam a ter <b>cabeçalho escuro</b>, com o mesmo peso visual das capas dos produtos. É esse contraste que faltava.
+    </div>
+  </div>
+
+  <div class="cx">
+    <h2>As outras seções</h2>
+    <p class="sub">Mudam pouco, mas quando mudam você não precisa abrir HTML.</p>
+    <div class="campos">
+      <div class="campo largo"><label>Título de "O que nos diferencia"</label><input id="h-dif-t"></div>
+    </div>
+    <div id="h-difs" style="margin-top:14px"></div>
+    <div class="campos" style="margin-top:22px">
+      <div class="campo"><label>Título de "Quem somos"</label><input id="h-qs-t"></div>
+      <div class="campo"><label>Texto do link "Conhecer a empresa"</label><input id="h-qs-l"></div>
+      <div class="campo largo"><label>Texto de apresentação</label><textarea id="h-qs-i"></textarea></div>
+    </div>
+    <div id="h-socios" style="margin-top:14px"></div>
+    <div class="campos" style="margin-top:22px">
+      <div class="campo"><label>Caixa final — título</label><input id="h-cf-t"></div>
+      <div class="campo"><label>Caixa final — botão</label><input id="h-cf-b"></div>
+      <div class="campo largo"><label>Caixa final — texto</label><textarea id="h-cf-x"></textarea></div>
+      <div class="campo"><label>Caixa final — linha de baixo do botão</label><input id="h-cf-s"></div>
+      <div class="campo"><label>Caixa final — para onde vai</label><input id="h-cf-l"></div>
+    </div>
+  </div>
+
+  <div class="cx">
+    <h2>Topos das outras páginas</h2>
+    <p class="sub">A primeira tela da Loja e da página de Serviços.</p>
+    <h3 style="font-size:17px;margin:6px 0 10px">Loja (materiais.html)</h3>
+    <div class="campos">
+      <div class="campo"><label>Linha de cima</label><input id="t-m-k"></div>
+      <div class="campo"><label>Selos <span class="aj">— separados por ponto e vírgula</span></label><input id="t-m-s"></div>
+      <div class="campo largo"><label>Título</label><input id="t-m-t"></div>
+      <div class="campo largo"><label>Chamada</label><textarea id="t-m-l"></textarea></div>
+    </div>
+    <h3 style="font-size:17px;margin:24px 0 10px">Serviços (servicos.html)</h3>
+    <div class="campos">
+      <div class="campo"><label>Linha de cima</label><input id="t-s-k"></div>
+      <div class="campo"><label>Botão</label><input id="t-s-b"></div>
+      <div class="campo largo"><label>Título</label><input id="t-s-t"></div>
+      <div class="campo largo"><label>Chamada</label><textarea id="t-s-l"></textarea></div>
+      <div class="campo"><label>Linha de baixo do botão</label><input id="t-s-sub"></div>
+    </div>
+  </div>
+
+  <div class="cx">
+    <button class="b pri" id="bt-salvar-home" style="font-size:16px;padding:12px 26px">Salvar a página inicial</button>
+    <span class="aj" style="margin-left:12px">depois vá em <b>Publicar</b> para baixar os arquivos</span>
+  </div>
+</section>
+
+<!-- ============================ BANNERS ============================ -->
+<section class="painel" id="pn-banners">
+  <div class="cx">
+    <h2>Banners do topo</h2>
+    <p class="sub">A faixa escura no alto da página inicial, que troca sozinha. Ligar uma campanha é um clique.</p>
+
+    <div class="aviso-cx">
+      <b>Três coisas que este carrossel faz e a maioria não faz:</b>
+      <ul style="margin:8px 0 0 20px">
+        <li><b>Funciona sem JavaScript.</b> Se o script falhar, o primeiro banner continua lá, inteiro e legível — o topo do site nunca fica vazio</li>
+        <li><b>Para de girar quando a pessoa mexe nos controles.</b> Quem clicou decidiu; o site para de decidir por ela</li>
+        <li><b>No celular não gira sozinho</b> — só com o dedo. Lá não existe "passar o mouse" para pausar</li>
+      </ul>
+      Por isso o <b>primeiro banner</b> é o que importa: pesquisa de usabilidade mostra que a maioria das pessoas nunca chega ao segundo. Ponha nele a mensagem que você quer que todo mundo leia.
+    </div>
+
+    <div id="lista-ban" style="margin-top:18px"></div>
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="b pri" id="bt-novo-ban">+ Novo banner</button>
+      <button class="b" id="bt-ver-arq-b">Ver arquivados</button>
+    </div>
+  </div>
+
+  <div class="cx oculto" id="ed-ban">
+    <h2 id="ed-ban-tit">Editar banner</h2>
+    <div class="campos">
+      <div class="campo largo"><label>Etiqueta de cima <span class="aj">— a linha pequena em verde</span></label><input id="b-rot"></div>
+      <div class="campo largo"><label>Título <span class="ob">*</span></label><input id="b-titulo"></div>
+      <div class="campo largo"><label>Texto <span class="ob">*</span></label><textarea id="b-texto" style="min-height:88px"></textarea></div>
+      <div class="campo"><label>Botão — texto</label><input id="b-botao"></div>
+      <div class="campo"><label>Botão — linha de baixo</label><input id="b-sub"></div>
+      <div class="campo largo"><label>Botão — para onde vai</label><input id="b-link" placeholder="servicos-treinamentos.html"></div>
+    </div>
+    <div id="b-avisos"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+      <button class="b pri" id="bt-salvar-ban">Salvar banner</button>
+      <button class="b" id="bt-cancelar-ban">Cancelar</button>
+    </div>
+    <h3 style="margin-top:28px;font-size:17px">Como vai ficar no site</h3>
+    <div style="margin-top:10px;background:#2B333A;border-radius:14px;padding:34px 30px" id="previa-ban"></div>
+  </div>
+</section>
+
+<!-- ========================== CATEGORIAS ========================== -->
+<section class="painel" id="pn-categorias">
+  <div class="cx">
+    <h2>Categorias da Loja</h2>
+    <p class="sub">Como os produtos se agrupam na página <b>Materiais</b>. Cada categoria pode ter subcategorias dentro dela.</p>
+
+    <div class="aviso-cx">
+      <b>Como isso aparece no site:</b> a categoria vira um título com a linha verde embaixo.
+      A subcategoria vira um subtítulo menor, dentro dela. Produto que não estiver em nenhuma
+      subcategoria aparece <b>logo abaixo do título da categoria</b>, antes das subcategorias —
+      então você não precisa criar subcategoria se não quiser.
+    </div>
+
+    <div id="lista-cat" style="margin-top:18px"></div>
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="b pri" id="bt-nova-cat">+ Nova categoria</button>
+      <button class="b" id="bt-ver-arq-c">Ver arquivadas</button>
+    </div>
+  </div>
+
+  <div class="cx oculto" id="ed-cat">
+    <h2 id="ed-cat-tit">Editar categoria</h2>
+    <div class="campos">
+      <div class="campo">
+        <label>Nome <span class="ob">*</span></label>
+        <input id="k-nome" placeholder="Segurança do Trabalho">
+      </div>
+      <div class="campo">
+        <label>Identificador <span class="aj">— não mexa se já existe</span></label>
+        <input id="k-id" placeholder="seguranca-do-trabalho">
+      </div>
+      <div class="campo largo">
+        <label>Texto de apresentação <span class="aj">— opcional; aparece abaixo do título</span></label>
+        <textarea id="k-intro" placeholder="Material técnico produzido a partir do texto oficial da norma."></textarea>
+      </div>
+    </div>
+    <div id="k-avisos"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+      <button class="b pri" id="bt-salvar-cat">Salvar categoria</button>
+      <button class="b" id="bt-cancelar-cat">Cancelar</button>
+    </div>
+  </div>
+
+  <div class="cx oculto" id="ed-sub">
+    <h2 id="ed-sub-tit">Editar subcategoria</h2>
+    <p class="sub" id="ed-sub-pai"></p>
+    <div class="campos">
+      <div class="campo">
+        <label>Nome <span class="ob">*</span></label>
+        <input id="sc-nome" placeholder="Ergonomia">
+      </div>
+      <div class="campo">
+        <label>Identificador <span class="aj">— não mexa se já existe</span></label>
+        <input id="sc-id" placeholder="ergonomia">
+      </div>
+      <div class="campo largo">
+        <label>Texto de apresentação <span class="aj">— opcional</span></label>
+        <textarea id="sc-intro"></textarea>
+      </div>
+    </div>
+    <div id="sc-avisos"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+      <button class="b pri" id="bt-salvar-sub">Salvar subcategoria</button>
+      <button class="b" id="bt-cancelar-sub">Cancelar</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PRODUTOS ============================ -->
+<section class="painel" id="pn-produtos">
+
+  <div class="cx">
+    <h2>Produtos da Loja</h2>
+    <p class="sub">O que aparece na página <b>Materiais</b>. Desligar tira do site sem perder o cadastro; arquivar guarda de lado.</p>
+    <div id="lista-prod"></div>
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="b pri" id="bt-novo-prod">+ Novo produto</button>
+      <button class="b" id="bt-ver-arq">Ver arquivados</button>
+    </div>
+  </div>
+
+  <div class="cx oculto" id="ed-prod">
+    <h2 id="ed-prod-tit">Editar produto</h2>
+    <p class="sub">Os campos em amarelo são os que você preenche.</p>
+
+    <div class="campos">
+      <div class="campo largo">
+        <label>Nome do produto <span class="ob">*</span></label>
+        <input id="p-nome" placeholder="Matemática — 1º ano">
+      </div>
+
+      <div class="campo largo">
+        <label>Resumo <span class="ob">*</span> <span class="aj">— as duas linhas que aparecem no cartão da loja</span></label>
+        <textarea id="p-resumo" placeholder="48 aulas em Word, 48 slides, 48 atividades e 48 planos de aula."></textarea>
+      </div>
+
+      <div class="campo">
+        <label>Categoria <span class="ob">*</span></label>
+        <select id="p-cat"></select>
+        <span class="aj">Cria e organiza na aba <b>Categorias</b>.</span>
+      </div>
+
+      <div class="campo">
+        <label>Subcategoria <span class="aj">— opcional</span></label>
+        <select id="p-sub"></select>
+        <span class="aj" id="p-sub-aj"></span>
+      </div>
+
+      <div class="campo">
+        <label>Capa <span class="ob">*</span> <span class="aj">— escolha uma das que estão em img/</span></label>
+        <select id="p-capa"></select>
+      </div>
+
+      <div class="campo">
+        <label>Página do produto <span class="aj">— o "Ver tudo o que vem"</span></label>
+        <input id="p-pagina" placeholder="matematica-1ano.html">
+      </div>
+
+      <div class="campo">
+        <label>Identificador interno <span class="aj">— não mexa se o produto já existe</span></label>
+        <input id="p-id" placeholder="mat1">
+      </div>
+
+      <div class="campo largo">
+        <label>Para onde vai o botão <span class="ob">*</span></label>
+        <div class="radios">
+          <label id="lb-kiwify"><input type="radio" name="destino" value="kiwify"> Compra na Kiwify</label>
+          <label id="lb-orcamento"><input type="radio" name="destino" value="orcamento"> Pedir orçamento</label>
+        </div>
+      </div>
+
+      <div class="campo largo" id="bl-kiwify">
+        <label>Link do checkout da Kiwify <span class="ob">*</span></label>
+        <input id="p-checkout" placeholder="https://pay.kiwify.com.br/XXXXXXX">
+        <span class="aj">Deixe vazio e o botão sai cinza escrito "Em breve", sem clique — o site nunca publica botão quebrado.</span>
+      </div>
+
+      <div class="campo" id="bl-preco">
+        <label>Preço <span class="ob">*</span> <span class="aj">— só o número, com vírgula</span></label>
+        <input id="p-preco" placeholder="34,90">
+      </div>
+
+      <div class="campo oculto" id="bl-area">
+        <label>Área do orçamento</label>
+        <select id="p-area"></select>
+      </div>
+
+      <div class="campo largo">
+        <label>Vídeo do YouTube <span class="aj">— opcional; sem vídeo o cartão simplesmente não mostra vídeo</span></label>
+        <input id="p-video" placeholder="https://www.youtube.com/watch?v=...">
+        <span class="aj" id="p-video-ok"></span>
+      </div>
+
+      <div class="campo largo">
+        <label>Página inicial</label>
+        <div class="radios">
+          <label id="lb-dest" style="flex:none"><input type="checkbox" id="p-destaque"> Mostrar este produto na página inicial</label>
+        </div>
+        <span class="aj">A página inicial mostra só alguns produtos, de propósito — para os serviços não virarem apêndice da loja. Quantos, você escolhe na aba <b>Página inicial</b>.</span>
+      </div>
+    </div>
+
+    <div id="p-avisos"></div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+      <button class="b pri" id="bt-salvar-prod">Salvar produto</button>
+      <button class="b" id="bt-cancelar-prod">Cancelar</button>
+    </div>
+
+    <h3 style="margin-top:28px;font-size:17px">Como vai ficar no site</h3>
+    <div class="previa-cx" style="margin-top:10px">
+      <div class="rot">Prévia do cartão</div>
+      <div id="previa-prod"></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ============================ SERVIÇOS ============================ -->
+<section class="painel" id="pn-servicos">
+  <div class="cx">
+    <h2>Áreas de Serviço</h2>
+    <p class="sub">O que aparece na página <b>Serviços</b>. Mesma lógica dos produtos.</p>
+    <div id="lista-serv"></div>
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="b pri" id="bt-novo-serv">+ Nova área</button>
+      <button class="b" id="bt-ver-arq-s">Ver arquivadas</button>
+    </div>
+  </div>
+
+  <div class="cx oculto" id="ed-serv">
+    <h2 id="ed-serv-tit">Editar área</h2>
+    <p class="sub">Os campos em amarelo são os que você preenche.</p>
+    <div class="campos">
+      <div class="campo">
+        <label>Nome da área <span class="ob">*</span></label>
+        <input id="s-nome" placeholder="Treinamentos">
+      </div>
+      <div class="campo">
+        <label>Identificador <span class="aj">— vira o ?area= do formulário</span></label>
+        <input id="s-slug" placeholder="treinamentos">
+      </div>
+      <div class="campo largo">
+        <label>Resumo <span class="ob">*</span></label>
+        <textarea id="s-resumo" placeholder="Treinamentos de saúde, segurança, meio ambiente e qualidade."></textarea>
+      </div>
+      <div class="campo largo">
+        <label>O que a área faz <span class="ob">*</span> <span class="aj">— um item por linha</span></label>
+        <textarea id="s-itens" style="min-height:150px" placeholder="Riscos psicossociais e saúde mental — NR-01&#10;CIPA — NR-05"></textarea>
+      </div>
+      <div class="campo largo">
+        <label>Página da área</label>
+        <input id="s-pagina" placeholder="servicos-treinamentos.html">
+      </div>
+    </div>
+    <div id="s-avisos"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+      <button class="b pri" id="bt-salvar-serv">Salvar área</button>
+      <button class="b" id="bt-cancelar-serv">Cancelar</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CONTATO ============================ -->
+<section class="painel" id="pn-contato">
+  <div class="cx">
+    <h2>Contato do site</h2>
+    <p class="sub">Vale para os botões de orçamento, o formulário e o rodapé de todas as páginas.</p>
+    <div class="campos">
+      <div class="campo">
+        <label>WhatsApp comercial <span class="aj">— só números, com 55 e DDD</span></label>
+        <input id="c-whats" placeholder="5534996931121">
+      </div>
+      <div class="campo">
+        <label>E-mail</label>
+        <input id="c-email" placeholder="contato@nucleoexato.com.br">
+      </div>
+    </div>
+    <div class="aviso-cx">
+      <b>Se o WhatsApp ficar vazio</b>, os botões de orçamento caem para o e-mail em vez de quebrar. Essa proteção já existia no <code>links.js</code> e continua valendo.
+    </div>
+    <div style="margin-top:18px"><button class="b pri" id="bt-salvar-contato">Salvar contato</button></div>
+  </div>
+</section>
+
+<!-- ============================ PUBLICAR ============================ -->
+<section class="painel" id="pn-publicar">
+  <div class="cx">
+    <h2>Gerar os arquivos</h2>
+    <p class="sub">O painel não publica nada. Ele gera os arquivos; quem publica é você, no GitHub — o mesmo gesto de sempre.</p>
+
+    <div class="aviso-cx" style="margin-bottom:18px">
+      <b>Confira antes de subir.</b> Estes botões abrem a página montada numa aba nova, com o
+      conteúdo que está no painel agora. Nada é publicado — é só para você olhar.
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+        <button class="b" data-ver="index">Ver a página inicial</button>
+        <button class="b" data-ver="materiais">Ver a Loja</button>
+        <button class="b" data-ver="servicos">Ver os Serviços</button>
+      </div>
+      <div class="aj" id="ver-aviso" style="margin-top:10px"></div>
+    </div>
+
+    <div id="pub-avisos"></div>
+    <div class="arqs">
+      <div class="arq">
+        <h4>index.html</h4>
+        <p>A página inicial, com os banners do topo e o equilíbrio entre Loja e Serviços. O único arquivo com script — e feito para o primeiro banner aparecer mesmo sem ele.</p>
+        <button class="b pri" data-gerar="index">Baixar</button>
+      </div>
+      <div class="arq">
+        <h4>dados/conteudo.json</h4>
+        <p>A memória do painel. É este arquivo que você abre da próxima vez para continuar de onde parou. <b>Sempre baixe este.</b></p>
+        <button class="b pri" data-gerar="json">Baixar</button>
+      </div>
+      <div class="arq">
+        <h4>materiais.html</h4>
+        <p>A página da Loja, com os cartões já montados em HTML puro. Nenhum JavaScript monta produto — se o navegador falhar, a loja continua lá.</p>
+        <button class="b pri" data-gerar="materiais">Baixar</button>
+      </div>
+      <div class="arq">
+        <h4>servicos.html</h4>
+        <p>A página de Serviços, com as áreas montadas. Mesma lógica: HTML pronto, sem depender de script.</p>
+        <button class="b pri" data-gerar="servicos">Baixar</button>
+      </div>
+      <div class="arq">
+        <h4>links.js</h4>
+        <p>Os preços e checkouts que as <b>seis páginas de produto</b> leem. É o que impede o preço de ter dois donos.</p>
+        <button class="b pri" data-gerar="links">Baixar</button>
+      </div>
+    </div>
+    <div style="margin-top:18px"><button class="b pri" id="bt-baixar-tudo" style="font-size:16px;padding:12px 26px">Baixar os cinco de uma vez</button></div>
+  </div>
+
+  <div class="cx">
+    <h2>Como subir</h2>
+    <p class="sub">Igual ao que você já faz. Nada de token, nada de linha de comando.</p>
+    <ol class="passos">
+      <li>Copie os arquivos baixados para a pasta do site, cada um no seu lugar — o <code>conteudo.json</code> vai dentro de <code>dados/</code>, os outros três na raiz.</li>
+      <li>No GitHub, abra <code>mouracassio/nucleo-exato</code> e clique em <b>Add file → Upload files</b>.</li>
+      <li>Arraste os arquivos e escreva no commit o que mudou. Ex.: <i>"produto novo: apostila de NR-35"</i>.</li>
+      <li>Commit. Em menos de um minuto o site republica sozinho.</li>
+      <li>Confira <b>em navegador de verdade</b> — nunca por link de prévia. Preço aparece como <code>R$ --</code> em fetch, e isso não é bug.</li>
+    </ol>
+    <div class="aviso-cx alerta">
+      <b>Guarde o <code>conteudo.json</code>.</b> Ele é a memória do painel. Se você perdê-lo, o site continua no ar normalmente — mas o painel volta a abrir sem saber o que você já cadastrou.
+    </div>
+  </div>
+</section>
+
+<div class="rodape wrap">
+  <div class="fr">"Tudo que é verdadeiro respeita o tempo."</div>
+  <div>Prof. Eng. Cássio Moura · Núcleo Exato · 2026</div>
+</div>
+
+</main>
+
+<script>
+/* =========================================================================
+   1. ESTADO
+   ========================================================================= */
+
+var CAPAS = ["img/capa-niosh.jpg","img/capa-mat1.jpg","img/capa-mat2.jpg",
+             "img/capa-mat3.jpg","img/capa-combo.jpg","img/capa-planilha.jpg"];
+
+var FRENTES = {
+  "Segurança do Trabalho": "Material técnico produzido a partir do texto oficial da norma.",
+  "Educação": "Material de sala de aula, usado antes de virar produto: as aulas foram dadas, as atividades aplicadas e os planos entregues à coordenação."
+};
+
+var VAZIO = { versao:3, contato:{whatsapp:"",email:""}, banners:[], home:{}, topos:{},
+              categorias:[], produtos:[], servicos:[] };
+
+/* Valores de reserva: se um arquivo antigo (versão 1) for aberto, ou se um
+   campo faltar, entra o texto que estava no ar em 16/08/2026 — nunca vazio.
+   Um site com título em branco é pior que um site desatualizado. */
+var PADRAO_HOME = {
+  hero:{ kick:"Núcleo Exato · Engenharia e Educação Técnica",
+         titulo:"Engenheiros que ensinam, e escrevem o próprio material",
+         lead:"Duas coisas, na mesma casa: uma <b>loja</b> de material técnico e didático, pronto para comprar e usar hoje; e <b>serviços</b> de engenharia sob orçamento — treinamento, palestra, licenciamento ambiental e qualidade. Tudo escrito por nós, com registro no CREA-MG.",
+         btn1:{texto:"Ver a loja",sub:"acesso na hora",link:"materiais.html"},
+         btn2:{texto:"Pedir orçamento",sub:"serviços, formulário de 1 minuto",link:"contato.html?area="} },
+  ordem:["servicos","loja"],
+  loja:{ titulo:"A loja — material pronto, preço na tela", tag:"compra imediata",
+         intro:"Você compra, recebe na hora e usa. Arquivos editáveis em Word, PowerPoint e Excel, produzidos por nós e usados antes de virarem produto. 7 dias de garantia.",
+         quantos:3, linkTexto:"Ver a loja completa, com tudo o que vem em cada material →" },
+  servicos:{ titulo:"Os serviços — engenharia sob orçamento", tag:"sob contrato",
+         intro:"Cinco áreas, uma empresa. Aqui não tem botão de comprar: tem conversa, proposta escrita e prazo por etapa.",
+         linkTexto:"Ver as cinco áreas" },
+  diferenciais:{ titulo:"O que nos diferencia", itens:[] },
+  quemSomos:{ titulo:"Quem somos", intro:"", socios:[], linkTexto:"Conhecer a empresa →" },
+  contatoFinal:{ titulo:"Conte o que você precisa",
+         texto:"Para serviço, orçamento e material sob encomenda. Você vê a mensagem antes de enviar.",
+         botao:"Pedir orçamento", sub:"leva ao formulário, 1 minuto", link:"contato.html?area=" }
+};
+var PADRAO_TOPOS = {
+  materiais:{ kick:"Loja · material pronto",
+    titulo:"A loja: material pronto, editável, com acesso na hora",
+    lead:"O que a gente produz para uso próprio e publica: apostila técnica, material didático e ferramentas de trabalho. Preço na tela, entrega automática, arquivos abertos em Word, PowerPoint e Excel.",
+    selos:["acesso imediato","arquivos editáveis","7 dias de garantia"] },
+  servicos:{ kick:"Serviços",
+    titulo:"Cinco áreas, uma empresa, o mesmo cuidado",
+    lead:"Capacitação em saúde, segurança e meio ambiente, engenharia ambiental, qualidade e produtividade e material didático. Trabalho sob contrato, com conversa antes e proposta escrita com prazo por etapa.",
+    botao:"Pedir orçamento", sub:"resposta pelo WhatsApp" }
+};
+
+/* D começa já normalizado: assim a tela nunca é desenhada a partir de um objeto
+   pela metade, mesmo antes de qualquer arquivo ser carregado. */
+var D = normaliza(JSON.parse(JSON.stringify(VAZIO)));  /* os dados */
+var sujo = false;        /* mudou algo desde o último download? */
+var origem = "nada";     /* de onde vieram os dados */
+var editandoProd = null; /* índice do produto em edição, ou "novo" */
+var editandoServ = null;
+var verArquivados = false, verArquivadosS = false;
+
+function marcaSujo(){ sujo = true; pintaEstado(); }
+
+/* =========================================================================
+   2. UTILITÁRIOS
+   ========================================================================= */
+
+function $(id){ return document.getElementById(id); }
+
+function esc(s){
+  return String(s==null?"":s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;");
+}
+
+function idYoutube(url){
+  if(!url) return "";
+  var m = String(url).match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : "";
+}
+function thumbYoutube(id){ return id ? "https://img.youtube.com/vi/"+id+"/mqdefault.jpg" : ""; }
+function linkYoutube(id){ return id ? "https://www.youtube.com/watch?v="+id : ""; }
+
+function checkoutValido(v){
+  return !!v && v.indexOf("COLE-AQUI") === -1 && v.indexOf("http") === 0;
+}
+
+function slugifica(s){
+  return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
+}
+
+function baixa(nome, texto, tipo){
+  var b = new Blob([texto], {type:(tipo||"text/plain")+";charset=utf-8"});
+  var u = URL.createObjectURL(b);
+  var a = document.createElement("a");
+  a.href = u; a.download = nome;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(u); }, 1500);
+}
+
+/* =========================================================================
+   3. CARREGAR OS DADOS
+   ========================================================================= */
+
+/* copia b sobre a, só onde a não tem valor (não sobrescreve o que o usuário pôs) */
+function completa(a, b){
+  a = a || {};
+  for(var k in b){
+    if(!b.hasOwnProperty(k)) continue;
+    if(a[k] === undefined || a[k] === null || a[k] === ""){
+      a[k] = JSON.parse(JSON.stringify(b[k]));
+    } else if(typeof b[k] === "object" && !Array.isArray(b[k])){
+      a[k] = completa(a[k], b[k]);
+    }
+  }
+  return a;
+}
+
+/* =========================================================================
+   MIGRAÇÃO v2 → v3 — categorias e subcategorias
+   Até a v2, a "seção da loja" era texto solto dentro de cada produto. Na v3 ela
+   virou uma lista de verdade, com nome, ordem, ligar/desligar e subcategorias.
+   Esta função converte um arquivo antigo sem perder nada: cada seção distinta
+   vira uma categoria, na ordem em que aparecia.
+   ========================================================================= */
+function migraCategorias(d){
+  if(Array.isArray(d.categorias) && d.categorias.length) return d;
+  var vistas = {}, lista = [];
+  (d.produtos||[]).forEach(function(p){
+    var nome = p.frente || p.categoria || "Educação";
+    if(!vistas[nome]){
+      vistas[nome] = slugifica(nome).slice(0,24) || ("cat"+lista.length);
+      lista.push({ id:vistas[nome], nome:nome, intro:(FRENTES[nome]||""),
+                   ativo:true, arquivado:false, subs:[] });
+    }
+    p.categoria = vistas[nome];
+    p.sub = p.sub || "";
+    delete p.frente;
+  });
+  d.categorias = lista;
+  return d;
+}
+
+function normaliza(d){
+  d = d || {};
+  d = migraCategorias(d);
+  d.categorias = d.categorias || [];
+  d.categorias.forEach(function(c){
+    c.ativo     = c.ativo !== false;
+    c.arquivado = c.arquivado === true;
+    c.subs      = c.subs || [];
+    c.id        = c.id || slugifica(c.nome).slice(0,24);
+    c.subs.forEach(function(s){
+      s.ativo     = s.ativo !== false;
+      s.arquivado = s.arquivado === true;
+      s.id        = s.id || slugifica(s.nome).slice(0,24);
+    });
+  });
+  d.versao   = 3;
+  d.contato  = d.contato || {whatsapp:"",email:""};
+  d.produtos = d.produtos || [];
+  d.servicos = d.servicos || [];
+  d.banners  = d.banners  || [];
+  d.home     = completa(d.home  || {}, PADRAO_HOME);
+  d.topos    = completa(d.topos || {}, PADRAO_TOPOS);
+  if(!Array.isArray(d.home.ordem) || d.home.ordem.length !== 2) d.home.ordem = ["servicos","loja"];
+  d.home.loja.quantos = parseInt(d.home.loja.quantos, 10);
+  if(isNaN(d.home.loja.quantos) || d.home.loja.quantos < 0) d.home.loja.quantos = 3;
+  d.banners.forEach(function(b){
+    b.ativo     = b.ativo !== false;
+    b.arquivado = b.arquivado === true;
+    b.id        = b.id || slugifica(b.titulo).slice(0,20) || ("b"+d.banners.indexOf(b));
+  });
+  d.produtos.forEach(function(p){
+    p.ativo     = p.ativo !== false;
+    p.arquivado = p.arquivado === true;
+    p.destino   = p.destino || {tipo:"kiwify",checkout:"",area:""};
+    if(!p.destino.tipo) p.destino.tipo = "kiwify";
+    p.video = p.video || "";
+    p.alt   = p.alt || p.nome || "";
+    p.destaqueHome = p.destaqueHome === true;
+    p.categoria = p.categoria || "";
+    p.sub = p.sub || "";
+    /* subcategoria que não pertence à categoria escolhida é descartada — senão
+       o produto sumiria de uma seção e apareceria em outra sem explicação */
+    var c = d.categorias.filter(function(x){ return x.id === p.categoria; })[0];
+    if(p.sub && (!c || !c.subs.some(function(s){ return s.id === p.sub; }))) p.sub = "";
+  });
+  d.servicos.forEach(function(s){
+    s.ativo     = s.ativo !== false;
+    s.arquivado = s.arquivado === true;
+    s.itens     = s.itens || [];
+    s.slug      = s.slug || slugifica(s.nome);
+  });
+  /* capas do JSON entram na lista de escolha */
+  d.produtos.forEach(function(p){
+    if(p.capa && CAPAS.indexOf(p.capa) === -1) CAPAS.push(p.capa);
+  });
+  return d;
+}
+
+function carrega(d, de){
+  D = normaliza(d);
+  origem = de;
+  sujo = false;
+  desenhaTudo();
+  pintaEstado();
+}
+
+function pintaEstado(){
+  var e = $("estado"), t = $("estado-txt");
+  var n = D.produtos.filter(function(p){return !p.arquivado;}).length;
+  var a = D.produtos.filter(function(p){return !p.arquivado && p.ativo;}).length;
+  if(origem === "nada"){
+    e.className = "estado suja";
+    t.innerHTML = "<b>Nenhum dado carregado.</b> Abra o <code>dados/conteudo.json</code> da pasta do site para continuar de onde parou.";
+    return;
+  }
+  e.className = "estado" + (sujo ? " suja" : "");
+  t.innerHTML = (sujo
+      ? "<b>Há mudanças não baixadas.</b> "
+      : "<b>Tudo salvo.</b> ")
+    + a + " de " + n + " produtos no ar · " + D.servicos.filter(function(s){return !s.arquivado && s.ativo;}).length
+    + " áreas de serviço · carregado " + (origem==="site" ? "do site" : origem==="arquivo" ? "do arquivo que você abriu" : "do início");
+}
+
+/* tenta ler o arquivo do próprio site (só funciona se o painel estiver publicado) */
+(function tentaDoSite(){
+  /* O .catch cobre SÓ a falha de rede. Um erro dentro de carrega() não pode
+     ser confundido com "arquivo não encontrado" — foi assim que um bug de
+     desenho se disfarçou de problema de rede na primeira versão. */
+  if(location.protocol === "file:") { esperaArquivo(); return; }
+  var achou = null;
+  fetch("dados/conteudo.json", {cache:"no-store"})
+    .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+    .then(function(j){ achou = j; })
+    .catch(function(){ achou = null; })
+    .then(function(){
+      if(achou) carrega(achou, "site"); else esperaArquivo();
+    });
+})();
+
+function esperaArquivo(){
+  origem = "nada";
+  desenhaTudo();
+  pintaEstado();
+}
+
+$("bt-abrir").onclick = function(){ $("file-json").click(); };
+$("file-json").onchange = function(ev){
+  var f = ev.target.files[0]; if(!f) return;
+  var r = new FileReader();
+  r.onload = function(){
+    try { carrega(JSON.parse(r.result), "arquivo"); }
+    catch(e){ alert("Não consegui ler esse arquivo como JSON.\n\nDetalhe técnico: " + e.message); }
+  };
+  r.readAsText(f, "utf-8");
+  ev.target.value = "";
+};
+
+window.addEventListener("beforeunload", function(e){
+  if(!sujo) return;
+  e.preventDefault(); e.returnValue = "";
+});
+
+/* =========================================================================
+   4. ABAS
+   ========================================================================= */
+var botoesAba = document.querySelectorAll(".abas button");
+for(var i=0;i<botoesAba.length;i++){
+  botoesAba[i].onclick = function(){
+    recolheTudo();   /* nada digitado se perde ao trocar de aba */
+    for(var k=0;k<botoesAba.length;k++) botoesAba[k].classList.remove("on");
+    this.classList.add("on");
+    var ps = document.querySelectorAll(".painel");
+    for(var j=0;j<ps.length;j++) ps[j].classList.remove("on");
+    var aba = this.getAttribute("data-aba");
+    $("pn-" + aba).classList.add("on");
+    /* redesenha ao entrar: a contagem de produtos por categoria, os avisos e as
+       listas dependem do que foi mexido nas outras abas */
+    if(aba === "categorias") desenhaListaCat();
+    if(aba === "produtos")   desenhaListaProd();
+    if(aba === "servicos")   desenhaListaServ();
+    if(aba === "banners")    desenhaListaBan();
+    if(aba === "home")       desenhaHome();
+    if(aba === "publicar")   avisosPublicar();
+    window.scrollTo(0,0);
+  };
+}
+
+/* =========================================================================
+   5. LISTA DE PRODUTOS
+   ========================================================================= */
+
+function desenhaListaProd(){
+  var el = $("lista-prod"); el.innerHTML = "";
+  var arq = D.produtos.filter(function(p){return p.arquivado;});
+  $("bt-ver-arq").textContent = (verArquivados ? "Esconder arquivados (" : "Ver arquivados (") + arq.length + ")";
+
+  var lista = D.produtos.filter(function(p){ return verArquivados ? true : !p.arquivado; });
+  if(!lista.length){
+    el.innerHTML = '<div class="aviso-cx">Nenhum produto ainda. Use <b>+ Novo produto</b>, ou abra o <code>conteudo.json</code> na faixa lá em cima.</div>';
+    return;
+  }
+
+  lista.forEach(function(p){
+    var idx = D.produtos.indexOf(p);
+    var d = document.createElement("div");
+    d.className = "linha" + (p.ativo && !p.arquivado ? "" : " desligada") + (p.arquivado ? " escondido-arq" : "");
+
+    var eti = p.arquivado ? '<span class="eti arq">arquivado</span>'
+            : p.ativo     ? '<span class="eti no-ar">no ar</span>'
+                          : '<span class="eti off">desligado</span>';
+
+    var quebrado = p.destino.tipo === "kiwify" && !checkoutValido(p.destino.checkout);
+    if(quebrado && p.ativo && !p.arquivado) eti += ' <span class="eti aviso">sai como "Em breve"</span>';
+
+    var det = p.destino.tipo === "kiwify"
+      ? ("R$ " + (p.preco||"—") + " · Kiwify" + (quebrado ? " (sem link)" : ""))
+      : ("orçamento · " + (p.destino.area || "sem área"));
+    if(p.video) det += " · com vídeo";
+
+    /* onde este produto vai parar na loja */
+    var c = catPorId(p.categoria);
+    if(!c){
+      det += " · ⚠ sem categoria";
+      if(p.ativo && !p.arquivado) eti += ' <span class="eti aviso">cai em "Outros materiais"</span>';
+    } else {
+      var s = c.subs.filter(function(x){ return x.id===p.sub && x.ativo && !x.arquivado; })[0];
+      det += " · " + c.nome + (s ? " › " + s.nome : "");
+      if(p.ativo && !p.arquivado && (c.arquivado || !c.ativo))
+        eti += ' <span class="eti aviso">categoria desligada — não aparece</span>';
+    }
+
+    d.innerHTML =
+      '<img class="cap" src="'+esc(p.capa)+'" alt="" onerror="this.style.visibility=\'hidden\'">' +
+      '<div class="meio"><div class="nm">'+esc(p.nome)+' '+eti+'</div>' +
+      '<div class="det">'+esc(det)+'</div></div>' +
+      '<div class="acs">' +
+        '<button class="b mini" data-ac="sobe"  data-i="'+idx+'" title="Subir">↑</button>' +
+        '<button class="b mini" data-ac="desce" data-i="'+idx+'" title="Descer">↓</button>' +
+        '<button class="b" data-ac="editar" data-i="'+idx+'">Editar</button>' +
+        (p.arquivado
+          ? '<button class="b" data-ac="desarquivar" data-i="'+idx+'">Desarquivar</button>'
+          : '<button class="b" data-ac="liga" data-i="'+idx+'">'+(p.ativo?"Desligar":"Ligar")+'</button>' +
+            '<button class="b perigo" data-ac="arquivar" data-i="'+idx+'">Excluir</button>') +
+      '</div>';
+    el.appendChild(d);
+  });
+
+  el.querySelectorAll("button[data-ac]").forEach(function(b){
+    b.onclick = function(){
+      var i = +this.getAttribute("data-i"), ac = this.getAttribute("data-ac");
+      if(ac==="liga"){ D.produtos[i].ativo = !D.produtos[i].ativo; marcaSujo(); desenhaListaProd(); }
+      if(ac==="arquivar"){
+        if(confirm('Arquivar "'+D.produtos[i].nome+'"?\n\nEle sai do site e some desta lista, mas NÃO é apagado — fica guardado em "Ver arquivados" e volta com um clique.\n\nO painel não apaga nada, de propósito.')){
+          D.produtos[i].arquivado = true; D.produtos[i].ativo = false; marcaSujo(); desenhaListaProd();
+        }
+      }
+      if(ac==="desarquivar"){ D.produtos[i].arquivado = false; marcaSujo(); desenhaListaProd(); }
+      if(ac==="editar"){ abreEditorProd(i); }
+      if(ac==="sobe" && i>0){ var t=D.produtos[i]; D.produtos[i]=D.produtos[i-1]; D.produtos[i-1]=t; marcaSujo(); desenhaListaProd(); }
+      if(ac==="desce" && i<D.produtos.length-1){ var t2=D.produtos[i]; D.produtos[i]=D.produtos[i+1]; D.produtos[i+1]=t2; marcaSujo(); desenhaListaProd(); }
+    };
+  });
+}
+
+$("bt-ver-arq").onclick = function(){ verArquivados = !verArquivados; desenhaListaProd(); };
+$("bt-novo-prod").onclick = function(){ abreEditorProd("novo"); };
+
+/* =========================================================================
+   6. EDITOR DE PRODUTO
+   ========================================================================= */
+
+function preencheSelects(){
+  var sc = $("p-capa"); sc.innerHTML = "";
+  CAPAS.forEach(function(c){
+    var o = document.createElement("option"); o.value = c; o.textContent = c.replace("img/",""); sc.appendChild(o);
+  });
+
+  var kc = $("p-cat"); var atual = kc.value; kc.innerHTML = "";
+  var vivas = D.categorias.filter(function(c){ return !c.arquivado; });
+  if(!vivas.length){
+    var o0 = document.createElement("option"); o0.value=""; o0.textContent="(nenhuma categoria criada)"; kc.appendChild(o0);
+  }
+  vivas.forEach(function(c){
+    var o = document.createElement("option"); o.value = c.id;
+    o.textContent = c.nome + (c.ativo ? "" : "  (desligada)");
+    kc.appendChild(o);
+  });
+  if(atual) kc.value = atual;
+  preencheSubs();
+
+  var sa = $("p-area"); sa.innerHTML = "";
+  D.servicos.filter(function(s){return !s.arquivado;}).forEach(function(s){
+    var o = document.createElement("option"); o.value = s.slug; o.textContent = s.nome; sa.appendChild(o);
+  });
+}
+
+/* a lista de subcategorias depende da categoria escolhida */
+function preencheSubs(){
+  var ks = $("p-sub"); var atual = ks.value; ks.innerHTML = "";
+  var o0 = document.createElement("option"); o0.value=""; o0.textContent="— nenhuma —"; ks.appendChild(o0);
+  var c = catPorId($("p-cat").value);
+  var subs = c ? c.subs.filter(function(s){ return !s.arquivado; }) : [];
+  subs.forEach(function(s){
+    var o = document.createElement("option"); o.value = s.id;
+    o.textContent = s.nome + (s.ativo ? "" : "  (desligada)");
+    ks.appendChild(o);
+  });
+  if(atual && subs.some(function(s){return s.id===atual;})) ks.value = atual;
+  $("p-sub-aj").innerHTML = subs.length
+    ? 'Sem subcategoria, o produto aparece logo abaixo do título da categoria.'
+    : '<b>Esta categoria ainda não tem subcategorias.</b> Crie na aba Categorias, se quiser.';
+}
+$("p-cat").addEventListener("change", function(){ preencheSubs(); atualizaPrevia(); });
+
+function abreEditorProd(i){
+  editandoProd = i;
+  var p = (i === "novo")
+    ? {id:"", nome:"", resumo:"", categoria:(D.categorias[0]?D.categorias[0].id:""), sub:"",
+       preco:"", capa:CAPAS[0], pagina:"",
+       destino:{tipo:"kiwify",checkout:"",area:""}, video:"", ativo:true, arquivado:false}
+    : D.produtos[i];
+
+  $("ed-prod-tit").textContent = (i==="novo" ? "Novo produto" : "Editar: " + p.nome);
+  $("p-nome").value = p.nome || "";
+  $("p-resumo").value = p.resumo || "";
+  preencheSelects();
+  $("p-cat").value = p.categoria || "";
+  preencheSubs();
+  $("p-sub").value = p.sub || "";
+  $("p-capa").value = p.capa || CAPAS[0];
+  $("p-pagina").value = p.pagina || "";
+  $("p-id").value = p.id || "";
+  $("p-checkout").value = (p.destino && p.destino.checkout) || "";
+  $("p-preco").value = p.preco || "";
+  $("p-video").value = p.video || "";
+  $("p-destaque").checked = p.destaqueHome === true;
+  var tipo = (p.destino && p.destino.tipo) || "kiwify";
+  document.querySelectorAll('input[name="destino"]').forEach(function(r){ r.checked = (r.value===tipo); });
+  if(p.destino && p.destino.area) $("p-area").value = p.destino.area;
+
+  $("ed-prod").classList.remove("oculto");
+  trocaDestino();
+  atualizaPrevia();
+  $("ed-prod").scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+function trocaDestino(){
+  var tipo = document.querySelector('input[name="destino"]:checked');
+  tipo = tipo ? tipo.value : "kiwify";
+  $("bl-kiwify").classList.toggle("oculto", tipo !== "kiwify");
+  $("bl-area").classList.toggle("oculto", tipo !== "orcamento");
+  $("lb-kiwify").classList.toggle("sel", tipo === "kiwify");
+  $("lb-orcamento").classList.toggle("sel", tipo === "orcamento");
+  atualizaPrevia();
+}
+document.querySelectorAll('input[name="destino"]').forEach(function(r){ r.onchange = trocaDestino; });
+
+["p-nome","p-resumo","p-cat","p-sub","p-capa","p-pagina","p-checkout","p-preco","p-video","p-area"]
+  .forEach(function(id){
+    $(id).addEventListener("input", atualizaPrevia);
+    $(id).addEventListener("change", atualizaPrevia);
+  });
+
+function leEditorProd(){
+  var tipo = document.querySelector('input[name="destino"]:checked');
+  tipo = tipo ? tipo.value : "kiwify";
+  var nome = $("p-nome").value.trim();
+  return {
+    id: $("p-id").value.trim() || slugifica(nome).slice(0,24),
+    nome: nome,
+    resumo: $("p-resumo").value.trim(),
+    categoria: $("p-cat").value,
+    sub: $("p-sub").value,
+    preco: $("p-preco").value.trim(),
+    capa: $("p-capa").value,
+    alt: nome,
+    pagina: $("p-pagina").value.trim(),
+    destino: { tipo: tipo, checkout: $("p-checkout").value.trim(), area: $("p-area").value || "" },
+    video: $("p-video").value.trim(),
+    destaqueHome: $("p-destaque").checked,
+    ativo: true, arquivado: false
+  };
+}
+
+function atualizaPrevia(){
+  var p = leEditorProd();
+  var vid = idYoutube(p.video);
+  $("p-video-ok").innerHTML = p.video
+      ? (vid ? '<b style="color:var(--verde-esc)">Vídeo reconhecido.</b> A miniatura aparece no cartão.'
+             : '<b style="color:var(--vermelho)">Não reconheci este endereço do YouTube.</b> O cartão sai sem vídeo.')
+      : "";
+
+  var kiwifyOk = p.destino.tipo === "kiwify" && checkoutValido(p.destino.checkout);
+  var botao = p.destino.tipo === "orcamento"
+      ? '<a class="bt" href="#">Pedir orçamento</a>'
+      : (kiwifyOk ? '<a class="bt" href="#">Comprar agora</a>' : '<a class="bt off">Em breve</a>');
+  var valor = p.destino.tipo === "orcamento"
+      ? '<div class="val" style="font-size:17px;color:var(--suave)">sob orçamento</div>'
+      : '<div class="val">R$ ' + esc(p.preco || "--") + '</div>';
+
+  var video = vid
+    ? '<a class="video" href="#"><span class="thumb" style="background-image:url('+thumbYoutube(vid)+')"></span>' +
+      '<span class="vt">Assistir ao vídeo<span class="vs">abre no YouTube</span></span></a>'
+    : '';
+
+  $("previa-prod").innerHTML =
+    '<div class="p-prod">' +
+      '<img class="pc" src="'+esc(p.capa)+'" alt="" onerror="this.style.opacity=.25">' +
+      '<div class="txt"><h3>'+esc(p.nome||"Nome do produto")+'</h3>' +
+      '<p>'+esc(p.resumo||"O resumo aparece aqui.")+'</p>' +
+      '<div class="rod">'+valor+botao+'</div>' +
+      (p.pagina ? '<a class="ver" href="#">Ver tudo o que vem →</a>' : '') +
+      video +
+      '</div></div>';
+
+  var av = [];
+  if(!p.nome)   av.push("Falta o <b>nome</b>.");
+  if(!p.resumo) av.push("Falta o <b>resumo</b>.");
+  if(p.destino.tipo === "kiwify"){
+    if(!p.preco) av.push("Falta o <b>preço</b>.");
+    if(!checkoutValido(p.destino.checkout))
+      av.push('Sem link de checkout válido — o botão vai sair <b>cinza, escrito "Em breve"</b>, sem clique. Isso é proteção, não erro: é melhor que publicar botão quebrado.');
+  }
+  if(p.pagina && p.pagina.indexOf(".html") === -1)
+    av.push("A <b>página do produto</b> costuma terminar em <code>.html</code>. Confira.");
+  var jaExiste = D.produtos.some(function(q,k){ return q.id === p.id && k !== editandoProd; });
+  if(jaExiste) av.push("Já existe outro produto com o <b>identificador</b> <code>"+esc(p.id)+"</code>. Troque, senão um sobrescreve o outro no <code>links.js</code>.");
+
+  $("p-avisos").innerHTML = av.length
+    ? '<div class="aviso-cx ' + (jaExiste ? 'erro' : 'alerta') + '"><b>Confira antes de salvar:</b><ul style="margin:8px 0 0 20px">' +
+      av.map(function(a){return "<li>"+a+"</li>";}).join("") + "</ul></div>"
+    : '<div class="aviso-cx">Está tudo preenchido.</div>';
+}
+
+$("bt-salvar-prod").onclick = function(){
+  var p = leEditorProd();
+  if(!p.nome || !p.resumo){ alert("Nome e resumo são obrigatórios."); return; }
+  if(!p.id){ alert("O identificador interno não pode ficar vazio."); return; }
+  if(D.produtos.some(function(q,k){ return q.id===p.id && k!==editandoProd; })){
+    if(!confirm("Já existe produto com o identificador \""+p.id+"\".\n\nIsso faz um sobrescrever o outro no links.js. Salvar mesmo assim?")) return;
+  }
+  if(editandoProd === "novo"){ D.produtos.push(p); }
+  else {
+    p.ativo     = D.produtos[editandoProd].ativo;
+    p.arquivado = D.produtos[editandoProd].arquivado;
+    D.produtos[editandoProd] = p;
+  }
+  editandoProd = null;
+  $("ed-prod").classList.add("oculto");
+  marcaSujo(); desenhaListaProd();
+};
+$("bt-cancelar-prod").onclick = function(){
+  editandoProd = null; $("ed-prod").classList.add("oculto");
+};
+
+/* =========================================================================
+   7. SERVIÇOS
+   ========================================================================= */
+
+function desenhaListaServ(){
+  var el = $("lista-serv"); el.innerHTML = "";
+  var arq = D.servicos.filter(function(s){return s.arquivado;});
+  $("bt-ver-arq-s").textContent = (verArquivadosS ? "Esconder arquivadas (" : "Ver arquivadas (") + arq.length + ")";
+
+  var lista = D.servicos.filter(function(s){ return verArquivadosS ? true : !s.arquivado; });
+  if(!lista.length){
+    el.innerHTML = '<div class="aviso-cx">Nenhuma área ainda.</div>'; return;
+  }
+  lista.forEach(function(s){
+    var idx = D.servicos.indexOf(s);
+    var d = document.createElement("div");
+    d.className = "linha" + (s.ativo && !s.arquivado ? "" : " desligada");
+    var eti = s.arquivado ? '<span class="eti arq">arquivada</span>'
+            : s.ativo ? '<span class="eti no-ar">no ar</span>' : '<span class="eti off">desligada</span>';
+    d.innerHTML =
+      '<div class="meio"><div class="nm">'+esc(s.nome)+' '+eti+'</div>' +
+      '<div class="det">'+s.itens.length+' itens · '+esc(s.slug)+'</div></div>' +
+      '<div class="acs">' +
+        '<button class="b mini" data-ac="sobe" data-i="'+idx+'">↑</button>' +
+        '<button class="b mini" data-ac="desce" data-i="'+idx+'">↓</button>' +
+        '<button class="b" data-ac="editar" data-i="'+idx+'">Editar</button>' +
+        (s.arquivado
+          ? '<button class="b" data-ac="desarquivar" data-i="'+idx+'">Desarquivar</button>'
+          : '<button class="b" data-ac="liga" data-i="'+idx+'">'+(s.ativo?"Desligar":"Ligar")+'</button>' +
+            '<button class="b perigo" data-ac="arquivar" data-i="'+idx+'">Excluir</button>') +
+      '</div>';
+    el.appendChild(d);
+  });
+
+  el.querySelectorAll("button[data-ac]").forEach(function(b){
+    b.onclick = function(){
+      var i = +this.getAttribute("data-i"), ac = this.getAttribute("data-ac");
+      if(ac==="liga"){ D.servicos[i].ativo = !D.servicos[i].ativo; marcaSujo(); desenhaListaServ(); }
+      if(ac==="arquivar"){
+        if(confirm('Arquivar a área "'+D.servicos[i].nome+'"?\n\nSai do site, mas NÃO é apagada — volta com um clique.')){
+          D.servicos[i].arquivado = true; D.servicos[i].ativo = false; marcaSujo(); desenhaListaServ();
+        }
+      }
+      if(ac==="desarquivar"){ D.servicos[i].arquivado = false; marcaSujo(); desenhaListaServ(); }
+      if(ac==="editar"){ abreEditorServ(i); }
+      if(ac==="sobe" && i>0){ var t=D.servicos[i]; D.servicos[i]=D.servicos[i-1]; D.servicos[i-1]=t; marcaSujo(); desenhaListaServ(); }
+      if(ac==="desce" && i<D.servicos.length-1){ var t2=D.servicos[i]; D.servicos[i]=D.servicos[i+1]; D.servicos[i+1]=t2; marcaSujo(); desenhaListaServ(); }
+    };
+  });
+}
+$("bt-ver-arq-s").onclick = function(){ verArquivadosS = !verArquivadosS; desenhaListaServ(); };
+$("bt-novo-serv").onclick = function(){ abreEditorServ("novo"); };
+
+function abreEditorServ(i){
+  editandoServ = i;
+  var s = (i==="novo") ? {nome:"",slug:"",resumo:"",itens:[],pagina:"",ativo:true,arquivado:false} : D.servicos[i];
+  $("ed-serv-tit").textContent = (i==="novo" ? "Nova área" : "Editar: " + s.nome);
+  $("s-nome").value = s.nome||""; $("s-slug").value = s.slug||"";
+  $("s-resumo").value = s.resumo||""; $("s-itens").value = (s.itens||[]).join("\n");
+  $("s-pagina").value = s.pagina||"";
+  $("ed-serv").classList.remove("oculto");
+  avisosServ();
+  $("ed-serv").scrollIntoView({behavior:"smooth", block:"start"});
+}
+["s-nome","s-slug","s-resumo","s-itens","s-pagina"].forEach(function(id){
+  $(id).addEventListener("input", avisosServ);
+});
+function avisosServ(){
+  var av = [];
+  if(!$("s-nome").value.trim()) av.push("Falta o <b>nome</b>.");
+  if(!$("s-resumo").value.trim()) av.push("Falta o <b>resumo</b>.");
+  var it = $("s-itens").value.split("\n").filter(function(x){return x.trim();});
+  if(!it.length) av.push("Falta pelo menos <b>um item</b> na lista.");
+  $("s-avisos").innerHTML = av.length
+    ? '<div class="aviso-cx alerta"><b>Confira:</b><ul style="margin:8px 0 0 20px">'+av.map(function(a){return "<li>"+a+"</li>";}).join("")+"</ul></div>"
+    : '<div class="aviso-cx">'+it.length+' itens na lista. Está pronto.</div>';
+}
+$("bt-salvar-serv").onclick = function(){
+  var nome = $("s-nome").value.trim();
+  if(!nome){ alert("O nome é obrigatório."); return; }
+  var s = {
+    nome: nome,
+    slug: $("s-slug").value.trim() || slugifica(nome),
+    resumo: $("s-resumo").value.trim(),
+    itens: $("s-itens").value.split("\n").map(function(x){return x.trim();}).filter(Boolean),
+    pagina: $("s-pagina").value.trim(),
+    ativo:true, arquivado:false
+  };
+  if(editandoServ === "novo"){ D.servicos.push(s); }
+  else {
+    s.ativo = D.servicos[editandoServ].ativo;
+    s.arquivado = D.servicos[editandoServ].arquivado;
+    s.id = D.servicos[editandoServ].id;
+    D.servicos[editandoServ] = s;
+  }
+  editandoServ = null; $("ed-serv").classList.add("oculto");
+  marcaSujo(); desenhaListaServ();
+};
+$("bt-cancelar-serv").onclick = function(){ editandoServ=null; $("ed-serv").classList.add("oculto"); };
+
+/* =========================================================================
+   8. CONTATO
+   ========================================================================= */
+$("bt-salvar-contato").onclick = function(){
+  recolheContato();
+  marcaSujo();
+  alert("Contato salvo no painel.\n\nLembre de baixar os arquivos na aba Publicar — só isso muda o site.");
+};
+
+/* =========================================================================
+   8a. CATEGORIAS E SUBCATEGORIAS
+   ========================================================================= */
+var editandoCat = null, editandoSub = null, verArquivadosC = false;
+
+function catPorId(id){ return D.categorias.filter(function(c){return c.id===id;})[0] || null; }
+function contaProdutos(catId, subId){
+  return D.produtos.filter(function(p){
+    if(p.arquivado) return false;
+    if(p.categoria !== catId) return false;
+    return subId === undefined ? true : (p.sub === subId);
+  }).length;
+}
+
+function desenhaListaCat(){
+  var el = $("lista-cat"); el.innerHTML = "";
+  var arq = D.categorias.filter(function(c){return c.arquivado;});
+  $("bt-ver-arq-c").textContent = (verArquivadosC ? "Esconder arquivadas (" : "Ver arquivadas (") + arq.length + ")";
+  var lista = D.categorias.filter(function(c){ return verArquivadosC ? true : !c.arquivado; });
+
+  if(!lista.length){
+    el.innerHTML = '<div class="aviso-cx alerta"><b>Nenhuma categoria.</b> Sem categoria, todos os produtos aparecem numa seção única chamada "Materiais". Use <b>+ Nova categoria</b>.</div>';
+    return;
+  }
+
+  lista.forEach(function(c){
+    var ic = D.categorias.indexOf(c);
+    var bloco = document.createElement("div");
+    bloco.className = "cat-bloco" + (c.ativo && !c.arquivado ? "" : " desligada");
+
+    var eti = c.arquivado ? '<span class="eti arq">arquivada</span>'
+            : c.ativo ? '<span class="eti no-ar">no ar</span>' : '<span class="eti off">desligada</span>';
+    var n = contaProdutos(c.id);
+    var nSubs = c.subs.filter(function(s){return !s.arquivado;}).length;
+    if(c.ativo && !c.arquivado && n === 0)
+      eti += ' <span class="eti off">vazia — não aparece</span>';
+
+    var cab = '<div class="cat-cab">' +
+      '<div class="meio"><div class="nm">'+esc(c.nome)+' '+eti+'</div>' +
+      '<div class="det">'+n+' produto(s) · '+nSubs+' subcategoria(s) · <code>'+esc(c.id)+'</code></div></div>' +
+      '<div class="acs">' +
+        '<button class="b mini" data-kc="sobe" data-i="'+ic+'">↑</button>' +
+        '<button class="b mini" data-kc="desce" data-i="'+ic+'">↓</button>' +
+        '<button class="b" data-kc="novasub" data-i="'+ic+'">+ Subcategoria</button>' +
+        '<button class="b" data-kc="editar" data-i="'+ic+'">Editar</button>' +
+        (c.arquivado
+          ? '<button class="b" data-kc="desarquivar" data-i="'+ic+'">Desarquivar</button>'
+          : '<button class="b" data-kc="liga" data-i="'+ic+'">'+(c.ativo?"Desligar":"Ligar")+'</button>' +
+            '<button class="b perigo" data-kc="arquivar" data-i="'+ic+'">Excluir</button>') +
+      '</div></div>';
+
+    var subsVis = c.subs.filter(function(s){ return verArquivadosC ? true : !s.arquivado; });
+    var subsHtml = subsVis.length
+      ? subsVis.map(function(s){
+          var is = c.subs.indexOf(s);
+          var ns = contaProdutos(c.id, s.id);
+          var e2 = s.arquivado ? '<span class="eti arq">arquivada</span>'
+                 : s.ativo ? '<span class="eti no-ar">no ar</span>' : '<span class="eti off">desligada</span>';
+          if(s.ativo && !s.arquivado && ns === 0) e2 += ' <span class="eti off">vazia</span>';
+          return '<div class="sub-linha'+(s.ativo && !s.arquivado ? '' : ' desligada')+'">' +
+            '<div class="meio"><div class="nm">'+esc(s.nome)+' '+e2+'</div>' +
+            '<div class="det">'+ns+' produto(s) · <code>'+esc(s.id)+'</code></div></div>' +
+            '<div class="acs">' +
+              '<button class="b mini" data-ks="sobe" data-i="'+ic+'" data-j="'+is+'">↑</button>' +
+              '<button class="b mini" data-ks="desce" data-i="'+ic+'" data-j="'+is+'">↓</button>' +
+              '<button class="b mini" data-ks="editar" data-i="'+ic+'" data-j="'+is+'">Editar</button>' +
+              (s.arquivado
+                ? '<button class="b mini" data-ks="desarquivar" data-i="'+ic+'" data-j="'+is+'">Desarquivar</button>'
+                : '<button class="b mini" data-ks="liga" data-i="'+ic+'" data-j="'+is+'">'+(s.ativo?"Desligar":"Ligar")+'</button>' +
+                  '<button class="b mini perigo" data-ks="arquivar" data-i="'+ic+'" data-j="'+is+'">Excluir</button>') +
+            '</div></div>';
+        }).join("")
+      : '<div class="vazio">Sem subcategorias. Os produtos desta categoria aparecem direto sob o título dela.</div>';
+
+    bloco.innerHTML = cab + '<div class="subs">' + subsHtml + '</div>';
+    el.appendChild(bloco);
+  });
+
+  el.querySelectorAll("button[data-kc]").forEach(function(b){
+    b.onclick = function(){
+      var i = +this.getAttribute("data-i"), ac = this.getAttribute("data-kc"), c = D.categorias[i];
+      if(ac==="liga"){ c.ativo = !c.ativo; marcaSujo(); desenhaListaCat(); }
+      if(ac==="arquivar"){
+        var n = contaProdutos(c.id);
+        var aviso = n ? '\n\nATENÇÃO: '+n+' produto(s) estão nesta categoria. Eles NÃO serão apagados, mas vão parar de aparecer na loja até você movê-los para outra categoria.' : '';
+        if(confirm('Arquivar a categoria "'+c.nome+'"?'+aviso+'\n\nEla sai do site, mas NÃO é apagada — volta com um clique.')){
+          c.arquivado = true; c.ativo = false; marcaSujo(); desenhaTudo();
+        }
+      }
+      if(ac==="desarquivar"){ c.arquivado = false; marcaSujo(); desenhaTudo(); }
+      if(ac==="editar"){ abreEditorCat(i); }
+      if(ac==="novasub"){ abreEditorSub(i,"novo"); }
+      if(ac==="sobe" && i>0){ var t=D.categorias[i]; D.categorias[i]=D.categorias[i-1]; D.categorias[i-1]=t; marcaSujo(); desenhaListaCat(); }
+      if(ac==="desce" && i<D.categorias.length-1){ var t2=D.categorias[i]; D.categorias[i]=D.categorias[i+1]; D.categorias[i+1]=t2; marcaSujo(); desenhaListaCat(); }
+    };
+  });
+
+  el.querySelectorAll("button[data-ks]").forEach(function(b){
+    b.onclick = function(){
+      var i = +this.getAttribute("data-i"), j = +this.getAttribute("data-j");
+      var ac = this.getAttribute("data-ks"), c = D.categorias[i], s = c.subs[j];
+      if(ac==="liga"){ s.ativo = !s.ativo; marcaSujo(); desenhaListaCat(); }
+      if(ac==="arquivar"){
+        var n = contaProdutos(c.id, s.id);
+        var aviso = n ? '\n\nATENÇÃO: '+n+' produto(s) estão nela. Eles NÃO serão apagados — voltam a aparecer direto sob o título da categoria.' : '';
+        if(confirm('Arquivar a subcategoria "'+s.nome+'"?'+aviso)){
+          s.arquivado = true; s.ativo = false; marcaSujo(); desenhaTudo();
+        }
+      }
+      if(ac==="desarquivar"){ s.arquivado = false; marcaSujo(); desenhaTudo(); }
+      if(ac==="editar"){ abreEditorSub(i,j); }
+      if(ac==="sobe" && j>0){ var t=c.subs[j]; c.subs[j]=c.subs[j-1]; c.subs[j-1]=t; marcaSujo(); desenhaListaCat(); }
+      if(ac==="desce" && j<c.subs.length-1){ var t2=c.subs[j]; c.subs[j]=c.subs[j+1]; c.subs[j+1]=t2; marcaSujo(); desenhaListaCat(); }
+    };
+  });
+}
+$("bt-ver-arq-c").onclick = function(){ verArquivadosC = !verArquivadosC; desenhaListaCat(); };
+$("bt-nova-cat").onclick = function(){ abreEditorCat("novo"); };
+
+function abreEditorCat(i){
+  editandoCat = i;
+  $("ed-sub").classList.add("oculto");
+  var c = (i==="novo") ? {nome:"",id:"",intro:"",ativo:true,arquivado:false,subs:[]} : D.categorias[i];
+  $("ed-cat-tit").textContent = (i==="novo" ? "Nova categoria" : "Editar: " + c.nome);
+  $("k-nome").value=c.nome||""; $("k-id").value=c.id||""; $("k-intro").value=c.intro||"";
+  $("ed-cat").classList.remove("oculto");
+  avisosCat();
+  $("ed-cat").scrollIntoView({behavior:"smooth",block:"start"});
+}
+["k-nome","k-id","k-intro"].forEach(function(id){ $(id).addEventListener("input", avisosCat); });
+function avisosCat(){
+  var nome = $("k-nome").value.trim();
+  var id = $("k-id").value.trim() || slugifica(nome).slice(0,24);
+  var av = [];
+  if(!nome) av.push("Falta o <b>nome</b>.");
+  if(D.categorias.some(function(c,k){ return c.id===id && k!==editandoCat; }))
+    av.push("Já existe categoria com o identificador <code>"+esc(id)+"</code>.");
+  if(editandoCat!=="novo" && D.categorias[editandoCat] && id !== D.categorias[editandoCat].id){
+    var n = contaProdutos(D.categorias[editandoCat].id);
+    if(n) av.push("Você mudou o <b>identificador</b>, e <b>"+n+" produto(s)</b> apontam para o antigo. Eles serão movidos junto, automaticamente.");
+  }
+  $("k-avisos").innerHTML = av.length
+    ? '<div class="aviso-cx alerta"><b>Confira:</b><ul style="margin:8px 0 0 20px">'+av.map(function(a){return "<li>"+a+"</li>";}).join("")+'</ul></div>'
+    : '<div class="aviso-cx">Está pronto.</div>';
+}
+$("bt-salvar-cat").onclick = function(){
+  var nome = $("k-nome").value.trim();
+  if(!nome){ alert("O nome é obrigatório."); return; }
+  var id = $("k-id").value.trim() || slugifica(nome).slice(0,24);
+  if(D.categorias.some(function(c,k){ return c.id===id && k!==editandoCat; })){
+    alert("Já existe uma categoria com o identificador \""+id+"\". Escolha outro."); return;
+  }
+  if(editandoCat === "novo"){
+    D.categorias.push({id:id,nome:nome,intro:$("k-intro").value.trim(),ativo:true,arquivado:false,subs:[]});
+  } else {
+    var c = D.categorias[editandoCat], antigo = c.id;
+    if(antigo !== id){
+      /* leva os produtos junto — ninguém fica órfão por renomear */
+      D.produtos.forEach(function(p){ if(p.categoria === antigo) p.categoria = id; });
+    }
+    c.id = id; c.nome = nome; c.intro = $("k-intro").value.trim();
+  }
+  editandoCat = null; $("ed-cat").classList.add("oculto");
+  marcaSujo(); desenhaTudo();
+};
+$("bt-cancelar-cat").onclick = function(){ editandoCat=null; $("ed-cat").classList.add("oculto"); };
+
+function abreEditorSub(i,j){
+  editandoCat = i; editandoSub = j;
+  $("ed-cat").classList.add("oculto");
+  var c = D.categorias[i];
+  var s = (j==="novo") ? {nome:"",id:"",intro:"",ativo:true,arquivado:false} : c.subs[j];
+  $("ed-sub-tit").textContent = (j==="novo" ? "Nova subcategoria" : "Editar: " + s.nome);
+  $("ed-sub-pai").innerHTML = 'Dentro da categoria <b>'+esc(c.nome)+'</b>.';
+  $("sc-nome").value=s.nome||""; $("sc-id").value=s.id||""; $("sc-intro").value=s.intro||"";
+  $("ed-sub").classList.remove("oculto");
+  avisosSub();
+  $("ed-sub").scrollIntoView({behavior:"smooth",block:"start"});
+}
+["sc-nome","sc-id","sc-intro"].forEach(function(id){ $(id).addEventListener("input", avisosSub); });
+function avisosSub(){
+  var nome = $("sc-nome").value.trim();
+  var id = $("sc-id").value.trim() || slugifica(nome).slice(0,24);
+  var c = D.categorias[editandoCat];
+  var av = [];
+  if(!nome) av.push("Falta o <b>nome</b>.");
+  if(c && c.subs.some(function(s,k){ return s.id===id && k!==editandoSub; }))
+    av.push("Já existe subcategoria com o identificador <code>"+esc(id)+"</code> nesta categoria.");
+  $("sc-avisos").innerHTML = av.length
+    ? '<div class="aviso-cx alerta"><b>Confira:</b><ul style="margin:8px 0 0 20px">'+av.map(function(a){return "<li>"+a+"</li>";}).join("")+'</ul></div>'
+    : '<div class="aviso-cx">Está pronto.</div>';
+}
+$("bt-salvar-sub").onclick = function(){
+  var nome = $("sc-nome").value.trim();
+  if(!nome){ alert("O nome é obrigatório."); return; }
+  var c = D.categorias[editandoCat];
+  var id = $("sc-id").value.trim() || slugifica(nome).slice(0,24);
+  if(c.subs.some(function(s,k){ return s.id===id && k!==editandoSub; })){
+    alert("Já existe subcategoria com esse identificador nesta categoria."); return;
+  }
+  if(editandoSub === "novo"){
+    c.subs.push({id:id,nome:nome,intro:$("sc-intro").value.trim(),ativo:true,arquivado:false});
+  } else {
+    var s = c.subs[editandoSub], antigo = s.id;
+    if(antigo !== id){
+      D.produtos.forEach(function(p){ if(p.categoria===c.id && p.sub===antigo) p.sub = id; });
+    }
+    s.id = id; s.nome = nome; s.intro = $("sc-intro").value.trim();
+  }
+  editandoSub = null; $("ed-sub").classList.add("oculto");
+  marcaSujo(); desenhaTudo();
+};
+$("bt-cancelar-sub").onclick = function(){ editandoSub=null; $("ed-sub").classList.add("oculto"); };
+
+/* =========================================================================
+   8b. BANNERS
+   ========================================================================= */
+var editandoBan = null, verArquivadosB = false;
+
+function desenhaListaBan(){
+  var el = $("lista-ban"); el.innerHTML = "";
+  var arq = D.banners.filter(function(b){return b.arquivado;});
+  $("bt-ver-arq-b").textContent = (verArquivadosB ? "Esconder arquivados (" : "Ver arquivados (") + arq.length + ")";
+  var lista = D.banners.filter(function(b){ return verArquivadosB ? true : !b.arquivado; });
+
+  if(!lista.length){
+    el.innerHTML = '<div class="aviso-cx alerta"><b>Nenhum banner.</b> Sem banner ligado, o topo da página inicial usa o título e a chamada da aba <b>Página inicial</b> — que é um começo perfeitamente bom.</div>';
+    return;
+  }
+  var noAr = D.banners.filter(function(b){return b.ativo && !b.arquivado;});
+  lista.forEach(function(b){
+    var idx = D.banners.indexOf(b);
+    var pos = noAr.indexOf(b);
+    var d = document.createElement("div");
+    d.className = "linha" + (b.ativo && !b.arquivado ? "" : " desligada");
+    var eti = b.arquivado ? '<span class="eti arq">arquivado</span>'
+            : b.ativo ? '<span class="eti no-ar">no ar</span>' : '<span class="eti off">desligado</span>';
+    if(pos === 0) eti += ' <span class="eti no-ar">1º — o que todos veem</span>';
+    d.innerHTML =
+      '<div class="meio"><div class="nm">'+esc(b.titulo||"(sem título)")+' '+eti+'</div>' +
+      '<div class="det">'+esc(b.rot||"sem etiqueta")+(b.link?' · vai para '+esc(b.link):' · sem botão')+'</div></div>' +
+      '<div class="acs">' +
+        '<button class="b mini" data-ac="sobe" data-i="'+idx+'">↑</button>' +
+        '<button class="b mini" data-ac="desce" data-i="'+idx+'">↓</button>' +
+        '<button class="b" data-ac="editar" data-i="'+idx+'">Editar</button>' +
+        (b.arquivado
+          ? '<button class="b" data-ac="desarquivar" data-i="'+idx+'">Desarquivar</button>'
+          : '<button class="b" data-ac="liga" data-i="'+idx+'">'+(b.ativo?"Desligar":"Ligar")+'</button>' +
+            '<button class="b perigo" data-ac="arquivar" data-i="'+idx+'">Excluir</button>') +
+      '</div>';
+    el.appendChild(d);
+  });
+  el.querySelectorAll("button[data-ac]").forEach(function(bt){
+    bt.onclick = function(){
+      var i = +this.getAttribute("data-i"), ac = this.getAttribute("data-ac");
+      if(ac==="liga"){ D.banners[i].ativo = !D.banners[i].ativo; marcaSujo(); desenhaListaBan(); }
+      if(ac==="arquivar"){
+        if(confirm('Arquivar o banner "'+D.banners[i].titulo+'"?\n\nSai do site, mas NÃO é apagado — volta com um clique.')){
+          D.banners[i].arquivado = true; D.banners[i].ativo = false; marcaSujo(); desenhaListaBan();
+        }
+      }
+      if(ac==="desarquivar"){ D.banners[i].arquivado = false; marcaSujo(); desenhaListaBan(); }
+      if(ac==="editar"){ abreEditorBan(i); }
+      if(ac==="sobe" && i>0){ var t=D.banners[i]; D.banners[i]=D.banners[i-1]; D.banners[i-1]=t; marcaSujo(); desenhaListaBan(); }
+      if(ac==="desce" && i<D.banners.length-1){ var t2=D.banners[i]; D.banners[i]=D.banners[i+1]; D.banners[i+1]=t2; marcaSujo(); desenhaListaBan(); }
+    };
+  });
+}
+$("bt-ver-arq-b").onclick = function(){ verArquivadosB = !verArquivadosB; desenhaListaBan(); };
+$("bt-novo-ban").onclick = function(){ abreEditorBan("novo"); };
+
+function abreEditorBan(i){
+  editandoBan = i;
+  var b = (i==="novo") ? {rot:"",titulo:"",texto:"",botao:"",sub:"",link:"",ativo:true,arquivado:false} : D.banners[i];
+  $("ed-ban-tit").textContent = (i==="novo" ? "Novo banner" : "Editar: " + b.titulo);
+  $("b-rot").value=b.rot||""; $("b-titulo").value=b.titulo||""; $("b-texto").value=b.texto||"";
+  $("b-botao").value=b.botao||""; $("b-sub").value=b.sub||""; $("b-link").value=b.link||"";
+  $("ed-ban").classList.remove("oculto");
+  previaBan();
+  $("ed-ban").scrollIntoView({behavior:"smooth",block:"start"});
+}
+["b-rot","b-titulo","b-texto","b-botao","b-sub","b-link"].forEach(function(id){
+  $(id).addEventListener("input", previaBan);
+});
+function leEditorBan(){
+  return { rot:$("b-rot").value.trim(), titulo:$("b-titulo").value.trim(),
+           texto:$("b-texto").value.trim(), botao:$("b-botao").value.trim(),
+           sub:$("b-sub").value.trim(), link:$("b-link").value.trim(),
+           ativo:true, arquivado:false };
+}
+function previaBan(){
+  var b = leEditorBan();
+  $("previa-ban").innerHTML =
+    (b.rot ? '<div style="font-size:12px;letter-spacing:1.8px;text-transform:uppercase;font-weight:700;color:#8FD9BC;margin-bottom:12px">'+esc(b.rot)+'</div>' : '') +
+    '<h2 style="color:#fff;font-size:30px;margin-bottom:12px;font-family:Cambria,Georgia,serif;line-height:1.25">'+esc(b.titulo||"Título do banner")+'</h2>' +
+    '<p style="color:#D9DEE1;font-size:17px;max-width:640px">'+esc(b.texto||"O texto aparece aqui.")+'</p>' +
+    (b.botao ? '<a style="display:inline-block;background:#1F9D66;color:#fff;text-decoration:none;font-size:17px;font-weight:700;padding:14px 30px;border-radius:10px;margin-top:22px">'+esc(b.botao)+
+      (b.sub?'<small style="display:block;font-weight:400;font-size:13px;opacity:.92;margin-top:3px">'+esc(b.sub)+'</small>':'')+'</a>' : '');
+
+  var av = [];
+  if(!b.titulo) av.push("Falta o <b>título</b>.");
+  if(!b.texto)  av.push("Falta o <b>texto</b>.");
+  if(b.botao && !b.link) av.push("O botão tem texto mas <b>não tem destino</b> — ele não vai aparecer.");
+  if(b.link && !b.botao) av.push("Tem destino mas <b>falta o texto do botão</b> — ele não vai aparecer.");
+  if(b.titulo && b.titulo.length > 90) av.push("Título com "+b.titulo.length+" letras. Acima de ~90 ele quebra em muitas linhas no celular.");
+  $("b-avisos").innerHTML = av.length
+    ? '<div class="aviso-cx alerta"><b>Confira:</b><ul style="margin:8px 0 0 20px">'+av.map(function(a){return "<li>"+a+"</li>";}).join("")+'</ul></div>'
+    : '<div class="aviso-cx">Está pronto.</div>';
+}
+$("bt-salvar-ban").onclick = function(){
+  var b = leEditorBan();
+  if(!b.titulo || !b.texto){ alert("Título e texto são obrigatórios."); return; }
+  b.id = slugifica(b.titulo).slice(0,20);
+  if(editandoBan === "novo"){ D.banners.push(b); }
+  else { b.ativo=D.banners[editandoBan].ativo; b.arquivado=D.banners[editandoBan].arquivado;
+         b.id=D.banners[editandoBan].id || b.id; D.banners[editandoBan]=b; }
+  editandoBan=null; $("ed-ban").classList.add("oculto");
+  marcaSujo(); desenhaListaBan();
+};
+$("bt-cancelar-ban").onclick = function(){ editandoBan=null; $("ed-ban").classList.add("oculto"); };
+
+/* =========================================================================
+   8c. PÁGINA INICIAL
+   ========================================================================= */
+
+function desenhaHome(){
+  var h = D.home, t = D.topos;
+  $("h-kick").value=h.hero.kick||""; $("h-titulo").value=h.hero.titulo||"";
+  $("h-lead").value=h.hero.lead||"";
+  $("h-b1t").value=h.hero.btn1.texto||""; $("h-b1s").value=h.hero.btn1.sub||""; $("h-b1l").value=h.hero.btn1.link||"";
+  $("h-b2t").value=h.hero.btn2.texto||""; $("h-b2s").value=h.hero.btn2.sub||""; $("h-b2l").value=h.hero.btn2.link||"";
+
+  document.querySelectorAll('input[name="ordem"]').forEach(function(r){ r.checked = (r.value===h.ordem[0]); });
+  pintaOrdem();
+
+  $("h-lj-t").value=h.loja.titulo||""; $("h-lj-tag").value=h.loja.tag||"";
+  $("h-lj-i").value=h.loja.intro||""; $("h-lj-q").value=h.loja.quantos;
+  $("h-lj-l").value=h.loja.linkTexto||"";
+  $("h-sv-t").value=h.servicos.titulo||""; $("h-sv-tag").value=h.servicos.tag||"";
+  $("h-sv-i").value=h.servicos.intro||""; $("h-sv-l").value=h.servicos.linkTexto||"";
+
+  $("h-dif-t").value=h.diferenciais.titulo||"";
+  $("h-difs").innerHTML = (h.diferenciais.itens||[]).map(function(d,i){
+    return '<div class="campos" style="margin-bottom:12px">' +
+      '<div class="campo"><label>Diferencial '+(i+1)+' — título</label><input data-dif="'+i+'" data-c="titulo" value="'+esc(d.titulo)+'"></div>' +
+      '<div class="campo"><label>Texto</label><textarea data-dif="'+i+'" data-c="texto">'+esc(d.texto)+'</textarea></div></div>';
+  }).join("");
+
+  $("h-qs-t").value=h.quemSomos.titulo||""; $("h-qs-i").value=h.quemSomos.intro||"";
+  $("h-qs-l").value=h.quemSomos.linkTexto||"";
+  $("h-socios").innerHTML = (h.quemSomos.socios||[]).map(function(s,i){
+    return '<div class="campos" style="margin-bottom:12px">' +
+      '<div class="campo"><label>Sócio '+(i+1)+' — nome</label><input data-soc="'+i+'" data-c="nome" value="'+esc(s.nome)+'"></div>' +
+      '<div class="campo"><label>Foto</label><input data-soc="'+i+'" data-c="foto" value="'+esc(s.foto)+'"></div>' +
+      '<div class="campo largo"><label>Texto</label><textarea data-soc="'+i+'" data-c="texto">'+esc(s.texto)+'</textarea></div></div>';
+  }).join("");
+
+  $("h-cf-t").value=h.contatoFinal.titulo||""; $("h-cf-x").value=h.contatoFinal.texto||"";
+  $("h-cf-b").value=h.contatoFinal.botao||""; $("h-cf-s").value=h.contatoFinal.sub||"";
+  $("h-cf-l").value=h.contatoFinal.link||"";
+
+  $("t-m-k").value=t.materiais.kick||""; $("t-m-t").value=t.materiais.titulo||"";
+  $("t-m-l").value=t.materiais.lead||""; $("t-m-s").value=(t.materiais.selos||[]).join("; ");
+  $("t-s-k").value=t.servicos.kick||""; $("t-s-t").value=t.servicos.titulo||"";
+  $("t-s-l").value=t.servicos.lead||""; $("t-s-b").value=t.servicos.botao||"";
+  $("t-s-sub").value=t.servicos.sub||"";
+
+  avisoQuantos();
+  avisoHero();
+}
+
+/* Com banner ligado, o topo é o carrossel — e o título e a chamada daqui NÃO
+   aparecem. Sem este aviso, dá para editar o título, não ver mudança nenhuma
+   no site e não entender o motivo. */
+function avisoHero(){
+  var n = noAr(D.banners).length;
+  $("h-hero-aviso").innerHTML = n
+    ? '<div class="aviso-cx alerta" style="margin-top:0;margin-bottom:18px"><b>Atenção:</b> há <b>'+n+
+      ' banner(s) ligado(s)</b>, e é o carrossel que ocupa o topo da página inicial. ' +
+      'O título, a chamada e os botões abaixo <b>não aparecem</b> enquanto houver banner ligado — ' +
+      'eles são a reserva, e voltam sozinhos se você desligar todos. Para mudar o que o cliente ' +
+      'vê no topo hoje, vá na aba <b>Banners</b>.</div>'
+    : '<div class="aviso-cx" style="margin-top:0;margin-bottom:18px">Nenhum banner ligado: o topo da página inicial é o título e a chamada abaixo.</div>';
+}
+
+function pintaOrdem(){
+  var v = document.querySelector('input[name="ordem"]:checked');
+  v = v ? v.value : "servicos";
+  $("lb-ord-s").classList.toggle("sel", v==="servicos");
+  $("lb-ord-l").classList.toggle("sel", v==="loja");
+}
+document.querySelectorAll('input[name="ordem"]').forEach(function(r){ r.onchange = pintaOrdem; });
+
+function avisoQuantos(){
+  var q = parseInt($("h-lj-q").value,10);
+  var total = noAr(D.produtos).length;
+  var marcados = noAr(D.produtos).filter(function(p){return p.destaqueHome;}).length;
+  var msg;
+  if(isNaN(q) || q<=0) msg = "Com <b>0</b>, a página inicial não mostra cartão de produto nenhum — só o texto e o link para a Loja.";
+  else if(q >= total) msg = "Com <b>"+q+"</b> de "+total+", a página inicial mostra <b>todos</b> os produtos. É o desequilíbrio de hoje: seis capas escuras contra os serviços.";
+  else msg = "A página inicial mostra <b>"+q+"</b> de "+total+" produtos. Escolha quais na aba <b>Produtos</b> (marcando \"mostrar na página inicial\") — hoje há <b>"+marcados+"</b> marcados. Faltando marcados, entram os primeiros da lista.";
+  $("h-lj-aviso").innerHTML = msg;
+}
+$("h-lj-q").addEventListener("input", avisoQuantos);
+
+/* Lê os campos da aba e guarda em D. É chamada pelo botão Salvar, mas TAMBÉM
+   automaticamente ao trocar de aba e antes de gerar qualquer arquivo — senão
+   quem editar e for direto para Publicar baixaria o texto antigo sem perceber. */
+function recolheHome(){
+  if(!$("h-titulo")) return;
+  var h = D.home, t = D.topos;
+  h.hero.kick=$("h-kick").value; h.hero.titulo=$("h-titulo").value; h.hero.lead=$("h-lead").value;
+  h.hero.btn1={texto:$("h-b1t").value,sub:$("h-b1s").value,link:$("h-b1l").value};
+  h.hero.btn2={texto:$("h-b2t").value,sub:$("h-b2s").value,link:$("h-b2l").value};
+  var pr = document.querySelector('input[name="ordem"]:checked');
+  h.ordem = (pr && pr.value==="loja") ? ["loja","servicos"] : ["servicos","loja"];
+  h.loja={titulo:$("h-lj-t").value,tag:$("h-lj-tag").value,intro:$("h-lj-i").value,
+          quantos:Math.max(0,parseInt($("h-lj-q").value,10)||0),linkTexto:$("h-lj-l").value};
+  h.servicos={titulo:$("h-sv-t").value,tag:$("h-sv-tag").value,intro:$("h-sv-i").value,linkTexto:$("h-sv-l").value};
+  h.diferenciais.titulo=$("h-dif-t").value;
+  document.querySelectorAll("[data-dif]").forEach(function(el){
+    h.diferenciais.itens[+el.getAttribute("data-dif")][el.getAttribute("data-c")] = el.value;
+  });
+  h.quemSomos.titulo=$("h-qs-t").value; h.quemSomos.intro=$("h-qs-i").value;
+  h.quemSomos.linkTexto=$("h-qs-l").value;
+  document.querySelectorAll("[data-soc]").forEach(function(el){
+    h.quemSomos.socios[+el.getAttribute("data-soc")][el.getAttribute("data-c")] = el.value;
+  });
+  h.contatoFinal={titulo:$("h-cf-t").value,texto:$("h-cf-x").value,botao:$("h-cf-b").value,
+                  sub:$("h-cf-s").value,link:$("h-cf-l").value};
+  t.materiais={kick:$("t-m-k").value,titulo:$("t-m-t").value,lead:$("t-m-l").value,
+               selos:$("t-m-s").value.split(";").map(function(x){return x.trim();}).filter(Boolean)};
+  t.servicos={kick:$("t-s-k").value,titulo:$("t-s-t").value,lead:$("t-s-l").value,
+              botao:$("t-s-b").value,sub:$("t-s-sub").value};
+  marcaSujo();
+}
+
+function recolheContato(){
+  if(!$("c-whats")) return;
+  D.contato.whatsapp = $("c-whats").value.replace(/[^0-9]/g,"");
+  D.contato.email = $("c-email").value.trim();
+}
+
+/* recolhe TUDO o que está em tela — chamada antes de qualquer geração */
+function recolheTudo(){ recolheHome(); recolheContato(); }
+
+$("bt-salvar-home").onclick = function(){
+  recolheHome();
+  alert("Página inicial salva no painel.\n\nLembre de baixar os arquivos na aba Publicar — só isso muda o site.");
+};
+
+/* =========================================================================
+   9. GERADORES — é aqui que o site nasce
+   ========================================================================= */
+
+function noAr(lista){ return lista.filter(function(x){ return x.ativo && !x.arquivado; }); }
+
+function gerarJson(){
+  var d = JSON.parse(JSON.stringify(D));
+  d.versao = 3;
+  return JSON.stringify(d, null, 2) + "\n";
+}
+
+function gerarLinks(){
+  var ps = D.produtos.filter(function(p){ return !p.arquivado && p.destino.tipo === "kiwify"; });
+  var blocos = ps.map(function(p){
+    return "  " + p.id + ": {\n" +
+           '    checkout: "' + (p.destino.checkout || "COLE-AQUI") + '",\n' +
+           '    preco: "' + (p.preco || "") + '"\n' +
+           "  }";
+  }).join(",\n\n");
+
+  return '/* =============================================================================\n' +
+' OS LINKS DA KIWIFY E O CONTATO\n' +
+'\n' +
+' ATENCAO: este arquivo passou a ser GERADO PELO painel.html em 16/08/2026.\n' +
+' Editar aqui na mao funciona, mas na proxima vez que voce gerar pelo painel\n' +
+' a sua edicao e perdida. Mexa no painel, nao aqui.\n' +
+'\n' +
+' A protecao antiga continua valendo: checkout como "COLE-AQUI" deixa o botao\n' +
+' cinza escrito "Em breve" e sem clique. Nunca se publica botao quebrado.\n' +
+' ============================================================================= */\n\n' +
+'var PRODUTOS = {\n\n' + blocos + '\n\n};\n\n' +
+'var CONTATO = {\n' +
+'  whatsapp: "' + (D.contato.whatsapp || "COLE-AQUI") + '",\n' +
+'  email: "' + (D.contato.email || "") + '"\n' +
+'};\n\n' +
+MOTOR_LINKS;
+}
+
+/* o motor do links.js, copiado do arquivo de 15/08/2026 sem alteracao */
+var MOTOR_LINKS =
+'/* ---------------------------------------------------------------------------\n' +
+'   Daqui para baixo e o que faz os botoes funcionarem. Nao precisa mexer.\n' +
+'   --------------------------------------------------------------------------- */\n' +
+'(function () {\n' +
+'  function pronto(v) {\n' +
+'    return v && v.indexOf("COLE-AQUI") === -1 && v.indexOf("http") === 0;\n' +
+'  }\n' +
+'  function temZap() {\n' +
+'    return CONTATO.whatsapp && CONTATO.whatsapp.indexOf("COLE-AQUI") === -1;\n' +
+'  }\n' +
+'  function soNumeros(v) {\n' +
+'    return String(v).replace(/[^0-9]/g, "");\n' +
+'  }\n' +
+'\n' +
+'  document.addEventListener("DOMContentLoaded", function () {\n' +
+'\n' +
+'    var botoes = document.querySelectorAll("[data-produto]");\n' +
+'    for (var i = 0; i < botoes.length; i++) {\n' +
+'      var el = botoes[i];\n' +
+'      var p = PRODUTOS[el.getAttribute("data-produto")];\n' +
+'      if (!p) continue;\n' +
+'      if (pronto(p.checkout)) {\n' +
+'        el.setAttribute("href", p.checkout);\n' +
+'        el.setAttribute("rel", "noopener");\n' +
+'      } else {\n' +
+'        el.classList.add("off");\n' +
+'        el.removeAttribute("href");\n' +
+'        var texto = el.querySelector("[data-rotulo]");\n' +
+'        if (texto) { texto.textContent = "Em breve"; }\n' +
+'        else { el.textContent = "Em breve"; }\n' +
+'      }\n' +
+'    }\n' +
+'\n' +
+'    var precos = document.querySelectorAll("[data-preco]");\n' +
+'    for (var j = 0; j < precos.length; j++) {\n' +
+'      var q = PRODUTOS[precos[j].getAttribute("data-preco")];\n' +
+'      if (q) { precos[j].textContent = q.preco; }\n' +
+'    }\n' +
+'\n' +
+'    var pedidos = document.querySelectorAll("[data-orcamento]");\n' +
+'    for (var k = 0; k < pedidos.length; k++) {\n' +
+'      var b = pedidos[k];\n' +
+'      var assunto = b.getAttribute("data-orcamento") || "um servico";\n' +
+'      var msg = "Ola! Vim pelo site da Nucleo Exato e gostaria de um orcamento de " + assunto + ".";\n' +
+'      if (temZap()) {\n' +
+'        b.setAttribute("href", "https://wa.me/" + soNumeros(CONTATO.whatsapp) +\n' +
+'                               "?text=" + encodeURIComponent(msg));\n' +
+'        b.setAttribute("target", "_blank");\n' +
+'        b.setAttribute("rel", "noopener");\n' +
+'      } else {\n' +
+'        b.setAttribute("href", "mailto:" + CONTATO.email +\n' +
+'                               "?subject=" + encodeURIComponent("Orcamento - " + assunto) +\n' +
+'                               "&body=" + encodeURIComponent(msg));\n' +
+'      }\n' +
+'    }\n' +
+'\n' +
+'    var mails = document.querySelectorAll("[data-email]");\n' +
+'    for (var m = 0; m < mails.length; m++) {\n' +
+'      mails[m].textContent = CONTATO.email;\n' +
+'      mails[m].setAttribute("href", "mailto:" + CONTATO.email);\n' +
+'    }\n' +
+'\n' +
+'    if (temZap()) {\n' +
+'      var zaps = document.querySelectorAll("[data-so-com-zap]");\n' +
+'      for (var z = 0; z < zaps.length; z++) { zaps[z].style.display = ""; }\n' +
+'    }\n' +
+'\n' +
+'    var form = document.getElementById("orc");\n' +
+'    if (!form) return;\n' +
+'\n' +
+'    var campos = {\n' +
+'      nome:        document.getElementById("f-nome"),\n' +
+'      empresa:     document.getElementById("f-empresa"),\n' +
+'      cidade:      document.getElementById("f-cidade"),\n' +
+'      contato:     document.getElementById("f-contato"),\n' +
+'      area:        document.getElementById("f-area"),\n' +
+'      necessidade: document.getElementById("f-necessidade")\n' +
+'    };\n' +
+'    var obrigatorios = ["nome", "contato", "area", "necessidade"];\n' +
+'    var previa  = document.getElementById("previa-txt");\n' +
+'    var botao   = document.getElementById("f-enviar");\n' +
+'    var sub     = document.getElementById("f-sub");\n' +
+'    var botaoML = document.getElementById("f-email");\n' +
+'\n' +
+'    (function preSelecionaArea() {\n' +
+'      var m = window.location.search.match(/[?&]area=([^&]+)/);\n' +
+'      if (!m) return;\n' +
+'      var alvo = decodeURIComponent(m[1]).replace(/-/g, " ").toLowerCase();\n' +
+'      var ops = campos.area.options;\n' +
+'      for (var i = 0; i < ops.length; i++) {\n' +
+'        var txt = ops[i].value\n' +
+'          .replace(/&[a-z]+;/g, "")\n' +
+'          .normalize ? ops[i].text.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase()\n' +
+'                     : ops[i].text.toLowerCase();\n' +
+'        if (txt.indexOf(alvo.split(" ")[0]) !== -1 && alvo.split(" ")[0].length > 3) {\n' +
+'          campos.area.selectedIndex = i;\n' +
+'          break;\n' +
+'        }\n' +
+'      }\n' +
+'    })();\n' +
+'\n' +
+'    function valor(k) {\n' +
+'      var v = campos[k] ? campos[k].value : "";\n' +
+'      return (v || "").replace(/\\s+/g, " ").trim();\n' +
+'    }\n' +
+'\n' +
+'    function completo() {\n' +
+'      for (var i = 0; i < obrigatorios.length; i++) {\n' +
+'        if (!valor(obrigatorios[i])) return false;\n' +
+'      }\n' +
+'      return true;\n' +
+'    }\n' +
+'\n' +
+'    function montaMensagem() {\n' +
+'      var l = [];\n' +
+'      l.push("Ola! Vim pelo site da Nucleo Exato e gostaria de um orcamento.");\n' +
+'      l.push("");\n' +
+'      l.push("Nome: " + (valor("nome") || "-"));\n' +
+'      if (valor("empresa")) l.push("Empresa: " + valor("empresa"));\n' +
+'      if (valor("cidade"))  l.push("Cidade: " + valor("cidade"));\n' +
+'      l.push("Contato: " + (valor("contato") || "-"));\n' +
+'      l.push("Area: " + (valor("area") || "-"));\n' +
+'      l.push("");\n' +
+'      l.push("Necessidade:");\n' +
+'      l.push(valor("necessidade") || "-");\n' +
+'      return l.join("\\n");\n' +
+'    }\n' +
+'\n' +
+'    function atualiza() {\n' +
+'      var ok = completo();\n' +
+'      previa.textContent = (valor("nome") || valor("necessidade") || valor("contato"))\n' +
+'        ? montaMensagem()\n' +
+'        : "Preencha os campos acima e a mensagem aparece aqui.";\n' +
+'\n' +
+'      if (ok) {\n' +
+'        botao.classList.remove("off");\n' +
+'        botao.setAttribute("aria-disabled", "false");\n' +
+'        sub.textContent = "abre o WhatsApp com esta mensagem";\n' +
+'        if (temZap()) {\n' +
+'          botao.setAttribute("href", "https://wa.me/" + soNumeros(CONTATO.whatsapp) +\n' +
+'                                     "?text=" + encodeURIComponent(montaMensagem()));\n' +
+'          botao.setAttribute("target", "_blank");\n' +
+'          botao.setAttribute("rel", "noopener");\n' +
+'        } else {\n' +
+'          botao.setAttribute("href", "mailto:" + CONTATO.email +\n' +
+'            "?subject=" + encodeURIComponent("Orcamento - " + valor("area")) +\n' +
+'            "&body=" + encodeURIComponent(montaMensagem()));\n' +
+'        }\n' +
+'        botaoML.setAttribute("href", "mailto:" + CONTATO.email +\n' +
+'          "?subject=" + encodeURIComponent("Orcamento - " + valor("area")) +\n' +
+'          "&body=" + encodeURIComponent(montaMensagem()));\n' +
+'        botaoML.classList.remove("off");\n' +
+'      } else {\n' +
+'        botao.classList.add("off");\n' +
+'        botao.setAttribute("aria-disabled", "true");\n' +
+'        botao.removeAttribute("href");\n' +
+'        sub.textContent = "preencha os campos marcados com *";\n' +
+'        botaoML.classList.add("off");\n' +
+'        botaoML.removeAttribute("href");\n' +
+'      }\n' +
+'    }\n' +
+'\n' +
+'    for (var k2 in campos) {\n' +
+'      if (!campos[k2]) continue;\n' +
+'      campos[k2].addEventListener("input", atualiza);\n' +
+'      campos[k2].addEventListener("change", atualiza);\n' +
+'    }\n' +
+'    form.addEventListener("submit", function (e) { e.preventDefault(); });\n' +
+'    atualiza();\n' +
+'  });\n' +
+'})();\n';
+
+/* ---------- cartão de um produto, em HTML puro ---------- */
+function cartaoProduto(p){
+  var vid = idYoutube(p.video);
+  var abre = p.pagina ? '<a href="'+esc(p.pagina)+'">' : '<span>';
+  var fecha = p.pagina ? '</a>' : '</span>';
+
+  var rodape;
+  if(p.destino.tipo === "orcamento"){
+    rodape = '<div class="rod"><div class="val" style="font-size:17px;color:#6B7480">sob orçamento</div>' +
+             '<a class="bt" data-orcamento="' + esc(p.nome) + '">Pedir orçamento</a></div>';
+  } else {
+    rodape = '<div class="rod"><div class="val">R$ <span data-preco="'+esc(p.id)+'">--</span></div>' +
+             '<a class="bt" data-produto="'+esc(p.id)+'"><span data-rotulo>Comprar agora</span></a></div>';
+  }
+
+  var video = vid
+    ? '<a class="video" href="'+linkYoutube(vid)+'" target="_blank" rel="noopener">' +
+      '<span class="thumb" style="background-image:url('+thumbYoutube(vid)+')"></span>' +
+      '<span class="vt">Assistir ao vídeo<span class="vs">abre no YouTube</span></span></a>'
+    : '';
+
+  return '<div class="prod">' +
+    abre + '<img src="'+esc(p.capa)+'" alt="'+esc(p.alt||p.nome)+'" loading="lazy">' + fecha +
+    '<div class="txt"><h3>'+esc(p.nome)+'</h3><p>'+esc(p.resumo)+'</p>' +
+    rodape +
+    (p.pagina ? '<a class="ver" href="'+esc(p.pagina)+'">Ver tudo o que vem &rarr;</a>' : '') +
+    video +
+    '</div></div>';
+}
+
+/* ---------- cartão de área de serviço, com cabeçalho escuro ---------- */
+function cartaoServico(s){
+  var titulo = s.pagina
+    ? '<h3><a href="'+esc(s.pagina)+'">'+esc(s.nome)+'</a></h3>'
+    : '<h3>'+esc(s.nome)+'</h3>';
+  var ver = s.pagina
+    ? '<a class="ver" href="'+esc(s.pagina)+'">Ver a &aacute;rea completa &rarr;</a>'
+    : '<a class="ver" href="contato.html?area='+esc(s.slug)+'">Pedir or&ccedil;amento &rarr;</a>';
+  return '<div class="serv-card">' +
+    '<div class="cab"><span class="mk"><i class="a"></i><i class="b"></i><i class="c"></i><i class="d"></i></span>' +
+    titulo + '</div>' +
+    '<div class="txt"><p>'+esc(s.resumo)+'</p>'+ver+'</div></div>';
+}
+
+/* ---------- o carrossel de banners ---------- */
+function blocoBanners(){
+  var bs = noAr(D.banners);
+  var h = D.home.hero;
+
+  /* sem banner ligado, o topo usa o título e a chamada da aba Página inicial */
+  if(!bs.length){
+    var b1 = h.btn1.texto ? '<a class="cta" href="'+esc(h.btn1.link)+'">'+esc(h.btn1.texto)+
+             (h.btn1.sub?'<small>'+esc(h.btn1.sub)+'</small>':'')+'</a>' : '';
+    var b2 = h.btn2.texto ? '<a class="cta linha" href="'+esc(h.btn2.link)+'">'+esc(h.btn2.texto)+
+             (h.btn2.sub?'<small>'+esc(h.btn2.sub)+'</small>':'')+'</a>' : '';
+    return '<header class="hero"><div class="wrap">\n' +
+      (h.kick ? '  <div class="kick">'+esc(h.kick)+'</div>\n' : '') +
+      '  <h1>'+esc(h.titulo)+'</h1>\n' +
+      '  <p class="lead">'+h.lead+'</p>\n' +
+      (b1||b2 ? '  <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:6px">'+b1+b2+'</div>\n' : '') +
+      '</div></header>\n';
+  }
+
+  var slides = bs.map(function(b,i){
+    var botao = (b.botao && b.link)
+      ? '<a class="cta" href="'+esc(b.link)+'">'+esc(b.botao)+
+        (b.sub?'<small>'+esc(b.sub)+'</small>':'')+'</a>'
+      : '';
+    return '    <div class="slide" role="group" aria-roledescription="banner" aria-label="'+(i+1)+' de '+bs.length+'">\n' +
+      (b.rot ? '      <div class="rot">'+esc(b.rot)+'</div>\n' : '') +
+      '      <h2>'+esc(b.titulo)+'</h2>\n' +
+      '      <p>'+esc(b.texto)+'</p>\n' +
+      (botao ? '      '+botao+'\n' : '') +
+      '    </div>';
+  }).join("\n");
+
+  var pontos = bs.map(function(b,i){
+    return '<button type="button" data-ir="'+i+'" aria-label="Ir para o banner '+(i+1)+'"'+
+           (i===0?' aria-current="true"':'')+'></button>';
+  }).join("");
+
+  var ctrl = bs.length > 1
+    ? '    <div class="carrossel-ctrl">\n' +
+      '      <button type="button" data-cr="ant" aria-label="Banner anterior">&lsaquo;</button>\n' +
+      '      <button type="button" data-cr="prox" aria-label="Pr&oacute;ximo banner">&rsaquo;</button>\n' +
+      '      <div class="pontos">'+pontos+'</div>\n' +
+      '      <span class="carrossel-conta" id="cr-conta">1 / '+bs.length+'</span>\n' +
+      '    </div>\n'
+    : '';
+
+  return '<header class="hero"><div class="wrap">\n' +
+    '  <div class="carrossel" id="carrossel" aria-roledescription="carrossel" aria-label="Destaques">\n' +
+    slides + '\n' + ctrl +
+    '  </div>\n</div></header>\n';
+}
+
+var SCRIPT_CARROSSEL =
+'<script>\n' +
+'/* Carrossel dos banners.\n' +
+'   O primeiro banner aparece por CSS, sem depender deste script. O que este\n' +
+'   arquivo faz e SO trocar de banner. Se ele nao rodar, o topo do site continua\n' +
+'   com uma mensagem inteira e legivel. */\n' +
+'(function(){\n' +
+'  var cx = document.getElementById("carrossel");\n' +
+'  if(!cx) return;\n' +
+'  var slides = cx.querySelectorAll(".slide");\n' +
+'  if(slides.length < 2){ cx.classList.add("js"); slides[0].classList.add("on"); return; }\n' +
+'\n' +
+'  var pontos = cx.querySelectorAll(".pontos button");\n' +
+'  var conta  = document.getElementById("cr-conta");\n' +
+'  var atual = 0, timer = null, parado = false;\n' +
+'  var SEGUNDOS = 7;\n' +
+'\n' +
+'  /* so autorotaciona onde existe ponteiro que passa por cima (desktop).\n' +
+'     No celular nao ha hover para pausar, entao girar sozinho atrapalha. */\n' +
+'  var podeGirar = window.matchMedia && window.matchMedia("(hover: hover)").matches;\n' +
+'  var menosMovimento = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;\n' +
+'\n' +
+'  cx.classList.add("js");\n' +
+'  mostra(0);\n' +
+'\n' +
+'  function mostra(i){\n' +
+'    atual = (i + slides.length) % slides.length;\n' +
+'    for(var k=0;k<slides.length;k++) slides[k].classList.toggle("on", k===atual);\n' +
+'    for(var p=0;p<pontos.length;p++){\n' +
+'      if(p===atual) pontos[p].setAttribute("aria-current","true");\n' +
+'      else pontos[p].removeAttribute("aria-current");\n' +
+'    }\n' +
+'    if(conta) conta.textContent = (atual+1) + " / " + slides.length;\n' +
+'  }\n' +
+'\n' +
+'  function anda(){ if(!parado) mostra(atual+1); }\n' +
+'  function liga(){ if(timer||parado||!podeGirar||menosMovimento) return; timer = setInterval(anda, SEGUNDOS*1000); }\n' +
+'  function desliga(){ if(timer){ clearInterval(timer); timer = null; } }\n' +
+'\n' +
+'  /* quem mexeu decidiu: o carrossel para de decidir por ele */\n' +
+'  function assumiuControle(){ parado = true; desliga(); }\n' +
+'\n' +
+'  cx.addEventListener("click", function(e){\n' +
+'    var b = e.target.closest ? e.target.closest("button") : null;\n' +
+'    if(!b) return;\n' +
+'    if(b.hasAttribute("data-ir"))   { assumiuControle(); mostra(+b.getAttribute("data-ir")); }\n' +
+'    if(b.getAttribute("data-cr")==="ant")  { assumiuControle(); mostra(atual-1); }\n' +
+'    if(b.getAttribute("data-cr")==="prox") { assumiuControle(); mostra(atual+1); }\n' +
+'  });\n' +
+'\n' +
+'  cx.addEventListener("mouseenter", desliga);\n' +
+'  cx.addEventListener("mouseleave", liga);\n' +
+'  cx.addEventListener("focusin",  desliga);\n' +
+'  cx.addEventListener("focusout", liga);\n' +
+'  document.addEventListener("visibilitychange", function(){\n' +
+'    if(document.hidden) desliga(); else liga();\n' +
+'  });\n' +
+'\n' +
+'  /* deslizar com o dedo, no celular */\n' +
+'  var x0 = null;\n' +
+'  cx.addEventListener("touchstart", function(e){ x0 = e.touches[0].clientX; }, {passive:true});\n' +
+'  cx.addEventListener("touchend", function(e){\n' +
+'    if(x0===null) return;\n' +
+'    var d = e.changedTouches[0].clientX - x0;\n' +
+'    if(Math.abs(d) > 45){ assumiuControle(); mostra(atual + (d<0 ? 1 : -1)); }\n' +
+'    x0 = null;\n' +
+'  }, {passive:true});\n' +
+'\n' +
+'  liga();\n' +
+'})();\n' +
+'<\/script>\n';
+
+function gerarIndex(){
+  var h = D.home;
+  var ps = noAr(D.produtos);
+  var marcados = ps.filter(function(p){ return p.destaqueHome; });
+  var escolhidos = (marcados.length ? marcados : ps).slice(0, h.loja.quantos);
+
+  var secLoja =
+    '<section><div class="wrap">\n' +
+    '  <div class="secao-topo">\n' +
+    '    <h2>'+esc(h.loja.titulo)+'</h2>\n' +
+    (h.loja.tag ? '    <span class="tag novo">'+esc(h.loja.tag)+'</span>\n' : '') +
+    '  </div>\n' +
+    '  <p class="intro">'+h.loja.intro+'</p>\n' +
+    (escolhidos.length ? '  <div class="produtos">'+escolhidos.map(cartaoProduto).join("")+'</div>\n' : '') +
+    (h.loja.linkTexto ? '  <p style="margin-top:28px"><a href="materiais.html">'+esc(h.loja.linkTexto)+'</a></p>\n' : '') +
+    '</div></section>\n';
+
+  var ss = noAr(D.servicos);
+  var secServ =
+    '<section class="alt"><div class="wrap">\n' +
+    '  <div class="secao-topo">\n' +
+    '    <h2>'+esc(h.servicos.titulo)+'</h2>\n' +
+    (h.servicos.tag ? '    <span class="tag breve">'+esc(h.servicos.tag)+'</span>\n' : '') +
+    '  </div>\n' +
+    '  <p class="intro">'+h.servicos.intro+'</p>\n' +
+    (ss.length ? '  <div class="serv-cards">'+ss.map(cartaoServico).join("")+'</div>\n' : '') +
+    (h.servicos.linkTexto ? '  <p style="margin-top:26px"><a class="cta linha" href="servicos.html">'+esc(h.servicos.linkTexto)+'</a></p>\n' : '') +
+    '</div></section>\n';
+
+  /* a seção que vier em segundo lugar troca de fundo, para as faixas alternarem */
+  var duas = h.ordem.map(function(q){ return q==="loja" ? secLoja : secServ; });
+  duas[0] = duas[0].replace('<section class="alt">','<section>');
+  duas[1] = duas[1].replace('<section>','<section class="alt">');
+
+  var difs = (h.diferenciais.itens||[]).map(function(d){
+    return '    <div class="card"><h3>'+esc(d.titulo)+'</h3><p>'+d.texto+'</p></div>';
+  }).join("\n");
+
+  var socios = (h.quemSomos.socios||[]).map(function(s,i){
+    return '  <div class="autor"'+(i?' style="margin-top:34px"':'')+'>\n' +
+      '    <img class="retrato" src="'+esc(s.foto)+'" alt="'+esc(s.nome)+'" loading="lazy">\n' +
+      '    <div class="txt">\n      <p><b>'+esc(s.nome)+'</b></p>\n      <p>'+s.texto+'</p>\n    </div>\n  </div>';
+  }).join("\n");
+
+  var cf = h.contatoFinal;
+
+  return CABECA("N&uacute;cleo Exato &mdash; Engenharia e Educa&ccedil;&atilde;o T&eacute;cnica",
+      "Loja de material t&eacute;cnico e did&aacute;tico, e servi&ccedil;os de engenharia: treinamentos e palestras de SSMA, licenciamento ambiental, qualidade e produtividade. Dois engenheiros registrados no CREA-MG.",
+      "index") +
+    blocoBanners() + '\n' +
+    duas[0] + '\n' + duas[1] + '\n' +
+    '<section><div class="wrap">\n' +
+    '  <h2>'+esc(h.diferenciais.titulo)+'</h2>\n' +
+    '  <div class="grid dois">\n'+difs+'\n  </div>\n' +
+    '</div></section>\n\n' +
+    '<section class="alt"><div class="wrap">\n' +
+    '  <h2>'+esc(h.quemSomos.titulo)+'</h2>\n' +
+    '  <p class="intro">'+h.quemSomos.intro+'</p>\n' +
+    socios + '\n' +
+    (h.quemSomos.linkTexto ? '  <p style="margin-top:26px"><a href="quem-somos.html">'+esc(h.quemSomos.linkTexto)+'</a></p>\n' : '') +
+    '</div></section>\n\n' +
+    '<section><div class="wrap">\n' +
+    '  <div class="contato-cx">\n' +
+    '    <h3>'+esc(cf.titulo)+'</h3>\n' +
+    '    <p>'+cf.texto+'</p>\n' +
+    (cf.botao ? '    <a class="cta" href="'+esc(cf.link)+'">'+esc(cf.botao)+
+      (cf.sub?'<small>'+esc(cf.sub)+'</small>':'')+'</a>\n' : '') +
+    '    <div class="alt">ou por e-mail: <a data-email href="#">contato</a></div>\n' +
+    '  </div>\n</div></section>\n\n' +
+    RODAPE.replace('</body>', SCRIPT_CARROSSEL + '</body>');
+}
+
+/* Monta a Loja em dois níveis: categoria e, dentro dela, subcategoria.
+   Regras, todas pensadas para NADA sumir em silêncio:
+   - categoria desligada ou arquivada → seus produtos não aparecem (é o objetivo
+     de desligar), e o painel avisa quantos são
+   - subcategoria desligada → os produtos dela sobem para o corpo da categoria,
+     em vez de sumirem
+   - produto apontando para categoria que não existe mais → vai para o fim, numa
+     seção "Outros materiais", porque isso é erro, não intenção */
+function gerarMateriais(){
+  var ps = noAr(D.produtos);
+  var usados = {};
+  var blocos = [];
+
+  D.categorias.forEach(function(c){
+    if(c.arquivado || !c.ativo) return;
+    var daCat = ps.filter(function(p){ return p.categoria === c.id; });
+    if(!daCat.length) return;                       /* categoria vazia não vira título órfão */
+    daCat.forEach(function(p){ usados[p.id] = 1; });
+
+    var subsVivas = c.subs.filter(function(s){ return s.ativo && !s.arquivado; });
+    var idsVivos  = subsVivas.map(function(s){ return s.id; });
+
+    var soltos = daCat.filter(function(p){ return !p.sub || idsVivos.indexOf(p.sub) === -1; });
+
+    var txt = '  <h3 class="frente">'+esc(c.nome)+'</h3>\n' +
+      (c.intro ? '  <p class="intro" style="margin-top:14px">'+esc(c.intro)+'</p>\n' : '');
+    if(soltos.length)
+      txt += '  <div class="produtos">' + soltos.map(cartaoProduto).join("") + '</div>\n';
+
+    subsVivas.forEach(function(s){
+      var daSub = daCat.filter(function(p){ return p.sub === s.id; });
+      if(!daSub.length) return;
+      txt += '  <h4 class="subfrente">'+esc(s.nome)+'</h4>\n' +
+        (s.intro ? '  <p class="intro sub" style="margin-top:10px">'+esc(s.intro)+'</p>\n' : '') +
+        '  <div class="produtos">' + daSub.map(cartaoProduto).join("") + '</div>\n';
+    });
+    blocos.push(txt);
+  });
+
+  /* produtos órfãos: categoria apagada ou nunca escolhida */
+  var orfaos = ps.filter(function(p){ return !usados[p.id] && !catAtiva(p.categoria); })
+                 .filter(function(p){ return !catExiste(p.categoria); });
+  if(orfaos.length){
+    blocos.push('  <h3 class="frente">Outros materiais</h3>\n' +
+      '  <div class="produtos">' + orfaos.map(cartaoProduto).join("") + '</div>\n');
+  }
+
+  var secoes = blocos.join("\n");
+  if(!secoes){
+    secoes = '  <div class="frente-breve"><b>Nenhum produto no ar no momento.</b> Os materiais voltam em breve.</div>\n';
+  }
+  return MOLDE_MATERIAIS().replace("<!--PRODUTOS-->", secoes);
+}
+
+function catExiste(id){ return D.categorias.some(function(c){ return c.id === id; }); }
+function catAtiva(id){ return D.categorias.some(function(c){ return c.id===id && c.ativo && !c.arquivado; }); }
+
+function gerarServicos(){
+  var ss = noAr(D.servicos);
+  var blocos = ss.map(function(s){
+    var titulo = s.pagina
+      ? '<h3><a href="'+esc(s.pagina)+'">'+esc(s.nome)+'</a></h3>'
+      : '<h3>'+esc(s.nome)+'</h3>';
+    var itens = s.itens.map(function(i){ return '<li>'+esc(i)+'</li>'; }).join("");
+    var mais = s.pagina
+      ? '\n    <p class="mais"><a href="'+esc(s.pagina)+'">Ver a área completa &rarr;</a></p>'
+      : '\n    <p class="mais"><a href="contato.html?area='+esc(s.slug)+'">Pedir orçamento &rarr;</a></p>';
+    return '  <div class="area">\n' +
+           '    <div class="area-h">'+titulo+'</div>\n' +
+           '    <p>'+esc(s.resumo)+'</p>\n' +
+           '    <ul class="lista">'+itens+'</ul>' + mais + '\n' +
+           '  </div>';
+  }).join("\n");
+
+  if(!ss.length) blocos = '  <div class="frente-breve"><b>Nenhuma área no ar no momento.</b></div>';
+
+  return MOLDE_SERVICOS().replace("<!--AREAS-->", blocos);
+}
+
+/* =========================================================================
+   10. MOLDES — o resto da página, que o painel não mexe
+   ========================================================================= */
+
+var CABECA = function(titulo, desc, aqui){
+return '<!DOCTYPE html>\n<html lang="pt-BR">\n<head>\n' +
+'<meta charset="utf-8">\n' +
+'<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
+'<title>' + titulo + '</title>\n' +
+'<meta name="description" content="' + desc + '">\n' +
+'<meta property="og:title" content="' + titulo + '">\n' +
+'<meta property="og:description" content="' + desc + '">\n' +
+'<meta property="og:type" content="website">\n' +
+'<link rel="stylesheet" href="css/estilo.css">\n' +
+'</head>\n<body>\n\n' +
+'<div class="barra"><div class="wrap">\n' +
+'  <a class="marca" href="index.html">\n' +
+'    <span class="mk"><i class="a"></i><i class="b"></i><i class="c"></i><i class="d"></i></span>\n' +
+'    <span>N&uacute;cleo Exato</span>\n' +
+'  </a>\n' +
+'  <nav><a href="index.html"' + (aqui==="index"?' class="aqui"':'') + '>In&iacute;cio</a><a href="materiais.html"' + (aqui==="materiais"?' class="aqui"':'') + '>Loja</a>' +
+'<a href="servicos.html"' + (aqui==="servicos"?' class="aqui"':'') + '>Servi&ccedil;os</a>' +
+'<a href="quem-somos.html">Quem somos</a><a href="contato.html">Contato</a></nav>\n' +
+'</div></div>\n\n';
+};
+
+var RODAPE =
+'<footer><div class="wrap">\n' +
+'  <div class="frase">"Tudo que &eacute; verdadeiro respeita o tempo."</div>\n' +
+'  <div>N&uacute;cleo Exato &mdash; Engenharia e Educa&ccedil;&atilde;o T&eacute;cnica &middot; 2026</div>\n' +
+'  <div class="regs">Eng. C&aacute;ssio Resende de Moura (CREA-MG 401683) &middot; Eng. Bruno Antonio de Lourdes (CREA-MG 230605/D)</div>\n' +
+'  <div class="links"><a href="servicos.html">Servi&ccedil;os</a><a href="materiais.html">Materiais</a><a href="quem-somos.html">Quem somos</a><a href="contato.html">Contato</a><a data-email href="#">contato</a></div>\n' +
+'</div></footer>\n\n' +
+'<script src="links.js"><\/script>\n</body>\n</html>\n';
+
+function MOLDE_MATERIAIS(){
+var t = D.topos.materiais;
+return CABECA("Loja &mdash; material t&eacute;cnico e did&aacute;tico | N&uacute;cleo Exato",
+       "Material t&eacute;cnico e did&aacute;tico pronto para uso: ergonomia (NIOSH), Matem&aacute;tica do Ensino M&eacute;dio e planilha de notas. Edit&aacute;vel, com acesso imediato.",
+       "materiais") +
+'<header class="hero"><div class="wrap">\n' +
+(t.kick ? '  <div class="kick">'+esc(t.kick)+'</div>\n' : '') +
+'  <h1>'+esc(t.titulo)+'</h1>\n' +
+'  <p class="lead">'+t.lead+'</p>\n' +
+((t.selos&&t.selos.length) ? '  <div class="selos">'+t.selos.map(function(s){return '<span class="selo">'+esc(s)+'</span>';}).join("")+'</div>\n' : '') +
+'</div></header>\n\n' +
+'<section><div class="wrap">\n' +
+'<!--PRODUTOS-->' +
+'</div></section>\n\n' +
+'<section class="alt"><div class="wrap">\n' +
+'  <h2>Por que comprar aqui</h2>\n' +
+'  <div class="grid dois">\n' +
+'    <div class="card"><h3>Autoria que se confere</h3><p>Todo material sai assinado, com o registro no CREA de quem o produziu. Voc&ecirc; confere no site do conselho antes de comprar. &Eacute; o contr&aacute;rio do arquivo sem dono que circula em grupo.</p></div>\n' +
+'    <div class="card"><h3>J&aacute; foi usado antes de ser vendido</h3><p>N&atilde;o &eacute; modelo te&oacute;rico: &eacute; material de trabalho, com as corre&ccedil;&otilde;es que s&oacute; o uso real ensina.</p></div>\n' +
+'    <div class="card"><h3>Edit&aacute;vel de verdade</h3><p>Word, PowerPoint e Excel, sem senha e sem bloqueio. Voc&ecirc; troca o nome, corta o que n&atilde;o usa e adapta. No material de Matem&aacute;tica, a vers&atilde;o em PDF j&aacute; vem sem o marcador de nome.</p></div>\n' +
+'    <div class="card"><h3>Entrega e garantia</h3><p>Pagou, recebeu &mdash; o acesso &eacute; liberado automaticamente pela Kiwify. E s&atilde;o 7 dias de garantia: n&atilde;o sendo o que voc&ecirc; esperava, pede o reembolso dentro do prazo.</p></div>\n' +
+'  </div>\n' +
+'  <div class="nota cinza">\n' +
+'    <p>Licen&ccedil;a de uso profissional individual: voc&ecirc; usa no seu trabalho &agrave; vontade, por quantos anos quiser. O que n&atilde;o pode &eacute; revender ou publicar o arquivo na internet.</p>\n' +
+'  </div>\n' +
+'</div></section>\n\n' +
+'<section><div class="wrap">\n' +
+'  <h2>Precisa de material que n&atilde;o est&aacute; aqui?</h2>\n' +
+'  <p class="intro">Apostila, plano de curso, manual t&eacute;cnico ou cartilha sob encomenda, no mesmo padr&atilde;o do que est&aacute; publicado.</p>\n' +
+'  <a class="cta linha" href="servicos-educacao.html">Material sob encomenda &rarr;</a>\n' +
+'</div></section>\n\n' + RODAPE;
+}
+
+function MOLDE_SERVICOS(){
+var t = D.topos.servicos;
+return CABECA("Servi&ccedil;os &mdash; as cinco &aacute;reas | N&uacute;cleo Exato",
+       "Treinamentos e palestras de SSMA e qualidade, licenciamento e engenharia ambiental, qualidade e produtividade, educa&ccedil;&atilde;o e material did&aacute;tico.",
+       "servicos") +
+'<header class="hero"><div class="wrap">\n' +
+(t.kick ? '  <div class="kick">'+esc(t.kick)+'</div>\n' : '') +
+'  <h1>'+esc(t.titulo)+'</h1>\n' +
+'  <p class="lead">'+t.lead+'</p>\n' +
+(t.botao ? '  <a class="cta" href="contato.html?area=">'+esc(t.botao)+(t.sub?'<small>'+esc(t.sub)+'</small>':'')+'</a>\n' : '') +
+'</div></header>\n\n' +
+'<section><div class="wrap">\n' +
+'  <div class="areas">\n' +
+'<!--AREAS-->\n' +
+'  </div>\n' +
+'</div></section>\n\n' +
+'<section class="alt"><div class="wrap">\n' +
+'  <h2>Por onde estamos come&ccedil;ando, e por qu&ecirc;</h2>\n' +
+'  <div class="nota">\n' +
+'    <p><b>Pela capacita&ccedil;&atilde;o.</b> Treinamento e palestra s&atilde;o onde a equipe muda de comportamento &mdash; e s&atilde;o o que uma empresa consegue contratar sem processo longo, com resultado que a lideran&ccedil;a v&ecirc; na semana seguinte.</p>\n' +
+'    <p>&Eacute; tamb&eacute;m onde a nossa forma&ccedil;&atilde;o pesa mais: h&aacute; engenheiro e professor de sala de aula na mesma equipe, e o conte&uacute;do &eacute; escrito aqui, n&atilde;o comprado pronto.</p>\n' +
+'  </div>\n' +
+'  <div class="nota cinza">\n' +
+'    <p><b>O que fica para depois.</b> Elabora&ccedil;&atilde;o de <b>PGR</b>, <b>AET</b>, <b>LTCAT</b> e demais laudos de seguran&ccedil;a do trabalho <b>ainda n&atilde;o est&atilde;o no nosso escopo</b>. Entram quando entrarem com estrutura completa &mdash; e at&eacute; l&aacute; a gente diz isso na primeira conversa, em vez de aceitar e correr atr&aacute;s.</p>\n' +
+'  </div>\n' +
+'  <div class="nota">\n' +
+'    <p><b>Responsabilidade t&eacute;cnica.</b> Todo trabalho t&eacute;cnico sai com <b>ART</b> e responsabilidade de engenheiro registrado no <b>CREA-MG</b>. O custo e o prazo da anota&ccedil;&atilde;o entram no or&ccedil;amento, escritos com todas as letras.</p>\n' +
+'  </div>\n' +
+'</div></section>\n\n' +
+'<section><div class="wrap">\n' +
+'  <h2>Como pedir</h2>\n' +
+'  <p class="intro">O formul&aacute;rio tem seis campos e leva um minuto. Voc&ecirc; v&ecirc; a mensagem montada na tela antes de enviar &mdash; nada sai sem voc&ecirc; ler.</p>\n' +
+'  <ul class="lista">\n' +
+'    <li><b>Nome</b>, <b>empresa</b> e <b>cidade</b></li>\n' +
+'    <li><b>Telefone ou e-mail</b> para retorno</li>\n' +
+'    <li>A <b>&aacute;rea</b> que te interessa</li>\n' +
+'    <li>E <b>uma linha</b> sobre a necessidade &mdash; o resto perguntamos na conversa</li>\n' +
+'  </ul>\n' +
+'  <a class="cta" href="contato.html?area=">Ir para o formul&aacute;rio<small>voc&ecirc; l&ecirc; antes de enviar</small></a>\n' +
+'</div></section>\n\n' + RODAPE;
+}
+
+/* =========================================================================
+   11. BOTÕES DE DOWNLOAD
+   ========================================================================= */
+
+function avisosPublicar(){
+  var av = [];
+  var semLink = noAr(D.produtos).filter(function(p){
+    return p.destino.tipo === "kiwify" && !checkoutValido(p.destino.checkout);
+  });
+  if(semLink.length){
+    av.push('<b>' + semLink.length + ' produto(s) no ar sem link de checkout</b> — vão sair com o botão cinza "Em breve": ' +
+            semLink.map(function(p){return esc(p.nome);}).join(", ") + '.');
+  }
+  if(!D.contato.whatsapp){
+    av.push('<b>Sem WhatsApp cadastrado</b> — os botões de orçamento vão cair para o e-mail.');
+  }
+  var ids = {}, dup = [];
+  D.produtos.filter(function(p){return !p.arquivado;}).forEach(function(p){
+    if(ids[p.id]) dup.push(p.id); ids[p.id]=1;
+  });
+  if(dup.length) av.push('<b>Identificadores repetidos:</b> ' + dup.join(", ") + '. Um vai sobrescrever o outro no links.js.');
+
+  var semCat = noAr(D.produtos).filter(function(p){ return !catExiste(p.categoria); });
+  if(semCat.length)
+    av.push('<b>' + semCat.length + ' produto(s) sem categoria válida</b> — vão para o fim da loja, numa seção "Outros materiais": ' +
+            semCat.map(function(p){return esc(p.nome);}).join(", ") + '.');
+
+  var escondidos = noAr(D.produtos).filter(function(p){ return catExiste(p.categoria) && !catAtiva(p.categoria); });
+  if(escondidos.length)
+    av.push('<b>' + escondidos.length + ' produto(s) estão ligados, mas em categoria desligada</b> — não vão aparecer na loja: ' +
+            escondidos.map(function(p){return esc(p.nome);}).join(", ") + '.');
+
+  $("pub-avisos").innerHTML = av.length
+    ? '<div class="aviso-cx ' + (dup.length?"erro":"alerta") + '"><b>Antes de subir, olhe isto:</b><ul style="margin:8px 0 0 20px">' +
+      av.map(function(a){return "<li>"+a+"</li>";}).join("") + '</ul></div>'
+    : '<div class="aviso-cx">Nenhum problema encontrado. ' + noAr(D.produtos).length +
+      ' produtos e ' + noAr(D.servicos).length + ' áreas vão para o ar.</div>';
+}
+
+/* ---------- prévia: abre a página montada numa aba nova, sem publicar ---------- */
+document.querySelectorAll("button[data-ver]").forEach(function(b){
+  b.onclick = function(){
+    recolheTudo();
+    var q = this.getAttribute("data-ver");
+    var html = q==="index" ? gerarIndex() : q==="materiais" ? gerarMateriais() : gerarServicos();
+
+    /* o <base> faz o css/ e o img/ resolverem contra a pasta do painel */
+    var pasta = location.href.replace(/[?#].*$/,"").replace(/[^\/]*$/,"");
+    html = html.replace("<head>", '<head>\n<base href="'+pasta+'">');
+
+    var u = URL.createObjectURL(new Blob([html], {type:"text/html;charset=utf-8"}));
+    window.open(u, "_blank");
+    setTimeout(function(){ URL.revokeObjectURL(u); }, 60000);
+
+    $("ver-aviso").innerHTML = (location.protocol === "file:")
+      ? '<b style="color:var(--vermelho)">Aviso:</b> como o painel está aberto por duplo clique, a prévia pode sair <b>sem as cores e sem as imagens</b> — o navegador bloqueia isso por segurança. O texto e a estrutura você confere normalmente. Publicado o painel no site, a prévia sai completa.'
+      : 'Prévia aberta em outra aba. Ela mostra o que está no painel agora — nada foi publicado.';
+  };
+});
+
+document.querySelectorAll("button[data-gerar]").forEach(function(b){
+  b.onclick = function(){
+    recolheTudo();   /* garante que o arquivo sai com o que está na tela */
+    var q = this.getAttribute("data-gerar");
+    if(q==="json")      baixa("conteudo.json",  gerarJson(),      "application/json");
+    if(q==="index")     baixa("index.html",     gerarIndex(),     "text/html");
+    if(q==="materiais") baixa("materiais.html", gerarMateriais(), "text/html");
+    if(q==="servicos")  baixa("servicos.html",  gerarServicos(),  "text/html");
+    if(q==="links")     baixa("links.js",       gerarLinks(),     "text/javascript");
+    sujo = false; pintaEstado();
+  };
+});
+
+$("bt-baixar-tudo").onclick = function(){
+  recolheTudo();
+  baixa("conteudo.json",  gerarJson(),      "application/json");
+  setTimeout(function(){ baixa("index.html",     gerarIndex(),     "text/html"); }, 350);
+  setTimeout(function(){ baixa("materiais.html", gerarMateriais(), "text/html"); }, 700);
+  setTimeout(function(){ baixa("servicos.html",  gerarServicos(),  "text/html"); }, 1050);
+  setTimeout(function(){ baixa("links.js",       gerarLinks(),     "text/javascript"); }, 1400);
+  sujo = false; pintaEstado();
+};
+
+/* =========================================================================
+   12. DESENHA TUDO
+   ========================================================================= */
+function desenhaTudo(){
+  desenhaListaCat();
+  desenhaListaProd();
+  desenhaListaServ();
+  desenhaListaBan();
+  desenhaHome();
+  $("c-whats").value = D.contato.whatsapp || "";
+  $("c-email").value = D.contato.email || "";
+  preencheSelects();
+  avisosPublicar();
+}
+desenhaTudo();
+</script>
+</body>
+</html>
