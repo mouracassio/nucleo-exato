@@ -1848,12 +1848,12 @@ function gerarLinks(){
   return '/* =============================================================================\n' +
 ' OS LINKS DA KIWIFY E O CONTATO\n' +
 '\n' +
-' ATENCAO: este arquivo passou a ser GERADO PELO painel.html em 16/08/2026.\n' +
-' Editar aqui na mao funciona, mas na proxima vez que voce gerar pelo painel\n' +
-' a sua edicao e perdida. Mexa no painel, nao aqui.\n' +
+' ATENÇÃO: este arquivo passou a ser GERADO PELO painel.html em 16/08/2026.\n' +
+' Editar aqui na mão funciona, mas na próxima vez que você gerar pelo painel\n' +
+' a sua edição é perdida. Mexa no painel, não aqui.\n' +
 '\n' +
-' A protecao antiga continua valendo: checkout como "COLE-AQUI" deixa o botao\n' +
-' cinza escrito "Em breve" e sem clique. Nunca se publica botao quebrado.\n' +
+' A proteção antiga continua valendo: checkout como "COLE-AQUI" deixa o botão\n' +
+' cinza escrito "Em breve" e sem clique. Nunca se publica botão quebrado.\n' +
 ' ============================================================================= */\n\n' +
 'var PRODUTOS = {\n\n' + blocos + '\n\n};\n\n' +
 'var CONTATO = {\n' +
@@ -1866,7 +1866,7 @@ MOTOR_LINKS;
 /* o motor do links.js, copiado do arquivo de 15/08/2026 sem alteracao */
 var MOTOR_LINKS =
 '/* ---------------------------------------------------------------------------\n' +
-'   Daqui para baixo e o que faz os botoes funcionarem. Nao precisa mexer.\n' +
+'   Daqui para baixo é o que faz os botões funcionarem. Não precisa mexer.\n' +
 '   --------------------------------------------------------------------------- */\n' +
 '(function () {\n' +
 '  function pronto(v) {\n' +
@@ -1907,8 +1907,8 @@ var MOTOR_LINKS =
 '    var pedidos = document.querySelectorAll("[data-orcamento]");\n' +
 '    for (var k = 0; k < pedidos.length; k++) {\n' +
 '      var b = pedidos[k];\n' +
-'      var assunto = b.getAttribute("data-orcamento") || "um servico";\n' +
-'      var msg = "Ola! Vim pelo site da Nucleo Exato e gostaria de um orcamento de " + assunto + ".";\n' +
+'      var assunto = b.getAttribute("data-orcamento") || "um serviço";\n' +
+'      var msg = "Olá! Vim pelo site da Núcleo Exato e gostaria de um orçamento de " + assunto + ".";\n' +
 '      if (temZap()) {\n' +
 '        b.setAttribute("href", "https://wa.me/" + soNumeros(CONTATO.whatsapp) +\n' +
 '                               "?text=" + encodeURIComponent(msg));\n' +
@@ -1916,7 +1916,7 @@ var MOTOR_LINKS =
 '        b.setAttribute("rel", "noopener");\n' +
 '      } else {\n' +
 '        b.setAttribute("href", "mailto:" + CONTATO.email +\n' +
-'                               "?subject=" + encodeURIComponent("Orcamento - " + assunto) +\n' +
+'                               "?subject=" + encodeURIComponent("Orçamento - " + assunto) +\n' +
 '                               "&body=" + encodeURIComponent(msg));\n' +
 '      }\n' +
 '    }\n' +
@@ -1980,16 +1980,16 @@ var MOTOR_LINKS =
 '\n' +
 '    function montaMensagem() {\n' +
 '      var l = [];\n' +
-'      l.push("Ola! Vim pelo site da Nucleo Exato e gostaria de um orcamento.");\n' +
+'      l.push("Olá! Vim pelo site da Núcleo Exato e gostaria de um orçamento.");\n' +
 '      l.push("");\n' +
-'      l.push("Nome: " + (valor("nome") || "-"));\n' +
+'      l.push("Nome: " + (valor("nome") || "—"));\n' +
 '      if (valor("empresa")) l.push("Empresa: " + valor("empresa"));\n' +
 '      if (valor("cidade"))  l.push("Cidade: " + valor("cidade"));\n' +
-'      l.push("Contato: " + (valor("contato") || "-"));\n' +
-'      l.push("Area: " + (valor("area") || "-"));\n' +
+'      l.push("Contato: " + (valor("contato") || "—"));\n' +
+'      l.push("Área: " + (valor("area") || "—"));\n' +
 '      l.push("");\n' +
 '      l.push("Necessidade:");\n' +
-'      l.push(valor("necessidade") || "-");\n' +
+'      l.push(valor("necessidade") || "—");\n' +
 '      return l.join("\\n");\n' +
 '    }\n' +
 '\n' +
@@ -2010,11 +2010,11 @@ var MOTOR_LINKS =
 '          botao.setAttribute("rel", "noopener");\n' +
 '        } else {\n' +
 '          botao.setAttribute("href", "mailto:" + CONTATO.email +\n' +
-'            "?subject=" + encodeURIComponent("Orcamento - " + valor("area")) +\n' +
+'            "?subject=" + encodeURIComponent("Orçamento - " + valor("area")) +\n' +
 '            "&body=" + encodeURIComponent(montaMensagem()));\n' +
 '        }\n' +
 '        botaoML.setAttribute("href", "mailto:" + CONTATO.email +\n' +
-'          "?subject=" + encodeURIComponent("Orcamento - " + valor("area")) +\n' +
+'          "?subject=" + encodeURIComponent("Orçamento - " + valor("area")) +\n' +
 '          "&body=" + encodeURIComponent(montaMensagem()));\n' +
 '        botaoML.classList.remove("off");\n' +
 '      } else {\n' +
