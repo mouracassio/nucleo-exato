@@ -51,6 +51,11 @@ var PRODUTOS = {
   niosh: {
     checkout: "https://pay.kiwify.com.br/BFF2tJd",
     preco: "59,90"
+  },
+
+  sst: {
+    checkout: "https://pay.kiwify.com.br/L1YIeBo",
+    preco: "59,90"
   }
 
 };

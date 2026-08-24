@@ -279,3 +279,51 @@ footer .links a{margin:0 9px;white-space:nowrap}
 .secao-topo{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px}
 .secao-topo h2{margin-bottom:0}
 .secao-topo .tag{margin-left:0}
+
+/* =========================================================================
+   IDENTIDADE POR LINHA DE PRODUTO — 24/08/2026
+   Verde/grafite continuam sendo a base institucional em toda página (logo,
+   menu, rodapé, botão de compra). Cada linha de produto ganha uma cor de
+   DESTAQUE própria, aplicada só em: o "kick" da hero, os selos, cards/h3
+   de destaque, a barrinha de "h3.frente", tag "novo" e a caixa ".destaque".
+   Para usar: adicionar a classe no <body> da página (ex.: <body class="linha-niosh">).
+   Convenção de nomes por linha: --LINHA (texto/borda em fundo claro),
+   --LINHA-esc (hover, mais escuro), --LINHA-hero (tom claro p/ fundo escuro
+   da hero, como o --verde tem o mint #8FD9BC), --LINHA-fundo/--LINHA-borda
+   (tinta pálida para caixas tipo ".tag.novo").
+   ========================================================================= */
+:root{
+  /* NIOSH / Ergonomia — amarelo, cor oficial do risco ergonômico no Mapa de Risco (NR-5) */
+  --niosh:#8A6D00; --niosh-esc:#6E5600; --niosh-hero:#E8CB7A;
+  --niosh-fundo:#FBF3DC; --niosh-borda:#EBDBA6; --niosh-selo:#8A7233;
+
+  /* Segurança do Trabalho — laranja de sinalização de segurança (cor de destaque da
+     linha inteira; o código de 5 cores do Mapa de Risco entra como selo DENTRO do
+     material, por tipo de risco — não é a cor de destaque do site). Ainda sem página
+     própria (hoje redireciona para Treinamentos) — regra pronta para quando a página
+     for construída: <body class="linha-sst"> */
+  --sst:#B85A09; --sst-esc:#96490A; --sst-hero:#F0A868;
+  --sst-fundo:#FDE9D6; --sst-borda:#F3CBA0; --sst-selo:#9C5A22;
+}
+
+.linha-niosh header.hero .kick{color:var(--niosh-hero)}
+.linha-niosh .selo{border-color:var(--niosh-selo);color:var(--niosh-hero)}
+.linha-niosh .card h3{color:var(--niosh-esc)}
+.linha-niosh h3.frente{color:var(--niosh-esc)}
+.linha-niosh h3.frente::after{background:var(--niosh)}
+.linha-niosh .tag.novo{background:var(--niosh-fundo);color:var(--niosh-esc);border-color:var(--niosh-borda)}
+.linha-niosh .destaque{border-color:var(--niosh);border-left-color:var(--niosh);
+  background:linear-gradient(180deg,var(--niosh-fundo) 0%,#FFFFFF 100%)}
+.linha-niosh .destaque-rot{background:var(--niosh-esc)}
+.linha-niosh .faq summary::before{color:var(--niosh)}
+
+.linha-sst header.hero .kick{color:var(--sst-hero)}
+.linha-sst .selo{border-color:var(--sst-selo);color:var(--sst-hero)}
+.linha-sst .card h3{color:var(--sst-esc)}
+.linha-sst h3.frente{color:var(--sst-esc)}
+.linha-sst h3.frente::after{background:var(--sst)}
+.linha-sst .tag.novo{background:var(--sst-fundo);color:var(--sst-esc);border-color:var(--sst-borda)}
+.linha-sst .destaque{border-color:var(--sst);border-left-color:var(--sst);
+  background:linear-gradient(180deg,var(--sst-fundo) 0%,#FFFFFF 100%)}
+.linha-sst .destaque-rot{background:var(--sst-esc)}
+.linha-sst .faq summary::before{color:var(--sst)}

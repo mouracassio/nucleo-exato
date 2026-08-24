@@ -141,6 +141,26 @@
   },
   "produtos": [
     {
+      "id": "sst",
+      "ativo": true,
+      "arquivado": false,
+      "destaqueHome": false,
+      "nome": "Riscos psicossociais — treinamento NR-01",
+      "resumo": "Treinamento de 4 horas sobre o Capítulo 1.5 da NR-01. Apostila de 52 páginas nas versões do participante e do instrutor, 29 slides, planilha de inventário em Excel e certificado modelo.",
+      "preco": "59,90",
+      "capa": "img/capa-sst.jpg",
+      "alt": "Riscos psicossociais no trabalho — treinamento NR-01",
+      "pagina": "treinamento-nr01.html",
+      "destino": {
+        "tipo": "kiwify",
+        "checkout": "https://pay.kiwify.com.br/L1YIeBo",
+        "area": ""
+      },
+      "video": "",
+      "categoria": "seguranca-do-trabalho",
+      "sub": ""
+    },
+    {
       "id": "niosh",
       "ativo": true,
       "arquivado": false,
