@@ -427,6 +427,10 @@ button.b:disabled{opacity:.4;cursor:not-allowed}
         <label>Texto de apresentação <span class="aj">— opcional; aparece abaixo do título</span></label>
         <textarea id="k-intro" placeholder="Material técnico produzido a partir do texto oficial da norma."></textarea>
       </div>
+      <div class="campo">
+        <label>Cor da categoria <span class="aj">— aparece no título da seção na loja</span></label>
+        <input type="color" id="k-cor" value="#157347" style="height:42px;padding:4px;width:90px;cursor:pointer">
+      </div>
     </div>
     <div id="k-avisos"></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
@@ -858,6 +862,7 @@ function normaliza(d){
     c.arquivado = c.arquivado === true;
     c.subs      = c.subs || [];
     c.id        = c.id || slugifica(c.nome).slice(0,24);
+    c.cor       = c.cor || "#157347";
     c.subs.forEach(function(s){
       s.ativo     = s.ativo !== false;
       s.arquivado = s.arquivado === true;
@@ -1497,12 +1502,12 @@ function abreEditorCat(i){
   $("ed-sub").classList.add("oculto");
   var c = (i==="novo") ? {nome:"",id:"",intro:"",ativo:true,arquivado:false,subs:[]} : D.categorias[i];
   $("ed-cat-tit").textContent = (i==="novo" ? "Nova categoria" : "Editar: " + c.nome);
-  $("k-nome").value=c.nome||""; $("k-id").value=c.id||""; $("k-intro").value=c.intro||"";
+  $("k-nome").value=c.nome||""; $("k-id").value=c.id||""; $("k-intro").value=c.intro||""; $("k-cor").value=c.cor||"#157347";
   $("ed-cat").classList.remove("oculto");
   avisosCat();
   $("ed-cat").scrollIntoView({behavior:"smooth",block:"start"});
 }
-["k-nome","k-id","k-intro"].forEach(function(id){ $(id).addEventListener("input", avisosCat); });
+["k-nome","k-id","k-intro","k-cor"].forEach(function(id){ $(id).addEventListener("input", avisosCat); });
 function avisosCat(){
   var nome = $("k-nome").value.trim();
   var id = $("k-id").value.trim() || slugifica(nome).slice(0,24);
@@ -1526,14 +1531,14 @@ $("bt-salvar-cat").onclick = function(){
     alert("Já existe uma categoria com o identificador \""+id+"\". Escolha outro."); return;
   }
   if(editandoCat === "novo"){
-    D.categorias.push({id:id,nome:nome,intro:$("k-intro").value.trim(),ativo:true,arquivado:false,subs:[]});
+    D.categorias.push({id:id,nome:nome,intro:$("k-intro").value.trim(),cor:$("k-cor").value,ativo:true,arquivado:false,subs:[]});
   } else {
     var c = D.categorias[editandoCat], antigo = c.id;
     if(antigo !== id){
       /* leva os produtos junto — ninguém fica órfão por renomear */
       D.produtos.forEach(function(p){ if(p.categoria === antigo) p.categoria = id; });
     }
-    c.id = id; c.nome = nome; c.intro = $("k-intro").value.trim();
+    c.id = id; c.nome = nome; c.intro = $("k-intro").value.trim(); c.cor = $("k-cor").value;
   }
   editandoCat = null; $("ed-cat").classList.add("oculto");
   marcaSujo(); desenhaTudo();
@@ -2301,7 +2306,7 @@ function gerarMateriais(){
 
     var soltos = daCat.filter(function(p){ return !p.sub || idsVivos.indexOf(p.sub) === -1; });
 
-    var txt = '  <h3 class="frente">'+esc(c.nome)+'</h3>\n' +
+    var txt = '  <h3 class="frente"'+(c.cor?' style="color:'+esc(c.cor)+'"':'')+'>'+esc(c.nome)+'</h3>\n' +
       (c.intro ? '  <p class="intro" style="margin-top:14px">'+esc(c.intro)+'</p>\n' : '');
     if(soltos.length)
       txt += '  <div class="produtos">' + soltos.map(cartaoProduto).join("") + '</div>\n';

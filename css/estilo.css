@@ -177,7 +177,7 @@ header.hero .cta.linha:hover{background:#8FD9BC;color:var(--escuro)}
 .nota{border-left:4px solid var(--verde);background:var(--claro);border-radius:0 12px 12px 0;
   padding:20px 24px;margin-top:28px;font-size:15.5px}
 .nota b{color:var(--grafite)}
-.nota.cinza{border-left-color:#B7C0C7;background:#F7F9FA;color:var(--suave)}
+.nota.cinza{border-left-color:#B7C0C7;background:#F7F9FA;color:var(--texto)}
 
 /* bloco de contato */
 .contato-cx{background:var(--escuro);color:#fff;border-radius:16px;padding:40px 30px;text-align:center}

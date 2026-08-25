@@ -378,6 +378,7 @@
       "id": "seguranca-do-trabalho",
       "nome": "Segurança do Trabalho",
       "intro": "Material técnico produzido a partir do texto oficial da norma.",
+      "cor": "#B85A09",
       "ativo": true,
       "arquivado": false,
       "subs": []
@@ -386,6 +387,7 @@
       "id": "educacao",
       "nome": "Educação",
       "intro": "Material de sala de aula, usado antes de virar produto: as aulas foram dadas, as atividades aplicadas e os planos entregues à coordenação.",
+      "cor": "#157347",
       "ativo": true,
       "arquivado": false,
       "subs": []
