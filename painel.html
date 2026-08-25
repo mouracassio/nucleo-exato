@@ -428,8 +428,8 @@ button.b:disabled{opacity:.4;cursor:not-allowed}
         <textarea id="k-intro" placeholder="Material técnico produzido a partir do texto oficial da norma."></textarea>
       </div>
       <div class="campo">
-        <label>Cor da categoria <span class="aj">— aparece no título da seção na loja</span></label>
-        <input type="color" id="k-cor" value="#157347" style="height:42px;padding:4px;width:90px;cursor:pointer">
+        <label>Cor da categoria <span class="aj">— aparece no título da seção na loja. Cores das frentes: Educação #174197 · Treinamentos #B85B0A · Palestras e SIPAT #D92641 · Qualidade #9337BE · Meio Ambiente #0B8098</span></label>
+        <input type="color" id="k-cor" value="#174197" style="height:42px;padding:4px;width:90px;cursor:pointer">
       </div>
     </div>
     <div id="k-avisos"></div>
@@ -862,7 +862,7 @@ function normaliza(d){
     c.arquivado = c.arquivado === true;
     c.subs      = c.subs || [];
     c.id        = c.id || slugifica(c.nome).slice(0,24);
-    c.cor       = c.cor || "#157347";
+    c.cor       = c.cor || "#174197";
     c.subs.forEach(function(s){
       s.ativo     = s.ativo !== false;
       s.arquivado = s.arquivado === true;
@@ -1502,7 +1502,7 @@ function abreEditorCat(i){
   $("ed-sub").classList.add("oculto");
   var c = (i==="novo") ? {nome:"",id:"",intro:"",ativo:true,arquivado:false,subs:[]} : D.categorias[i];
   $("ed-cat-tit").textContent = (i==="novo" ? "Nova categoria" : "Editar: " + c.nome);
-  $("k-nome").value=c.nome||""; $("k-id").value=c.id||""; $("k-intro").value=c.intro||""; $("k-cor").value=c.cor||"#157347";
+  $("k-nome").value=c.nome||""; $("k-id").value=c.id||""; $("k-intro").value=c.intro||""; $("k-cor").value=c.cor||"#174197";
   $("ed-cat").classList.remove("oculto");
   avisosCat();
   $("ed-cat").scrollIntoView({behavior:"smooth",block:"start"});
@@ -2339,6 +2339,16 @@ function gerarMateriais(){
 function catExiste(id){ return D.categorias.some(function(c){ return c.id === id; }); }
 function catAtiva(id){ return D.categorias.some(function(c){ return c.id===id && c.ativo && !c.arquivado; }); }
 
+/* cor por frente (25/08/2026): a classe no bloco da área faz o css/estilo.css
+   pintar título, marcadores e link na cor daquela frente. Slug fora da lista
+   fica na base verde da marca. */
+function classeFrente(slug){
+  var m = { "treinamentos":"frente-treinamentos", "palestras":"frente-palestras",
+            "meio-ambiente":"frente-ambiente", "qualidade":"frente-qualidade",
+            "educacao":"frente-educacao" };
+  return m[slug] ? " "+m[slug] : "";
+}
+
 function gerarServicos(){
   var ss = noAr(D.servicos);
   var blocos = ss.map(function(s){
@@ -2349,7 +2359,7 @@ function gerarServicos(){
     var mais = s.pagina
       ? '\n    <p class="mais"><a href="'+esc(s.pagina)+'">Ver a área completa &rarr;</a></p>'
       : '\n    <p class="mais"><a href="contato.html?area='+esc(s.slug)+'">Pedir orçamento &rarr;</a></p>';
-    return '  <div class="area">\n' +
+    return '  <div class="area'+classeFrente(s.slug)+'">\n' +
            '    <div class="area-h">'+titulo+'</div>\n' +
            '    <p>'+esc(s.resumo)+'</p>\n' +
            '    <ul class="lista">'+itens+'</ul>' + mais + '\n' +

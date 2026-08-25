@@ -166,4 +166,34 @@ Foram custosas, não desfaça sem motivo:
 - **Treinamentos que exigem estrutura prática** (NR-10, NR-33, NR-35, NR-11, NR-12, NR-13) estão
   declarados como fora da lista, na página de Treinamentos. Quando algum entrar, tire-o de lá.
 
+---
+
+## Cores por frente e site claro (25/08/2026)
+
+O verde é da **marca**, não de produto: fica só no logotipo, no menu, no rodapé e no botão de
+compra. Cada frente de trabalho tem uma cor própria, e ela pinta o resto da página (kicker e
+selos da hero, títulos dos cards, marcadores, caixas, botão secundário):
+
+| Frente | Classe no `<body>` | Cor (texto) | Identidade |
+|---|---|---|---|
+| Educação e Material Didático (Matemática, Planilha) | `frente-educacao` | `#174197` | azul-marinho `#174197` |
+| Treinamentos (NR-01, NIOSH — ergonomia fica dentro de SST/NR-17) | `frente-treinamentos` | `#B85B0A` | laranja `#E9730C` |
+| Palestras e SIPAT | `frente-palestras` | `#D92641` | vermelho-carmim |
+| Qualidade e Produtividade | `frente-qualidade` | `#9337BE` | roxo |
+| Meio Ambiente e Saneamento | `frente-ambiente` | `#0B8098` | azul-petróleo `#0FA4C2` |
+
+- Os tokens estão no fim do `css/estilo.css` (`--educacao`, `--educacao-esc`, `--educacao-fundo`…).
+  Todas as cores de texto passam de 4,5:1 sobre branco.
+- Página institucional (início, quem somos, contato, hub de serviços) fica sem classe, na base
+  verde/grafite. No hub, cada bloco `.area` leva a classe da sua frente — o `painel.html` já
+  gera assim (`classeFrente`).
+- A cor do título de cada categoria da loja vem do `dados/conteudo.json` (campo `cor`).
+- **Fundo escuro acabou.** Hero, caixa de preço, caixa de contato e rodapé passaram a fundo
+  claro; a hero de página com frente ganha o tom pálido da própria frente. Cássio não gosta de
+  escuro — não voltar ao `#2B333A`.
+- **As artes** (capas da loja, ML, Shopee e Kiwify) seguem a mesma regra: fundo branco, cor da
+  frente só no destaque, símbolo e faixa do rodapé em verde. Os geradores estão em
+  `00_Comece_aqui/_Ferramentas de geracao (scripts)/artes/` (`gera_capa.py` + `specs.py` para
+  as capas; `recolor.py` para trocar a cor de destaque de uma arte pronta sem refazê-la).
+
 *"Tudo que é verdadeiro respeita o tempo."* — **Prof. Eng. Cássio Moura** · 2026

@@ -24,13 +24,13 @@ a{color:var(--verde-esc)}
 .barra nav a:hover{color:var(--verde-esc)}
 @media(max-width:640px){.barra nav{display:none}}
 
-header.hero{background:var(--escuro);color:#fff;padding:58px 0 52px}
-header.hero h1{color:#fff;font-size:clamp(30px,5.2vw,50px);letter-spacing:-.5px}
-header.hero .kick{color:#8FD9BC;font-size:13px;letter-spacing:2.5px;text-transform:uppercase;
+header.hero{background:var(--claro);color:var(--texto);padding:58px 0 52px;border-bottom:1px solid var(--borda)}
+header.hero h1{color:var(--grafite);font-size:clamp(30px,5.2vw,50px);letter-spacing:-.5px}
+header.hero .kick{color:var(--verde-esc);font-size:13px;letter-spacing:2.5px;text-transform:uppercase;
   font-weight:700;margin-bottom:14px}
-header.hero p.lead{color:#D9DEE1;font-size:clamp(17px,2.4vw,21px);margin-top:16px;max-width:660px}
+header.hero p.lead{color:var(--texto);font-size:clamp(17px,2.4vw,21px);margin-top:16px;max-width:660px}
 .selos{display:flex;flex-wrap:wrap;gap:9px;margin-top:26px}
-.selo{border:1px solid #4A555E;color:#D9DEE1;border-radius:999px;padding:7px 15px;font-size:14px}
+.selo{border:1px solid #C9D3CC;background:#fff;color:var(--texto);border-radius:999px;padding:7px 15px;font-size:14px}
 
 .cta{display:inline-block;background:var(--verde);color:#fff;text-decoration:none;
   font-size:19px;font-weight:700;padding:17px 38px;border-radius:10px;margin-top:30px;
@@ -63,10 +63,11 @@ ul.lista li{padding-left:28px;position:relative;margin-bottom:11px;font-size:16p
 ul.lista li::before{content:"";position:absolute;left:0;top:8px;width:11px;height:11px;
   background:var(--verde);border-radius:3px}
 
-.preco{text-align:center;background:var(--escuro);color:#fff;border-radius:16px;padding:44px 26px}
-.preco .valor{font-family:Cambria,Georgia,serif;font-size:56px;color:#fff;line-height:1}
+.preco{text-align:center;background:#fff;color:var(--texto);border:1px solid var(--borda);border-radius:16px;padding:44px 26px;
+  box-shadow:0 10px 30px rgba(20,40,30,.06)}
+.preco .valor{font-family:Cambria,Georgia,serif;font-size:56px;color:var(--grafite);line-height:1}
 .preco .valor span{font-size:23px;vertical-align:super;margin-right:4px}
-.preco p{color:#D9DEE1;margin-top:12px}
+.preco p{color:var(--suave);margin-top:12px}
 .preco .cta{margin-top:24px}
 
 .autor{display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap}
@@ -97,9 +98,9 @@ ul.lista li::before{content:"";position:absolute;left:0;top:8px;width:11px;heigh
 .prod .bt.off{background:#8A9299;pointer-events:none}
 .prod .ver{display:block;margin-top:12px;font-size:15px;text-decoration:none}
 
-footer{background:var(--grafite);color:#AEB8C0;padding:34px 0;font-size:14px;text-align:center}
-footer a{color:#8FD9BC}
-footer .frase{color:#D9DEE1;font-size:15px;margin-bottom:8px}
+footer{background:var(--claro);color:var(--suave);padding:34px 0;font-size:14px;text-align:center;border-top:1px solid var(--borda)}
+footer a{color:var(--verde-esc)}
+footer .frase{color:var(--grafite);font-size:15px;margin-bottom:8px}
 .aviso{font-size:14px;color:var(--suave);margin-top:16px;text-align:center}
 
 .autor .retrato{width:210px;height:210px;border-radius:14px;object-fit:cover;flex:none;
@@ -108,7 +109,7 @@ footer .frase{color:#D9DEE1;font-size:15px;margin-bottom:8px}
 
 .produtos .prod{max-width:560px}
 h3.frente{font-size:21px;color:var(--verde-esc);margin:38px 0 0;letter-spacing:.3px}
-h3.frente::after{content:"";display:block;width:52px;height:3px;background:var(--verde);margin-top:8px}
+h3.frente::after{content:"";display:block;width:52px;height:3px;background:currentColor;margin-top:8px}
 
 /* =========================================================================
    ACRÉSCIMOS DO SITE EM DUAS METADES (Loja + Serviços) — 15/08/2026
@@ -134,8 +135,8 @@ h3.frente::after{content:"";display:block;width:52px;height:3px;background:var(-
 .cta.linha{background:transparent;border:2px solid var(--verde);color:var(--verde-esc);
   box-shadow:none}
 .cta.linha:hover{background:var(--verde);color:#fff}
-header.hero .cta.linha{border-color:#8FD9BC;color:#fff}
-header.hero .cta.linha:hover{background:#8FD9BC;color:var(--escuro)}
+header.hero .cta.linha{border-color:var(--verde);color:var(--verde-esc)}
+header.hero .cta.linha:hover{background:var(--verde);color:#fff}
 
 /* as duas metades, na home */
 .metades{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:34px}
@@ -180,15 +181,16 @@ header.hero .cta.linha:hover{background:#8FD9BC;color:var(--escuro)}
 .nota.cinza{border-left-color:#B7C0C7;background:#F7F9FA;color:var(--texto)}
 
 /* bloco de contato */
-.contato-cx{background:var(--escuro);color:#fff;border-radius:16px;padding:40px 30px;text-align:center}
-.contato-cx h3{color:#fff;font-size:25px;margin-bottom:10px}
-.contato-cx p{color:#D9DEE1;max-width:520px;margin:0 auto}
+.contato-cx{background:#fff;color:var(--texto);border:1px solid var(--borda);border-radius:16px;padding:40px 30px;text-align:center;
+  box-shadow:0 10px 30px rgba(20,40,30,.06)}
+.contato-cx h3{color:var(--grafite);font-size:25px;margin-bottom:10px}
+.contato-cx p{color:var(--suave);max-width:520px;margin:0 auto}
 .contato-cx .cta{margin-top:24px}
-.contato-cx .alt{margin-top:18px;font-size:15px;color:#AEB8C0}
-.contato-cx .alt a{color:#8FD9BC}
+.contato-cx .alt{margin-top:18px;font-size:15px;color:var(--suave)}
+.contato-cx .alt a{color:var(--verde-esc)}
 
 /* rodapé novo, com os dois registros */
-footer .regs{margin-top:6px;font-size:13.5px;color:#8E99A3}
+footer .regs{margin-top:6px;font-size:13.5px;color:var(--suave)}
 footer .links{margin-top:14px}
 footer .links a{margin:0 9px;white-space:nowrap}
 
@@ -281,49 +283,165 @@ footer .links a{margin:0 9px;white-space:nowrap}
 .secao-topo .tag{margin-left:0}
 
 /* =========================================================================
-   IDENTIDADE POR LINHA DE PRODUTO — 24/08/2026
-   Verde/grafite continuam sendo a base institucional em toda página (logo,
-   menu, rodapé, botão de compra). Cada linha de produto ganha uma cor de
-   DESTAQUE própria, aplicada só em: o "kick" da hero, os selos, cards/h3
-   de destaque, a barrinha de "h3.frente", tag "novo" e a caixa ".destaque".
-   Para usar: adicionar a classe no <body> da página (ex.: <body class="linha-niosh">).
-   Convenção de nomes por linha: --LINHA (texto/borda em fundo claro),
-   --LINHA-esc (hover, mais escuro), --LINHA-hero (tom claro p/ fundo escuro
-   da hero, como o --verde tem o mint #8FD9BC), --LINHA-fundo/--LINHA-borda
-   (tinta pálida para caixas tipo ".tag.novo").
+   SITE CLARO — 25/08/2026: hero, caixa de preço, caixa de contato e rodapé
+   deixaram o fundo escuro (#2B333A/grafite) e passaram a fundo claro; as
+   regras acima já foram alteradas no lugar. O token --escuro segue definido
+   para o que ainda precisar dele (ex.: painel.html).
    ========================================================================= */
-:root{
-  /* NIOSH / Ergonomia — amarelo, cor oficial do risco ergonômico no Mapa de Risco (NR-5) */
-  --niosh:#8A6D00; --niosh-esc:#6E5600; --niosh-hero:#E8CB7A;
-  --niosh-fundo:#FBF3DC; --niosh-borda:#EBDBA6; --niosh-selo:#8A7233;
 
-  /* Segurança do Trabalho — laranja de sinalização de segurança (cor de destaque da
-     linha inteira; o código de 5 cores do Mapa de Risco entra como selo DENTRO do
-     material, por tipo de risco — não é a cor de destaque do site). Ainda sem página
-     própria (hoje redireciona para Treinamentos) — regra pronta para quando a página
-     for construída: <body class="linha-sst"> */
-  --sst:#B85A09; --sst-esc:#96490A; --sst-hero:#F0A868;
-  --sst-fundo:#FDE9D6; --sst-borda:#F3CBA0; --sst-selo:#9C5A22;
+/* =========================================================================
+   CORES POR FRENTE DE TRABALHO — 25/08/2026 (substitui "identidade por linha
+   de produto", de 24/08)
+
+   O verde é da MARCA, não de produto: fica só no logotipo, no menu, no rodapé
+   e no botão de compra. Cada FRENTE tem uma cor própria, fácil de reconhecer,
+   e ela pinta todo o resto da página: o "kick" e os selos da hero, os títulos
+   dos cards, os marcadores de lista, a barrinha do "h3.frente", a tag "novo",
+   as caixas ".nota", ".destaque" e ".previa", o botão secundário ".cta.linha",
+   o cabeçalho da tabela e o foco do formulário.
+
+   Para usar: a classe no <body> da página, ex.: <body class="frente-educacao">.
+   Página sem classe (início, quem somos, contato, hub de serviços) segue na
+   base verde/grafite da marca.
+
+   Convenção por frente: --F (texto e borda sobre fundo claro; passa de 4,5:1
+   sobre branco), --F-esc (hover e rótulos), --F-hero (tom claro para a hero
+   escura — mantido para uso futuro; o site ficou claro em 25/08), --F-fundo/--F-borda (tinta pálida das
+   caixas) e --F-viva (a cor de identidade da frente, para faixas e artes).
+   ========================================================================= */
+:root{  /* Educação e Material Didático — azul-marinho */
+  --educacao:#174197; --educacao-esc:#10306F; --educacao-hero:#9DB6F0;
+  --educacao-fundo:#E8EEFA; --educacao-borda:#BFD0F2; --educacao-selo:#6F8AC4; --educacao-viva:#174197;
+  /* Treinamentos — laranja (inclui Segurança do Trabalho e o NIOSH) */
+  --treinamentos:#B85B0A; --treinamentos-esc:#96490A; --treinamentos-hero:#F0A868;
+  --treinamentos-fundo:#FDE9D6; --treinamentos-borda:#F3CBA0; --treinamentos-selo:#9C5A22; --treinamentos-viva:#E9730C;
+  /* Palestras e SIPAT — vermelho-carmim */
+  --palestras:#D92641; --palestras-esc:#B01C33; --palestras-hero:#F48A9B;
+  --palestras-fundo:#FCE6EA; --palestras-borda:#F4BCC6; --palestras-selo:#C96A79; --palestras-viva:#D92641;
+  /* Qualidade e Produtividade — roxo */
+  --qualidade:#9337BE; --qualidade-esc:#75299A; --qualidade-hero:#C99AE3;
+  --qualidade-fundo:#F2E8F8; --qualidade-borda:#D9BFE8; --qualidade-selo:#A97BC4; --qualidade-viva:#9337BE;
+  /* Meio Ambiente e Saneamento — azul-petróleo */
+  --ambiente:#0B8098; --ambiente-esc:#086A7E; --ambiente-hero:#7FD5E8;
+  --ambiente-fundo:#E3F5F9; --ambiente-borda:#B4E2EC; --ambiente-selo:#5FA9BB; --ambiente-viva:#0FA4C2;
 }
 
-.linha-niosh header.hero .kick{color:var(--niosh-hero)}
-.linha-niosh .selo{border-color:var(--niosh-selo);color:var(--niosh-hero)}
-.linha-niosh .card h3{color:var(--niosh-esc)}
-.linha-niosh h3.frente{color:var(--niosh-esc)}
-.linha-niosh h3.frente::after{background:var(--niosh)}
-.linha-niosh .tag.novo{background:var(--niosh-fundo);color:var(--niosh-esc);border-color:var(--niosh-borda)}
-.linha-niosh .destaque{border-color:var(--niosh);border-left-color:var(--niosh);
-  background:linear-gradient(180deg,var(--niosh-fundo) 0%,#FFFFFF 100%)}
-.linha-niosh .destaque-rot{background:var(--niosh-esc)}
-.linha-niosh .faq summary::before{color:var(--niosh)}
+.frente-educacao header.hero{background:var(--educacao-fundo);border-bottom-color:var(--educacao-borda)}
+.frente-educacao header.hero .kick{color:var(--educacao)}
+.frente-educacao .selo{border-color:var(--educacao-borda);background:var(--educacao-fundo);color:var(--educacao-esc)}
+.frente-educacao header.hero .cta.linha{border-color:var(--educacao);color:var(--educacao-esc)}
+.frente-educacao header.hero .cta.linha:hover{background:var(--educacao);color:#fff}
+.frente-educacao .card h3{color:var(--educacao-esc)}
+.frente-educacao h3.frente{color:var(--educacao-esc)}
+.frente-educacao .metade .rot,.frente-educacao .previa-h .rot{color:var(--educacao-esc)}
+.frente-educacao ul.lista li::before{background:var(--educacao)}
+.frente-educacao .tag.novo{background:var(--educacao-fundo);color:var(--educacao-esc);border-color:var(--educacao-borda)}
+.frente-educacao .nota{border-left-color:var(--educacao)}
+.frente-educacao .destaque{border-color:var(--educacao);border-left-color:var(--educacao);
+  background:linear-gradient(180deg,var(--educacao-fundo) 0%,#FFFFFF 100%)}
+.frente-educacao .destaque-rot{background:var(--educacao-esc)}
+.frente-educacao .faq summary::before{color:var(--educacao)}
+.frente-educacao .cta.linha{border-color:var(--educacao);color:var(--educacao-esc)}
+.frente-educacao .cta.linha:hover{background:var(--educacao);color:#fff}
+.frente-educacao .tab th{border-bottom-color:var(--educacao)}
+.frente-educacao .area-h{border-bottom-color:var(--educacao)}
+.frente-educacao .area-h h3 a:hover{color:var(--educacao-esc)}
+.frente-educacao .previa{border-color:var(--educacao)}
+.frente-educacao .campo input:focus,.frente-educacao .campo select:focus,.frente-educacao .campo textarea:focus{border-color:var(--educacao);box-shadow:0 0 0 3px var(--educacao-fundo)}
+@media(max-width:680px){.frente-educacao .tab td::before{color:var(--educacao-esc)}}
 
-.linha-sst header.hero .kick{color:var(--sst-hero)}
-.linha-sst .selo{border-color:var(--sst-selo);color:var(--sst-hero)}
-.linha-sst .card h3{color:var(--sst-esc)}
-.linha-sst h3.frente{color:var(--sst-esc)}
-.linha-sst h3.frente::after{background:var(--sst)}
-.linha-sst .tag.novo{background:var(--sst-fundo);color:var(--sst-esc);border-color:var(--sst-borda)}
-.linha-sst .destaque{border-color:var(--sst);border-left-color:var(--sst);
-  background:linear-gradient(180deg,var(--sst-fundo) 0%,#FFFFFF 100%)}
-.linha-sst .destaque-rot{background:var(--sst-esc)}
-.linha-sst .faq summary::before{color:var(--sst)}
+.frente-treinamentos header.hero{background:var(--treinamentos-fundo);border-bottom-color:var(--treinamentos-borda)}
+.frente-treinamentos header.hero .kick{color:var(--treinamentos)}
+.frente-treinamentos .selo{border-color:var(--treinamentos-borda);background:var(--treinamentos-fundo);color:var(--treinamentos-esc)}
+.frente-treinamentos header.hero .cta.linha{border-color:var(--treinamentos);color:var(--treinamentos-esc)}
+.frente-treinamentos header.hero .cta.linha:hover{background:var(--treinamentos);color:#fff}
+.frente-treinamentos .card h3{color:var(--treinamentos-esc)}
+.frente-treinamentos h3.frente{color:var(--treinamentos-esc)}
+.frente-treinamentos .metade .rot,.frente-treinamentos .previa-h .rot{color:var(--treinamentos-esc)}
+.frente-treinamentos ul.lista li::before{background:var(--treinamentos)}
+.frente-treinamentos .tag.novo{background:var(--treinamentos-fundo);color:var(--treinamentos-esc);border-color:var(--treinamentos-borda)}
+.frente-treinamentos .nota{border-left-color:var(--treinamentos)}
+.frente-treinamentos .destaque{border-color:var(--treinamentos);border-left-color:var(--treinamentos);
+  background:linear-gradient(180deg,var(--treinamentos-fundo) 0%,#FFFFFF 100%)}
+.frente-treinamentos .destaque-rot{background:var(--treinamentos-esc)}
+.frente-treinamentos .faq summary::before{color:var(--treinamentos)}
+.frente-treinamentos .cta.linha{border-color:var(--treinamentos);color:var(--treinamentos-esc)}
+.frente-treinamentos .cta.linha:hover{background:var(--treinamentos);color:#fff}
+.frente-treinamentos .tab th{border-bottom-color:var(--treinamentos)}
+.frente-treinamentos .area-h{border-bottom-color:var(--treinamentos)}
+.frente-treinamentos .area-h h3 a:hover{color:var(--treinamentos-esc)}
+.frente-treinamentos .previa{border-color:var(--treinamentos)}
+.frente-treinamentos .campo input:focus,.frente-treinamentos .campo select:focus,.frente-treinamentos .campo textarea:focus{border-color:var(--treinamentos);box-shadow:0 0 0 3px var(--treinamentos-fundo)}
+@media(max-width:680px){.frente-treinamentos .tab td::before{color:var(--treinamentos-esc)}}
+
+.frente-palestras header.hero{background:var(--palestras-fundo);border-bottom-color:var(--palestras-borda)}
+.frente-palestras header.hero .kick{color:var(--palestras)}
+.frente-palestras .selo{border-color:var(--palestras-borda);background:var(--palestras-fundo);color:var(--palestras-esc)}
+.frente-palestras header.hero .cta.linha{border-color:var(--palestras);color:var(--palestras-esc)}
+.frente-palestras header.hero .cta.linha:hover{background:var(--palestras);color:#fff}
+.frente-palestras .card h3{color:var(--palestras-esc)}
+.frente-palestras h3.frente{color:var(--palestras-esc)}
+.frente-palestras .metade .rot,.frente-palestras .previa-h .rot{color:var(--palestras-esc)}
+.frente-palestras ul.lista li::before{background:var(--palestras)}
+.frente-palestras .tag.novo{background:var(--palestras-fundo);color:var(--palestras-esc);border-color:var(--palestras-borda)}
+.frente-palestras .nota{border-left-color:var(--palestras)}
+.frente-palestras .destaque{border-color:var(--palestras);border-left-color:var(--palestras);
+  background:linear-gradient(180deg,var(--palestras-fundo) 0%,#FFFFFF 100%)}
+.frente-palestras .destaque-rot{background:var(--palestras-esc)}
+.frente-palestras .faq summary::before{color:var(--palestras)}
+.frente-palestras .cta.linha{border-color:var(--palestras);color:var(--palestras-esc)}
+.frente-palestras .cta.linha:hover{background:var(--palestras);color:#fff}
+.frente-palestras .tab th{border-bottom-color:var(--palestras)}
+.frente-palestras .area-h{border-bottom-color:var(--palestras)}
+.frente-palestras .area-h h3 a:hover{color:var(--palestras-esc)}
+.frente-palestras .previa{border-color:var(--palestras)}
+.frente-palestras .campo input:focus,.frente-palestras .campo select:focus,.frente-palestras .campo textarea:focus{border-color:var(--palestras);box-shadow:0 0 0 3px var(--palestras-fundo)}
+@media(max-width:680px){.frente-palestras .tab td::before{color:var(--palestras-esc)}}
+
+.frente-qualidade header.hero{background:var(--qualidade-fundo);border-bottom-color:var(--qualidade-borda)}
+.frente-qualidade header.hero .kick{color:var(--qualidade)}
+.frente-qualidade .selo{border-color:var(--qualidade-borda);background:var(--qualidade-fundo);color:var(--qualidade-esc)}
+.frente-qualidade header.hero .cta.linha{border-color:var(--qualidade);color:var(--qualidade-esc)}
+.frente-qualidade header.hero .cta.linha:hover{background:var(--qualidade);color:#fff}
+.frente-qualidade .card h3{color:var(--qualidade-esc)}
+.frente-qualidade h3.frente{color:var(--qualidade-esc)}
+.frente-qualidade .metade .rot,.frente-qualidade .previa-h .rot{color:var(--qualidade-esc)}
+.frente-qualidade ul.lista li::before{background:var(--qualidade)}
+.frente-qualidade .tag.novo{background:var(--qualidade-fundo);color:var(--qualidade-esc);border-color:var(--qualidade-borda)}
+.frente-qualidade .nota{border-left-color:var(--qualidade)}
+.frente-qualidade .destaque{border-color:var(--qualidade);border-left-color:var(--qualidade);
+  background:linear-gradient(180deg,var(--qualidade-fundo) 0%,#FFFFFF 100%)}
+.frente-qualidade .destaque-rot{background:var(--qualidade-esc)}
+.frente-qualidade .faq summary::before{color:var(--qualidade)}
+.frente-qualidade .cta.linha{border-color:var(--qualidade);color:var(--qualidade-esc)}
+.frente-qualidade .cta.linha:hover{background:var(--qualidade);color:#fff}
+.frente-qualidade .tab th{border-bottom-color:var(--qualidade)}
+.frente-qualidade .area-h{border-bottom-color:var(--qualidade)}
+.frente-qualidade .area-h h3 a:hover{color:var(--qualidade-esc)}
+.frente-qualidade .previa{border-color:var(--qualidade)}
+.frente-qualidade .campo input:focus,.frente-qualidade .campo select:focus,.frente-qualidade .campo textarea:focus{border-color:var(--qualidade);box-shadow:0 0 0 3px var(--qualidade-fundo)}
+@media(max-width:680px){.frente-qualidade .tab td::before{color:var(--qualidade-esc)}}
+
+.frente-ambiente header.hero{background:var(--ambiente-fundo);border-bottom-color:var(--ambiente-borda)}
+.frente-ambiente header.hero .kick{color:var(--ambiente)}
+.frente-ambiente .selo{border-color:var(--ambiente-borda);background:var(--ambiente-fundo);color:var(--ambiente-esc)}
+.frente-ambiente header.hero .cta.linha{border-color:var(--ambiente);color:var(--ambiente-esc)}
+.frente-ambiente header.hero .cta.linha:hover{background:var(--ambiente);color:#fff}
+.frente-ambiente .card h3{color:var(--ambiente-esc)}
+.frente-ambiente h3.frente{color:var(--ambiente-esc)}
+.frente-ambiente .metade .rot,.frente-ambiente .previa-h .rot{color:var(--ambiente-esc)}
+.frente-ambiente ul.lista li::before{background:var(--ambiente)}
+.frente-ambiente .tag.novo{background:var(--ambiente-fundo);color:var(--ambiente-esc);border-color:var(--ambiente-borda)}
+.frente-ambiente .nota{border-left-color:var(--ambiente)}
+.frente-ambiente .destaque{border-color:var(--ambiente);border-left-color:var(--ambiente);
+  background:linear-gradient(180deg,var(--ambiente-fundo) 0%,#FFFFFF 100%)}
+.frente-ambiente .destaque-rot{background:var(--ambiente-esc)}
+.frente-ambiente .faq summary::before{color:var(--ambiente)}
+.frente-ambiente .cta.linha{border-color:var(--ambiente);color:var(--ambiente-esc)}
+.frente-ambiente .cta.linha:hover{background:var(--ambiente);color:#fff}
+.frente-ambiente .tab th{border-bottom-color:var(--ambiente)}
+.frente-ambiente .area-h{border-bottom-color:var(--ambiente)}
+.frente-ambiente .area-h h3 a:hover{color:var(--ambiente-esc)}
+.frente-ambiente .previa{border-color:var(--ambiente)}
+.frente-ambiente .campo input:focus,.frente-ambiente .campo select:focus,.frente-ambiente .campo textarea:focus{border-color:var(--ambiente);box-shadow:0 0 0 3px var(--ambiente-fundo)}
+@media(max-width:680px){.frente-ambiente .tab td::before{color:var(--ambiente-esc)}}
