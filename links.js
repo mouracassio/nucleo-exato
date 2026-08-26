@@ -65,7 +65,7 @@ var CONTATO = {
      Hoje é o número do Bruno (34 99693-1121), decidido em 15/08/2026.
      Formato: só números, começando por 55 (Brasil) + DDD. */
   whatsapp: "5534996931121",
-  email: "moura.cassio@outlook.com"
+  email: "nucleoexato@gmail.com"
 };
 
 /* ---------------------------------------------------------------------------
