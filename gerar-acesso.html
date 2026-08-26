@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Gerar acesso &mdash; N&uacute;cleo Exato</title>
+<link rel="stylesheet" href="css/estilo.css">
+<style>
+.gera-wrap{max-width:480px;margin:0 auto;padding:50px 20px}
+.gera-wrap label{display:block;font-weight:700;margin-bottom:4px;font-size:14px}
+.gera-wrap select,.gera-wrap input{width:100%;padding:12px;border:1px solid var(--borda);border-radius:10px;margin:0 0 18px;font-size:15px;font-family:inherit}
+.gera-wrap button{width:100%;padding:14px;border:0;border-radius:10px;background:var(--verde);color:#fff;font-weight:700;font-size:16px;cursor:pointer}
+.resultado{margin-top:22px;padding:16px;border-radius:10px;background:#f3f8f5;border:1px solid var(--borda);display:none}
+.resultado code{font-size:22px;letter-spacing:2px;display:block;margin:8px 0;font-weight:700}
+.copiar{background:none;border:1px solid var(--verde);color:var(--verde);padding:9px 16px;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px}
+.aviso{color:var(--suave);font-size:13.5px;margin-top:-8px;margin-bottom:22px}
+</style>
+</head>
+<body>
+<div class="gera-wrap">
+  <h1>Gerar c&oacute;digo de acesso</h1>
+  <p class="aviso">S&oacute; para vendas de fora (Mercado Livre, Shopee). O que vende pela Kiwify entrega sozinho, n&atilde;o precisa disso.</p>
+
+  <label for="produto">Produto</label>
+  <select id="produto">
+    <option value="entregas/nr01.zip">Treinamento NR-01</option>
+    <option value="entregas/niosh.zip">Equa&ccedil;&atilde;o do NIOSH</option>
+    <option value="entregas/matematica-1ano.zip">Matem&aacute;tica 1&ordm; ano</option>
+    <option value="entregas/matematica-2ano.zip">Matem&aacute;tica 2&ordm; ano</option>
+    <option value="entregas/matematica-3ano.zip">Matem&aacute;tica 3&ordm; ano</option>
+    <option value="entregas/matematica-combo.zip">Matem&aacute;tica &mdash; combo</option>
+    <option value="entregas/planilha-de-notas.zip">Planilha de Notas</option>
+  </select>
+
+  <label for="meses">Validade (meses)</label>
+  <input type="number" id="meses" value="6" min="1" max="24">
+
+  <button onclick="gerar()">Gerar c&oacute;digo</button>
+
+  <div class="resultado" id="resultado">
+    <div>C&oacute;digo:</div>
+    <code id="codigo"></code>
+    <button class="copiar" onclick="copiar()">Copiar mensagem pronta</button>
+  </div>
+</div>
+
+<script>
+function senhaSalva() {
+  let s = sessionStorage.getItem("senha_admin_ne");
+  if (!s) {
+    s = prompt("Senha de administrador:");
+    if (s) sessionStorage.setItem("senha_admin_ne", s);
+  }
+  return s || "";
+}
+
+async function gerar() {
+  const sel = document.getElementById("produto");
+  const produto = sel.options[sel.selectedIndex].text;
+  const arquivo = sel.value;
+  const meses = document.getElementById("meses").value;
+
+  let resp;
+  try {
+    resp = await fetch("/api/gerar", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-senha": senhaSalva() },
+      body: JSON.stringify({ produto, arquivo, meses }),
+    });
+  } catch (e) {
+    alert("Não consegui falar com o servidor. Confira a internet e tente de novo.");
+    return;
+  }
+
+  if (resp.status === 401) {
+    sessionStorage.removeItem("senha_admin_ne");
+    alert("Senha incorreta. Tente de novo.");
+    return;
+  }
+
+  const dados = await resp.json();
+  if (!resp.ok) { alert(dados.erro || "Erro ao gerar."); return; }
+
+  document.getElementById("codigo").textContent = dados.codigo;
+  document.getElementById("resultado").style.display = "block";
+  window._mensagemPronta = "Olá! Aqui está o acesso ao seu material — " + produto + ".\n\n" +
+    "Entre em nucleoexato.com.br/acesso.html e digite o código: " + dados.codigo + "\n\n" +
+    "Qualquer dúvida, me chama por aqui.";
+}
+
+function copiar() {
+  navigator.clipboard.writeText(window._mensagemPronta || document.getElementById("codigo").textContent);
+  alert("Mensagem copiada — já pode colar no chat.");
+}
+</script>
+</body>
+</html>

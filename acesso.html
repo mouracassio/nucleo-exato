@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Acesso ao material &mdash; N&uacute;cleo Exato</title>
+<meta name="description" content="Digite o c&oacute;digo recebido na mensagem da compra para acessar seu material.">
+<link rel="stylesheet" href="css/estilo.css">
+<style>
+.acesso-wrap{max-width:420px;margin:0 auto;padding:60px 20px;text-align:center}
+.acesso-wrap input{width:100%;font-size:22px;letter-spacing:3px;text-align:center;text-transform:uppercase;
+  padding:14px;border:1px solid var(--borda);border-radius:10px;margin:18px 0;font-family:inherit}
+.acesso-wrap button{width:100%;padding:14px;border:0;border-radius:10px;background:var(--verde);color:#fff;
+  font-weight:700;font-size:16px;cursor:pointer}
+.acesso-wrap .sub{color:var(--suave);font-size:15px}
+</style>
+</head>
+<body>
+<div class="acesso-wrap">
+  <h1>Seu material</h1>
+  <p class="sub">Digite o c&oacute;digo que voc&ecirc; recebeu na mensagem da compra.</p>
+  <form action="/api/resgatar" method="get">
+    <input type="text" name="codigo" maxlength="8" autocomplete="off" autocapitalize="characters" required placeholder="EX: 7K2P9XQF">
+    <button type="submit">Acessar material</button>
+  </form>
+  <p style="margin-top:30px;font-size:13.5px;color:var(--suave)">Prof. Eng. C&aacute;ssio Moura &middot; N&uacute;cleo Exato</p>
+</div>
+</body>
+</html>
