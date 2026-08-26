@@ -4,61 +4,102 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Gerar acesso &mdash; N&uacute;cleo Exato</title>
+<title>C&oacute;digo de acesso &mdash; N&uacute;cleo Exato</title>
 <link rel="stylesheet" href="css/estilo.css">
 <style>
-.gera-wrap{max-width:480px;margin:0 auto;padding:50px 20px}
-.gera-wrap label{display:block;font-weight:700;margin-bottom:4px;font-size:14px}
-.gera-wrap select,.gera-wrap input{width:100%;padding:12px;border:1px solid var(--borda);border-radius:10px;margin:0 0 18px;font-size:15px;font-family:inherit}
-.gera-wrap button{width:100%;padding:14px;border:0;border-radius:10px;background:var(--verde);color:#fff;font-weight:700;font-size:16px;cursor:pointer}
+.wrap{max-width:1040px;margin:0 auto;padding:50px 20px}
+.wrap h1{margin-bottom:6px}
+.aviso{color:var(--suave);font-size:13.5px;margin-top:-2px;margin-bottom:30px}
+.form-gera{max-width:480px;margin:0 0 46px}
+.form-gera label{display:block;font-weight:700;margin-bottom:4px;font-size:14px}
+.form-gera select,.form-gera input{width:100%;padding:12px;border:1px solid var(--borda);border-radius:10px;margin:0 0 18px;font-size:15px;font-family:inherit}
+.form-gera button{width:100%;padding:14px;border:0;border-radius:10px;background:var(--verde);color:#fff;font-weight:700;font-size:16px;cursor:pointer}
 .resultado{margin-top:22px;padding:16px;border-radius:10px;background:#f3f8f5;border:1px solid var(--borda);display:none}
 .resultado code{font-size:22px;letter-spacing:2px;display:block;margin:8px 0;font-weight:700}
 .copiar{background:none;border:1px solid var(--verde);color:var(--verde);padding:9px 16px;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px}
-.aviso{color:var(--suave);font-size:13.5px;margin-top:-8px;margin-bottom:22px}
 .sku{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.5px;color:var(--suave);border:1px solid var(--borda);border-radius:6px;padding:2px 8px;margin-left:6px;vertical-align:middle}
-.painel-link{display:block;text-align:center;margin-top:26px;font-size:14px;color:var(--verde)}
+h2.titulo-lista{font-size:19px;margin:0 0 6px}
+.busca{width:100%;max-width:420px;padding:10px 12px;border:1px solid var(--borda);border-radius:10px;font-size:14px;margin-bottom:18px;font-family:inherit}
+.tabela-wrap{overflow-x:auto;border:1px solid var(--borda);border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--borda);white-space:nowrap}
+th{background:var(--claro);font-weight:700}
+tr:last-child td{border-bottom:0}
+code.cod{font-weight:700;letter-spacing:1px}
+.col-sku{font-size:11.5px;font-weight:700;color:var(--suave)}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:12px;font-weight:700}
+.badge-ativo{background:#e6f4ec;color:#1f7a4d}
+.badge-usado{background:#eaf1fb;color:#2b5fa8}
+.badge-vencido{background:#fbeaea;color:#a83b3b}
+.vazio,.carregando{text-align:center;color:var(--suave);padding:40px 0}
+.atualizar{margin-top:14px;background:none;border:1px solid var(--verde);color:var(--verde);padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:700;font-size:13.5px}
 </style>
 </head>
 <body>
-<div class="gera-wrap">
-  <h1>Gerar c&oacute;digo de acesso</h1>
+<div class="wrap">
+  <h1>C&oacute;digo de acesso</h1>
   <p class="aviso">S&oacute; para vendas de fora (Mercado Livre, Shopee). O que vende pela Kiwify entrega sozinho, n&atilde;o precisa disso.</p>
 
-  <label for="produto">Produto <span class="sku" id="skuAtual">NR01</span></label>
-  <select id="produto">
-    <option value="entregas/nr01.zip" data-sku="NR01">Treinamento NR-01</option>
-    <option value="entregas/niosh.zip" data-sku="NIOSH">Equa&ccedil;&atilde;o do NIOSH</option>
-    <option value="entregas/matematica-1ano.zip" data-sku="MAT-1EM">Matem&aacute;tica 1&ordm; ano</option>
-    <option value="entregas/matematica-2ano.zip" data-sku="MAT-2EM">Matem&aacute;tica 2&ordm; ano</option>
-    <option value="entregas/matematica-3ano.zip" data-sku="MAT-3EM">Matem&aacute;tica 3&ordm; ano</option>
-    <option value="entregas/matematica-combo.zip" data-sku="MAT-COMBO">Matem&aacute;tica &mdash; combo</option>
-    <option value="entregas/planilha-de-notas.zip" data-sku="PLAN-NOTAS">Planilha de Notas</option>
-  </select>
+  <div class="form-gera">
+    <label for="produto">Produto <span class="sku" id="skuAtual">NR01</span></label>
+    <select id="produto">
+      <option value="entregas/nr01.zip" data-sku="NR01">Treinamento NR-01</option>
+      <option value="entregas/niosh.zip" data-sku="NIOSH">Equa&ccedil;&atilde;o do NIOSH</option>
+      <option value="entregas/matematica-1ano.zip" data-sku="MAT-1EM">Matem&aacute;tica 1&ordm; ano</option>
+      <option value="entregas/matematica-2ano.zip" data-sku="MAT-2EM">Matem&aacute;tica 2&ordm; ano</option>
+      <option value="entregas/matematica-3ano.zip" data-sku="MAT-3EM">Matem&aacute;tica 3&ordm; ano</option>
+      <option value="entregas/matematica-combo.zip" data-sku="MAT-COMBO">Matem&aacute;tica &mdash; combo</option>
+      <option value="entregas/planilha-de-notas.zip" data-sku="PLAN-NOTAS">Planilha de Notas</option>
+    </select>
 
-  <label for="meses">Validade (meses)</label>
-  <input type="number" id="meses" value="6" min="1" max="24">
+    <label for="meses">Validade (meses)</label>
+    <input type="number" id="meses" value="6" min="1" max="24">
 
-  <label for="plataforma">Plataforma da venda</label>
-  <select id="plataforma">
-    <option value="Mercado Livre">Mercado Livre</option>
-    <option value="Shopee">Shopee</option>
-  </select>
+    <label for="plataforma">Plataforma da venda</label>
+    <select id="plataforma">
+      <option value="Mercado Livre">Mercado Livre</option>
+      <option value="Shopee">Shopee</option>
+    </select>
 
-  <label for="numeroVenda">N&uacute;mero da venda</label>
-  <input type="text" id="numeroVenda" placeholder="Ex.: 2000012345678">
+    <label for="numeroVenda">N&uacute;mero da venda</label>
+    <input type="text" id="numeroVenda" placeholder="Ex.: 2000012345678">
 
-  <label for="dataVenda">Data da venda</label>
-  <input type="date" id="dataVenda">
+    <label for="dataVenda">Data da venda</label>
+    <input type="date" id="dataVenda">
 
-  <button onclick="gerar()">Gerar c&oacute;digo</button>
+    <button onclick="gerar()">Gerar c&oacute;digo</button>
 
-  <div class="resultado" id="resultado">
-    <div>C&oacute;digo:</div>
-    <code id="codigo"></code>
-    <button class="copiar" onclick="copiar()">Copiar mensagem pronta</button>
+    <div class="resultado" id="resultado">
+      <div>C&oacute;digo:</div>
+      <code id="codigo"></code>
+      <button class="copiar" onclick="copiar()">Copiar mensagem pronta</button>
+    </div>
   </div>
 
-  <a class="painel-link" href="/painel-acessos.html">Ver todos os c&oacute;digos j&aacute; gerados &rarr;</a>
+  <h2 class="titulo-lista">C&oacute;digos gerados</h2>
+  <input class="busca" id="busca" placeholder="Buscar por c&oacute;digo, SKU, produto, plataforma ou n&ordm; da venda&hellip;" oninput="filtrar()">
+
+  <div class="tabela-wrap">
+    <table id="tabela">
+      <thead>
+        <tr>
+          <th>C&oacute;digo</th>
+          <th>SKU</th>
+          <th>Produto</th>
+          <th>Plataforma</th>
+          <th>N&ordm; da venda</th>
+          <th>Data da venda</th>
+          <th>Gerado em</th>
+          <th>Status</th>
+          <th>Usos</th>
+        </tr>
+      </thead>
+      <tbody id="corpo">
+        <tr><td colspan="9" class="carregando">Carregando&hellip;</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <button class="atualizar" onclick="carregar()">Atualizar lista</button>
 </div>
 
 <script>
@@ -70,8 +111,7 @@ function atualizarSku() {
 selProduto.addEventListener("change", atualizarSku);
 atualizarSku();
 
-const campoData = document.getElementById("dataVenda");
-campoData.value = new Date().toISOString().slice(0, 10);
+document.getElementById("dataVenda").value = new Date().toISOString().slice(0, 10);
 
 function senhaSalva() {
   let s = sessionStorage.getItem("senha_admin_ne");
@@ -118,12 +158,85 @@ async function gerar() {
   window._mensagemPronta = "Olá! Aqui está o acesso ao seu material — " + produto + ".\n\n" +
     "Entre em nucleoexato.com.br/acesso.html e digite o código: " + dados.codigo + "\n\n" +
     "Qualquer dúvida, me chama por aqui.";
+
+  document.getElementById("numeroVenda").value = "";
+  carregar();
 }
 
 function copiar() {
   navigator.clipboard.writeText(window._mensagemPronta || document.getElementById("codigo").textContent);
   alert("Mensagem copiada — já pode colar no chat.");
 }
+
+let todos = [];
+
+function formatarDataHora(ms) {
+  if (!ms) return "—";
+  const d = new Date(ms);
+  return d.toLocaleDateString("pt-BR") + " " + d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+}
+
+function formatarData(iso) {
+  if (!iso) return "—";
+  const [ano, mes, dia] = iso.split("-");
+  return dia && mes && ano ? dia + "/" + mes + "/" + ano : iso;
+}
+
+function badge(status) {
+  const rotulo = { ativo: "Ativo", usado: "Usado", vencido: "Vencido", desconhecido: "—" }[status] || status;
+  return '<span class="badge badge-' + status + '">' + rotulo + '</span>';
+}
+
+async function carregar() {
+  document.getElementById("corpo").innerHTML = '<tr><td colspan="9" class="carregando">Carregando…</td></tr>';
+  let resp;
+  try {
+    resp = await fetch("/api/listar", { headers: { "x-senha": senhaSalva() } });
+  } catch (e) {
+    document.getElementById("corpo").innerHTML = '<tr><td colspan="9" class="vazio">Não consegui falar com o servidor.</td></tr>';
+    return;
+  }
+  if (resp.status === 401) {
+    sessionStorage.removeItem("senha_admin_ne");
+    alert("Senha incorreta. Tente de novo.");
+    document.getElementById("corpo").innerHTML = '<tr><td colspan="9" class="vazio">Senha incorreta.</td></tr>';
+    return;
+  }
+  const dados = await resp.json();
+  todos = dados.codigos || [];
+  filtrar();
+}
+
+function renderizar(lista) {
+  const corpo = document.getElementById("corpo");
+  if (!lista.length) {
+    corpo.innerHTML = '<tr><td colspan="9" class="vazio">Nenhum código gerado ainda.</td></tr>';
+    return;
+  }
+  corpo.innerHTML = lista.map(function (c) {
+    return "<tr>" +
+      "<td><code class=\"cod\">" + c.codigo + "</code></td>" +
+      "<td class=\"col-sku\">" + (c.sku || "—") + "</td>" +
+      "<td>" + (c.produto || "—") + "</td>" +
+      "<td>" + (c.plataforma || "—") + "</td>" +
+      "<td>" + (c.numeroVenda || "—") + "</td>" +
+      "<td>" + formatarData(c.dataVenda) + "</td>" +
+      "<td>" + formatarDataHora(c.criadoEm) + "</td>" +
+      "<td>" + badge(c.status) + "</td>" +
+      "<td>" + (c.usos || 0) + "</td>" +
+      "</tr>";
+  }).join("");
+}
+
+function filtrar() {
+  const termo = document.getElementById("busca").value.trim().toLowerCase();
+  if (!termo) { renderizar(todos); return; }
+  renderizar(todos.filter(function (c) {
+    return (c.codigo + " " + c.sku + " " + c.produto + " " + c.plataforma + " " + c.numeroVenda).toLowerCase().includes(termo);
+  }));
+}
+
+carregar();
 </script>
 </body>
 </html>
