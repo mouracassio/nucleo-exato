@@ -19,7 +19,7 @@ export async function onRequestGet({ request, env }) {
 
   registro.usos = (registro.usos || 0) + 1;
   registro.ultimoUso = Date.now();
-  await env.ACESSOS.put(codigo, JSON.stringify(registro));
+  await env.ACESSOS.put(codigo, JSON.stringify(registro), { metadata: registro });
 
   const nomeArquivo = registro.arquivo.split("/").pop();
   return new Response(objeto.body, {

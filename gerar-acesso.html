@@ -15,6 +15,8 @@
 .resultado code{font-size:22px;letter-spacing:2px;display:block;margin:8px 0;font-weight:700}
 .copiar{background:none;border:1px solid var(--verde);color:var(--verde);padding:9px 16px;border-radius:8px;cursor:pointer;font-weight:700;font-size:14px}
 .aviso{color:var(--suave);font-size:13.5px;margin-top:-8px;margin-bottom:22px}
+.sku{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.5px;color:var(--suave);border:1px solid var(--borda);border-radius:6px;padding:2px 8px;margin-left:6px;vertical-align:middle}
+.painel-link{display:block;text-align:center;margin-top:26px;font-size:14px;color:var(--verde)}
 </style>
 </head>
 <body>
@@ -22,19 +24,22 @@
   <h1>Gerar c&oacute;digo de acesso</h1>
   <p class="aviso">S&oacute; para vendas de fora (Mercado Livre, Shopee). O que vende pela Kiwify entrega sozinho, n&atilde;o precisa disso.</p>
 
-  <label for="produto">Produto</label>
+  <label for="produto">Produto <span class="sku" id="skuAtual">NR01</span></label>
   <select id="produto">
-    <option value="entregas/nr01.zip">Treinamento NR-01</option>
-    <option value="entregas/niosh.zip">Equa&ccedil;&atilde;o do NIOSH</option>
-    <option value="entregas/matematica-1ano.zip">Matem&aacute;tica 1&ordm; ano</option>
-    <option value="entregas/matematica-2ano.zip">Matem&aacute;tica 2&ordm; ano</option>
-    <option value="entregas/matematica-3ano.zip">Matem&aacute;tica 3&ordm; ano</option>
-    <option value="entregas/matematica-combo.zip">Matem&aacute;tica &mdash; combo</option>
-    <option value="entregas/planilha-de-notas.zip">Planilha de Notas</option>
+    <option value="entregas/nr01.zip" data-sku="NR01">Treinamento NR-01</option>
+    <option value="entregas/niosh.zip" data-sku="NIOSH">Equa&ccedil;&atilde;o do NIOSH</option>
+    <option value="entregas/matematica-1ano.zip" data-sku="MAT-1EM">Matem&aacute;tica 1&ordm; ano</option>
+    <option value="entregas/matematica-2ano.zip" data-sku="MAT-2EM">Matem&aacute;tica 2&ordm; ano</option>
+    <option value="entregas/matematica-3ano.zip" data-sku="MAT-3EM">Matem&aacute;tica 3&ordm; ano</option>
+    <option value="entregas/matematica-combo.zip" data-sku="MAT-COMBO">Matem&aacute;tica &mdash; combo</option>
+    <option value="entregas/planilha-de-notas.zip" data-sku="PLAN-NOTAS">Planilha de Notas</option>
   </select>
 
   <label for="meses">Validade (meses)</label>
   <input type="number" id="meses" value="6" min="1" max="24">
+
+  <label for="nota">Nota (pedido, comprador &mdash; s&oacute; pra voc&ecirc;, n&atilde;o aparece pro cliente)</label>
+  <input type="text" id="nota" placeholder="Ex.: ML pedido #123456 - Jo&atilde;o Silva">
 
   <button onclick="gerar()">Gerar c&oacute;digo</button>
 
@@ -43,9 +48,19 @@
     <code id="codigo"></code>
     <button class="copiar" onclick="copiar()">Copiar mensagem pronta</button>
   </div>
+
+  <a class="painel-link" href="/painel-acessos.html">Ver todos os c&oacute;digos j&aacute; gerados &rarr;</a>
 </div>
 
 <script>
+const selProduto = document.getElementById("produto");
+const skuAtual = document.getElementById("skuAtual");
+function atualizarSku() {
+  skuAtual.textContent = selProduto.options[selProduto.selectedIndex].dataset.sku || "";
+}
+selProduto.addEventListener("change", atualizarSku);
+atualizarSku();
+
 function senhaSalva() {
   let s = sessionStorage.getItem("senha_admin_ne");
   if (!s) {
@@ -59,14 +74,16 @@ async function gerar() {
   const sel = document.getElementById("produto");
   const produto = sel.options[sel.selectedIndex].text;
   const arquivo = sel.value;
+  const sku = sel.options[sel.selectedIndex].dataset.sku || "";
   const meses = document.getElementById("meses").value;
+  const nota = document.getElementById("nota").value.trim();
 
   let resp;
   try {
     resp = await fetch("/api/gerar", {
       method: "POST",
       headers: { "content-type": "application/json", "x-senha": senhaSalva() },
-      body: JSON.stringify({ produto, arquivo, meses }),
+      body: JSON.stringify({ produto, arquivo, meses, sku, nota }),
     });
   } catch (e) {
     alert("Não consegui falar com o servidor. Confira a internet e tente de novo.");
