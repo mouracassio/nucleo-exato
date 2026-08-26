@@ -7,7 +7,7 @@
 <title>C&oacute;digos gerados &mdash; N&uacute;cleo Exato</title>
 <link rel="stylesheet" href="css/estilo.css">
 <style>
-.painel-wrap{max-width:960px;margin:0 auto;padding:40px 20px}
+.painel-wrap{max-width:1040px;margin:0 auto;padding:40px 20px}
 .painel-wrap h1{margin-bottom:6px}
 .aviso{color:var(--suave);font-size:13.5px;margin-bottom:22px}
 .busca{width:100%;max-width:420px;padding:10px 12px;border:1px solid var(--borda);border-radius:10px;font-size:14px;margin-bottom:18px;font-family:inherit}
@@ -29,9 +29,9 @@ code.cod{font-weight:700;letter-spacing:1px}
 <body>
 <div class="painel-wrap">
   <h1>C&oacute;digos de acesso gerados</h1>
-  <p class="aviso">Hist&oacute;rico completo &mdash; busca por c&oacute;digo, SKU, produto ou nota (pedido/comprador).</p>
+  <p class="aviso">Hist&oacute;rico completo, ordenado pela data da venda &mdash; busca por c&oacute;digo, SKU, produto, plataforma ou n&uacute;mero da venda.</p>
 
-  <input class="busca" id="busca" placeholder="Buscar por c&oacute;digo, SKU, produto ou nota&hellip;" oninput="filtrar()">
+  <input class="busca" id="busca" placeholder="Buscar por c&oacute;digo, SKU, produto, plataforma ou n&ordm; da venda&hellip;" oninput="filtrar()">
 
   <div class="tabela-wrap">
     <table id="tabela">
@@ -40,15 +40,16 @@ code.cod{font-weight:700;letter-spacing:1px}
           <th>C&oacute;digo</th>
           <th>SKU</th>
           <th>Produto</th>
-          <th>Nota</th>
+          <th>Plataforma</th>
+          <th>N&ordm; da venda</th>
+          <th>Data da venda</th>
           <th>Gerado em</th>
-          <th>Expira em</th>
           <th>Status</th>
           <th>Usos</th>
         </tr>
       </thead>
       <tbody id="corpo">
-        <tr><td colspan="8" class="carregando">Carregando&hellip;</td></tr>
+        <tr><td colspan="9" class="carregando">Carregando&hellip;</td></tr>
       </tbody>
     </table>
   </div>
@@ -67,10 +68,16 @@ function senhaSalva() {
   return s || "";
 }
 
-function formatarData(ms) {
+function formatarDataHora(ms) {
   if (!ms) return "—";
   const d = new Date(ms);
   return d.toLocaleDateString("pt-BR") + " " + d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+}
+
+function formatarData(iso) {
+  if (!iso) return "—";
+  const [ano, mes, dia] = iso.split("-");
+  return dia && mes && ano ? dia + "/" + mes + "/" + ano : iso;
 }
 
 function badge(status) {
@@ -79,18 +86,18 @@ function badge(status) {
 }
 
 async function carregar() {
-  document.getElementById("corpo").innerHTML = '<tr><td colspan="8" class="carregando">Carregando…</td></tr>';
+  document.getElementById("corpo").innerHTML = '<tr><td colspan="9" class="carregando">Carregando…</td></tr>';
   let resp;
   try {
     resp = await fetch("/api/listar", { headers: { "x-senha": senhaSalva() } });
   } catch (e) {
-    document.getElementById("corpo").innerHTML = '<tr><td colspan="8" class="vazio">Não consegui falar com o servidor.</td></tr>';
+    document.getElementById("corpo").innerHTML = '<tr><td colspan="9" class="vazio">Não consegui falar com o servidor.</td></tr>';
     return;
   }
   if (resp.status === 401) {
     sessionStorage.removeItem("senha_admin_ne");
     alert("Senha incorreta. Tente de novo.");
-    document.getElementById("corpo").innerHTML = '<tr><td colspan="8" class="vazio">Senha incorreta.</td></tr>';
+    document.getElementById("corpo").innerHTML = '<tr><td colspan="9" class="vazio">Senha incorreta.</td></tr>';
     return;
   }
   const dados = await resp.json();
@@ -101,7 +108,7 @@ async function carregar() {
 function renderizar(lista) {
   const corpo = document.getElementById("corpo");
   if (!lista.length) {
-    corpo.innerHTML = '<tr><td colspan="8" class="vazio">Nenhum código gerado ainda.</td></tr>';
+    corpo.innerHTML = '<tr><td colspan="9" class="vazio">Nenhum código gerado ainda.</td></tr>';
     return;
   }
   corpo.innerHTML = lista.map(function (c) {
@@ -109,9 +116,10 @@ function renderizar(lista) {
       "<td><code class=\"cod\">" + c.codigo + "</code></td>" +
       "<td class=\"sku\">" + (c.sku || "—") + "</td>" +
       "<td>" + (c.produto || "—") + "</td>" +
-      "<td>" + (c.nota || "—") + "</td>" +
-      "<td>" + formatarData(c.criadoEm) + "</td>" +
-      "<td>" + formatarData(c.expiraEm) + "</td>" +
+      "<td>" + (c.plataforma || "—") + "</td>" +
+      "<td>" + (c.numeroVenda || "—") + "</td>" +
+      "<td>" + formatarData(c.dataVenda) + "</td>" +
+      "<td>" + formatarDataHora(c.criadoEm) + "</td>" +
       "<td>" + badge(c.status) + "</td>" +
       "<td>" + (c.usos || 0) + "</td>" +
       "</tr>";
@@ -122,7 +130,7 @@ function filtrar() {
   const termo = document.getElementById("busca").value.trim().toLowerCase();
   if (!termo) { renderizar(todos); return; }
   renderizar(todos.filter(function (c) {
-    return (c.codigo + " " + c.sku + " " + c.produto + " " + c.nota).toLowerCase().includes(termo);
+    return (c.codigo + " " + c.sku + " " + c.produto + " " + c.plataforma + " " + c.numeroVenda).toLowerCase().includes(termo);
   }));
 }
 

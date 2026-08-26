@@ -17,7 +17,9 @@ export async function onRequestGet({ request, env }) {
         codigo: chave.name,
         produto: m.produto || "",
         sku: m.sku || "",
-        nota: m.nota || "",
+        plataforma: m.plataforma || "",
+        numeroVenda: m.numeroVenda || "",
+        dataVenda: m.dataVenda || "",
         criadoEm: m.criadoEm || null,
         expiraEm: m.expiraEm || null,
         usos: m.usos || 0,
@@ -28,8 +30,16 @@ export async function onRequestGet({ request, env }) {
     cursor = pagina.list_complete ? null : pagina.cursor;
   } while (cursor);
 
-  lista.sort((a, b) => (b.criadoEm || 0) - (a.criadoEm || 0));
+  lista.sort((a, b) => chaveOrdenacao(b) - chaveOrdenacao(a));
   return json({ total: lista.length, codigos: lista });
+}
+
+function chaveOrdenacao(c) {
+  if (c.dataVenda) {
+    const t = Date.parse(c.dataVenda);
+    if (!isNaN(t)) return t;
+  }
+  return c.criadoEm || 0;
 }
 
 function json(obj, status = 200) {

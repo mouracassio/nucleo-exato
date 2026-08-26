@@ -14,7 +14,7 @@ export async function onRequestPost({ request, env }) {
     return json({ erro: "corpo inválido" }, 400);
   }
 
-  const { produto, arquivo, meses, sku, nota } = corpo;
+  const { produto, arquivo, meses, sku, plataforma, numeroVenda, dataVenda } = corpo;
   if (!produto || !arquivo) {
     return json({ erro: "produto e arquivo são obrigatórios" }, 400);
   }
@@ -25,7 +25,8 @@ export async function onRequestPost({ request, env }) {
   const expiraEm = criadoEm + validadeMeses * 30 * 24 * 60 * 60 * 1000;
 
   const registro = {
-    produto, arquivo, sku: sku || "", nota: nota || "",
+    produto, arquivo, sku: sku || "",
+    plataforma: plataforma || "", numeroVenda: numeroVenda || "", dataVenda: dataVenda || "",
     criadoEm, expiraEm, usos: 0,
   };
 

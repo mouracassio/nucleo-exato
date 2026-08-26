@@ -38,8 +38,17 @@
   <label for="meses">Validade (meses)</label>
   <input type="number" id="meses" value="6" min="1" max="24">
 
-  <label for="nota">Nota (pedido, comprador &mdash; s&oacute; pra voc&ecirc;, n&atilde;o aparece pro cliente)</label>
-  <input type="text" id="nota" placeholder="Ex.: ML pedido #123456 - Jo&atilde;o Silva">
+  <label for="plataforma">Plataforma da venda</label>
+  <select id="plataforma">
+    <option value="Mercado Livre">Mercado Livre</option>
+    <option value="Shopee">Shopee</option>
+  </select>
+
+  <label for="numeroVenda">N&uacute;mero da venda</label>
+  <input type="text" id="numeroVenda" placeholder="Ex.: 2000012345678">
+
+  <label for="dataVenda">Data da venda</label>
+  <input type="date" id="dataVenda">
 
   <button onclick="gerar()">Gerar c&oacute;digo</button>
 
@@ -61,6 +70,9 @@ function atualizarSku() {
 selProduto.addEventListener("change", atualizarSku);
 atualizarSku();
 
+const campoData = document.getElementById("dataVenda");
+campoData.value = new Date().toISOString().slice(0, 10);
+
 function senhaSalva() {
   let s = sessionStorage.getItem("senha_admin_ne");
   if (!s) {
@@ -76,14 +88,16 @@ async function gerar() {
   const arquivo = sel.value;
   const sku = sel.options[sel.selectedIndex].dataset.sku || "";
   const meses = document.getElementById("meses").value;
-  const nota = document.getElementById("nota").value.trim();
+  const plataforma = document.getElementById("plataforma").value;
+  const numeroVenda = document.getElementById("numeroVenda").value.trim();
+  const dataVenda = document.getElementById("dataVenda").value;
 
   let resp;
   try {
     resp = await fetch("/api/gerar", {
       method: "POST",
       headers: { "content-type": "application/json", "x-senha": senhaSalva() },
-      body: JSON.stringify({ produto, arquivo, meses, sku, nota }),
+      body: JSON.stringify({ produto, arquivo, meses, sku, plataforma, numeroVenda, dataVenda }),
     });
   } catch (e) {
     alert("Não consegui falar com o servidor. Confira a internet e tente de novo.");
