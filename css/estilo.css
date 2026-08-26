@@ -90,7 +90,7 @@ ul.lista li::before{content:"";position:absolute;left:0;top:8px;width:11px;heigh
 .prod .txt{padding:22px 22px 24px;display:flex;flex-direction:column;flex:1}
 .prod h3{font-size:20px;margin-bottom:8px}
 .prod p{font-size:15.5px;color:var(--suave);flex:1}
-.prod .rod{display:flex;align-items:center;justify-content:space-between;margin-top:18px;gap:12px}
+.prod .rod{display:flex;align-items:center;justify-content:space-between;margin-top:18px;gap:12px;background:var(--claro);border:1px solid var(--borda);border-radius:10px;padding:14px 16px}
 .prod .val{font-family:Cambria,Georgia,serif;font-size:25px;color:var(--grafite);white-space:nowrap}
 .prod .bt{background:var(--verde);color:#fff;text-decoration:none;font-weight:700;font-size:16px;
   padding:11px 20px;border-radius:9px;white-space:nowrap}
