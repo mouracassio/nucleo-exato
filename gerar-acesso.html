@@ -7,7 +7,7 @@
 <title>C&oacute;digo de acesso &mdash; N&uacute;cleo Exato</title>
 <link rel="stylesheet" href="css/estilo.css">
 <style>
-.wrap{max-width:1040px;margin:0 auto;padding:50px 20px}
+.wrap{max-width:1100px;margin:0 auto;padding:50px 20px}
 .wrap h1{margin-bottom:6px}
 .aviso{color:var(--suave);font-size:13.5px;margin-top:-2px;margin-bottom:30px}
 .form-gera{max-width:480px;margin:0 0 46px}
@@ -33,6 +33,8 @@ code.cod{font-weight:700;letter-spacing:1px}
 .badge-vencido{background:#fbeaea;color:#a83b3b}
 .vazio,.carregando{text-align:center;color:var(--suave);padding:40px 0}
 .atualizar{margin-top:14px;background:none;border:1px solid var(--verde);color:var(--verde);padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:700;font-size:13.5px}
+.btn-copiar-linha{background:none;border:1px solid var(--verde);color:var(--verde);padding:6px 12px;border-radius:7px;cursor:pointer;font-weight:700;font-size:12.5px;white-space:nowrap}
+.btn-copiar-linha.copiado{background:var(--verde);color:#fff}
 </style>
 </head>
 <body>
@@ -92,10 +94,11 @@ code.cod{font-weight:700;letter-spacing:1px}
           <th>Gerado em</th>
           <th>Status</th>
           <th>Usos</th>
+          <th>Mensagem</th>
         </tr>
       </thead>
       <tbody id="corpo">
-        <tr><td colspan="9" class="carregando">Carregando&hellip;</td></tr>
+        <tr><td colspan="10" class="carregando">Carregando&hellip;</td></tr>
       </tbody>
     </table>
   </div>
@@ -120,6 +123,12 @@ function senhaSalva() {
     if (s) sessionStorage.setItem("senha_admin_ne", s);
   }
   return s || "";
+}
+
+function montarMensagem(produto, codigo) {
+  return "Olá! Aqui está o acesso ao seu material — " + produto + ".\n\n" +
+    "Entre em nucleoexato.com.br/acesso.html e digite o código: " + codigo + "\n\n" +
+    "Qualquer dúvida, me chama por aqui.";
 }
 
 async function gerar() {
@@ -155,9 +164,7 @@ async function gerar() {
 
   document.getElementById("codigo").textContent = dados.codigo;
   document.getElementById("resultado").style.display = "block";
-  window._mensagemPronta = "Olá! Aqui está o acesso ao seu material — " + produto + ".\n\n" +
-    "Entre em nucleoexato.com.br/acesso.html e digite o código: " + dados.codigo + "\n\n" +
-    "Qualquer dúvida, me chama por aqui.";
+  window._mensagemPronta = montarMensagem(produto, dados.codigo);
 
   document.getElementById("numeroVenda").value = "";
   carregar();
@@ -187,19 +194,23 @@ function badge(status) {
   return '<span class="badge badge-' + status + '">' + rotulo + '</span>';
 }
 
+function escapeAttr(s) {
+  return String(s || "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+}
+
 async function carregar() {
-  document.getElementById("corpo").innerHTML = '<tr><td colspan="9" class="carregando">Carregando…</td></tr>';
+  document.getElementById("corpo").innerHTML = '<tr><td colspan="10" class="carregando">Carregando…</td></tr>';
   let resp;
   try {
     resp = await fetch("/api/listar", { headers: { "x-senha": senhaSalva() } });
   } catch (e) {
-    document.getElementById("corpo").innerHTML = '<tr><td colspan="9" class="vazio">Não consegui falar com o servidor.</td></tr>';
+    document.getElementById("corpo").innerHTML = '<tr><td colspan="10" class="vazio">Não consegui falar com o servidor.</td></tr>';
     return;
   }
   if (resp.status === 401) {
     sessionStorage.removeItem("senha_admin_ne");
     alert("Senha incorreta. Tente de novo.");
-    document.getElementById("corpo").innerHTML = '<tr><td colspan="9" class="vazio">Senha incorreta.</td></tr>';
+    document.getElementById("corpo").innerHTML = '<tr><td colspan="10" class="vazio">Senha incorreta.</td></tr>';
     return;
   }
   const dados = await resp.json();
@@ -210,7 +221,7 @@ async function carregar() {
 function renderizar(lista) {
   const corpo = document.getElementById("corpo");
   if (!lista.length) {
-    corpo.innerHTML = '<tr><td colspan="9" class="vazio">Nenhum código gerado ainda.</td></tr>';
+    corpo.innerHTML = '<tr><td colspan="10" class="vazio">Nenhum código gerado ainda.</td></tr>';
     return;
   }
   corpo.innerHTML = lista.map(function (c) {
@@ -224,9 +235,24 @@ function renderizar(lista) {
       "<td>" + formatarDataHora(c.criadoEm) + "</td>" +
       "<td>" + badge(c.status) + "</td>" +
       "<td>" + (c.usos || 0) + "</td>" +
+      "<td><button class=\"btn-copiar-linha\" data-codigo=\"" + escapeAttr(c.codigo) + "\" data-produto=\"" + escapeAttr(c.produto) + "\">Copiar mensagem</button></td>" +
       "</tr>";
   }).join("");
 }
+
+document.getElementById("corpo").addEventListener("click", function (e) {
+  const btn = e.target.closest(".btn-copiar-linha");
+  if (!btn) return;
+  const msg = montarMensagem(btn.dataset.produto, btn.dataset.codigo);
+  navigator.clipboard.writeText(msg);
+  const textoOriginal = btn.textContent;
+  btn.textContent = "Copiado!";
+  btn.classList.add("copiado");
+  setTimeout(function () {
+    btn.textContent = textoOriginal;
+    btn.classList.remove("copiado");
+  }, 1500);
+});
 
 function filtrar() {
   const termo = document.getElementById("busca").value.trim().toLowerCase();
