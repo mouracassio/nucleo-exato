@@ -45,7 +45,7 @@
     "hero": {
       "kick": "Núcleo Exato · Engenharia e Educação Técnica",
       "titulo": "Engenheiros que ensinam, e escrevem o próprio material",
-      "lead": "Duas coisas, na mesma casa: uma <b>loja</b> de material técnico e didático, pronto para comprar e usar hoje; e <b>serviços</b> de engenharia sob orçamento — treinamento, palestra, licenciamento ambiental e qualidade. Tudo escrito por nós, com registro no CREA-MG.",
+      "lead": "Duas coisas, na mesma casa: uma <b>loja</b> de material técnico e didático, pronto para comprar e usar hoje; e <b>serviços</b> de engenharia sob orçamento — treinamento, palestra e qualidade. Tudo escrito por nós, com registro no CREA-MG.",
       "btn1": {
         "texto": "Ver a loja",
         "sub": "acesso na hora",
@@ -71,15 +71,15 @@
     "servicos": {
       "titulo": "Os serviços — engenharia sob orçamento",
       "tag": "sob contrato",
-      "intro": "Cinco áreas, uma empresa. Aqui não tem botão de comprar: tem conversa, proposta escrita e prazo por etapa. Começamos pela capacitação — treinamento e palestra — porque é onde a equipe muda de comportamento e o resultado aparece mais rápido.",
-      "linkTexto": "Ver as cinco áreas"
+      "intro": "Quatro áreas, uma empresa. Aqui não tem botão de comprar: tem conversa, proposta escrita e prazo por etapa. Começamos pela capacitação — treinamento e palestra — porque é onde a equipe muda de comportamento e o resultado aparece mais rápido.",
+      "linkTexto": "Ver as quatro áreas"
     },
     "diferenciais": {
       "titulo": "O que nos diferencia",
       "itens": [
         {
           "titulo": "Registro que se confere",
-          "texto": "Dois engenheiros registrados no CREA-MG, com os números escritos em toda página deste site. Você confere na consulta pública do conselho <b>antes</b> de comprar ou contratar."
+          "texto": "Engenheiro registrado no CREA-MG, com o número escrito em toda página deste site. Você confere na consulta pública do conselho <b>antes</b> de comprar ou contratar."
         },
         {
           "titulo": "Conteúdo de autoria própria",
@@ -97,17 +97,12 @@
     },
     "quemSomos": {
       "titulo": "Quem somos",
-      "intro": "Dois engenheiros registrados no CREA-MG. O material e os documentos que saem daqui têm nome, registro e rosto de quem os produziu.",
+      "intro": "Engenheiro registrado no CREA-MG. O material e os documentos que saem daqui têm nome, registro e rosto de quem os produziu.",
       "socios": [
         {
           "nome": "Eng. Cássio Resende de Moura",
           "texto": "Engenheiro de Produção e Engenheiro de Segurança do Trabalho (<b>CREA-MG 401683</b>), licenciado em Matemática. Professor da rede estadual de Minas Gerais.",
           "foto": "img/cassio.jpg"
-        },
-        {
-          "nome": "Eng. Bruno Antonio de Lourdes",
-          "texto": "Engenheiro Ambiental e Sanitarista (<b>CREA-MG 230605/D</b>).",
-          "foto": "img/bruno.jpg"
         }
       ],
       "linkTexto": "Conhecer a empresa →"
@@ -133,8 +128,8 @@
     },
     "servicos": {
       "kick": "Serviços",
-      "titulo": "Cinco áreas, uma empresa, o mesmo cuidado",
-      "lead": "Capacitação em saúde, segurança e meio ambiente, engenharia ambiental, qualidade e produtividade e material didático. Trabalho sob contrato, com conversa antes e proposta escrita com prazo por etapa.",
+      "titulo": "Quatro áreas, uma empresa, o mesmo cuidado",
+      "lead": "Capacitação em saúde, segurança e meio ambiente, qualidade e produtividade e material didático. Trabalho sob contrato, com conversa antes e proposta escrita com prazo por etapa.",
       "botao": "Pedir orçamento",
       "sub": "resposta pelo WhatsApp"
     }
@@ -322,7 +317,7 @@
     },
     {
       "id": "meio-ambiente",
-      "ativo": true,
+      "ativo": false,
       "arquivado": false,
       "nome": "Meio Ambiente e Saneamento",
       "resumo": "Licenciamento, estudos e projetos ambientais, do enquadramento ao protocolo, com acompanhamento do processo.",
