@@ -62,9 +62,9 @@ var PRODUTOS = {
 
 var CONTATO = {
   /* WhatsApp comercial da Núcleo Exato — recebe TODOS os pedidos de orçamento.
-     Hoje é o número do Bruno (34 99693-1121), decidido em 15/08/2026.
+     Número do Cássio (34 99913-1399), atualizado em 30/08/2026.
      Formato: só números, começando por 55 (Brasil) + DDD. */
-  whatsapp: "5534996931121",
+  whatsapp: "5534999131399",
   email: "nucleoexato@gmail.com"
 };
 

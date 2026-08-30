@@ -56,7 +56,7 @@ apontar para o lugar certo, tudo de uma vez.
 
 ```js
 var CONTATO = {
-  whatsapp: "5534996931121",
+  whatsapp: "5534999131399",
   email: "nucleoexato@gmail.com"
 };
 ```
