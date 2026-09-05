@@ -1,27 +1,25 @@
 /* =============================================================================
-   OS LINKS DA KIWIFY E O CONTATO — É AQUI QUE VOCÊ MEXE, E SÓ AQUI.
+ OS LINKS DA KIWIFY E O CONTATO
 
-   PARTE 1 — CHECKOUTS
-   Depois de criar cada produto na Kiwify, copie o link de CHECKOUT dele
-   (o que começa com https://pay.kiwify.com.br/...) e cole no lugar do texto
-   "COLE-AQUI". O site inteiro passa a apontar para ele — catálogo e página
-   do produto, tudo de uma vez.
+ ATENÇÃO: este arquivo passou a ser GERADO PELO painel.html em 16/08/2026.
+ Editar aqui na mão funciona, mas na próxima vez que você gerar pelo painel
+ a sua edição é perdida. Mexa no painel, não aqui.
 
-   Enquanto o link estiver como "COLE-AQUI", o botão daquele produto aparece
-   cinza escrito "Em breve" e não deixa ninguém clicar. Assim você nunca
-   publica um botão quebrado.
-
-   O preço é só texto: escreva do jeito que quer que apareça na tela.
-
-   PARTE 2 — CONTATO
-   O número do WhatsApp fica em CONTATO.whatsapp, só com números, começando
-   por 55 (Brasil) e o DDD. Exemplo: 5531999998888.
-   Todos os botões "Pedir orçamento" do site passam a abrir a conversa já com
-   a mensagem escrita. Enquanto o número estiver como "COLE-AQUI", esses
-   botões abrem o e-mail em vez do WhatsApp — o site nunca fica sem contato.
-   ============================================================================= */
+ A proteção antiga continua valendo: checkout como "COLE-AQUI" deixa o botão
+ cinza escrito "Em breve" e sem clique. Nunca se publica botão quebrado.
+ ============================================================================= */
 
 var PRODUTOS = {
+
+  sst: {
+    checkout: "https://pay.kiwify.com.br/L1YIeBo",
+    preco: "59,90"
+  },
+
+  niosh: {
+    checkout: "https://pay.kiwify.com.br/BFF2tJd",
+    preco: "64,90"
+  },
 
   mat1: {
     checkout: "https://pay.kiwify.com.br/BRUOjDP",
@@ -48,22 +46,34 @@ var PRODUTOS = {
     preco: "34,90"
   },
 
-  niosh: {
-    checkout: "https://pay.kiwify.com.br/BFF2tJd",
-    preco: "64,90"
+  epi: {
+    checkout: "https://pay.kiwify.com.br/68Bv0Xr",
+    preco: "34,90"
   },
 
-  sst: {
-    checkout: "https://pay.kiwify.com.br/L1YIeBo",
-    preco: "59,90"
+  treinamentos-venc: {
+    checkout: "https://pay.kiwify.com.br/BBeUMN0",
+    preco: "34,90"
+  },
+
+  matriz-sst: {
+    checkout: "https://pay.kiwify.com.br/PRg6z9r",
+    preco: "34,90"
+  },
+
+  cartoes-operador: {
+    checkout: "https://pay.kiwify.com.br/PO7kDsp",
+    preco: "34,90"
+  },
+
+  nr13: {
+    checkout: "https://pay.kiwify.com.br/dNRFpTZ",
+    preco: "34,90"
   }
 
 };
 
 var CONTATO = {
-  /* WhatsApp comercial da Núcleo Exato — recebe TODOS os pedidos de orçamento.
-     Número do Cássio (34 99913-1399), atualizado em 30/08/2026.
-     Formato: só números, começando por 55 (Brasil) + DDD. */
   whatsapp: "5534999131399",
   email: "nucleoexato@gmail.com"
 };
@@ -84,7 +94,6 @@ var CONTATO = {
 
   document.addEventListener("DOMContentLoaded", function () {
 
-    /* botões de compra */
     var botoes = document.querySelectorAll("[data-produto]");
     for (var i = 0; i < botoes.length; i++) {
       var el = botoes[i];
@@ -102,14 +111,12 @@ var CONTATO = {
       }
     }
 
-    /* preços */
     var precos = document.querySelectorAll("[data-preco]");
     for (var j = 0; j < precos.length; j++) {
       var q = PRODUTOS[precos[j].getAttribute("data-preco")];
       if (q) { precos[j].textContent = q.preco; }
     }
 
-    /* botões de orçamento — viram WhatsApp, ou e-mail se o número não estiver posto */
     var pedidos = document.querySelectorAll("[data-orcamento]");
     for (var k = 0; k < pedidos.length; k++) {
       var b = pedidos[k];
@@ -122,28 +129,22 @@ var CONTATO = {
         b.setAttribute("rel", "noopener");
       } else {
         b.setAttribute("href", "mailto:" + CONTATO.email +
-                               "?subject=" + encodeURIComponent("Orçamento — " + assunto) +
+                               "?subject=" + encodeURIComponent("Orçamento - " + assunto) +
                                "&body=" + encodeURIComponent(msg));
       }
     }
 
-    /* o e-mail escrito por extenso, onde aparecer */
     var mails = document.querySelectorAll("[data-email]");
     for (var m = 0; m < mails.length; m++) {
       mails[m].textContent = CONTATO.email;
       mails[m].setAttribute("href", "mailto:" + CONTATO.email);
     }
 
-    /* blocos que só fazem sentido com o WhatsApp posto — ficam escondidos até lá */
     if (temZap()) {
       var zaps = document.querySelectorAll("[data-so-com-zap]");
       for (var z = 0; z < zaps.length; z++) { zaps[z].style.display = ""; }
     }
 
-    /* ----------------------------------------------------------------
-       FORMULÁRIO DE ORÇAMENTO (só roda na página de contato)
-       Monta a mensagem, mostra a prévia e só então libera o envio.
-       ---------------------------------------------------------------- */
     var form = document.getElementById("orc");
     if (!form) return;
 
@@ -161,7 +162,6 @@ var CONTATO = {
     var sub     = document.getElementById("f-sub");
     var botaoML = document.getElementById("f-email");
 
-    /* a área pode vir escolhida pelo link: contato.html?area=qualidade */
     (function preSelecionaArea() {
       var m = window.location.search.match(/[?&]area=([^&]+)/);
       if (!m) return;
@@ -207,12 +207,12 @@ var CONTATO = {
     }
 
     function atualiza() {
-      var pronto = completo();
+      var ok = completo();
       previa.textContent = (valor("nome") || valor("necessidade") || valor("contato"))
         ? montaMensagem()
         : "Preencha os campos acima e a mensagem aparece aqui.";
 
-      if (pronto) {
+      if (ok) {
         botao.classList.remove("off");
         botao.setAttribute("aria-disabled", "false");
         sub.textContent = "abre o WhatsApp com esta mensagem";
@@ -223,11 +223,11 @@ var CONTATO = {
           botao.setAttribute("rel", "noopener");
         } else {
           botao.setAttribute("href", "mailto:" + CONTATO.email +
-            "?subject=" + encodeURIComponent("Orçamento — " + valor("area")) +
+            "?subject=" + encodeURIComponent("Orçamento - " + valor("area")) +
             "&body=" + encodeURIComponent(montaMensagem()));
         }
         botaoML.setAttribute("href", "mailto:" + CONTATO.email +
-          "?subject=" + encodeURIComponent("Orçamento — " + valor("area")) +
+          "?subject=" + encodeURIComponent("Orçamento - " + valor("area")) +
           "&body=" + encodeURIComponent(montaMensagem()));
         botaoML.classList.remove("off");
       } else {
@@ -240,10 +240,10 @@ var CONTATO = {
       }
     }
 
-    for (var k in campos) {
-      if (!campos[k]) continue;
-      campos[k].addEventListener("input", atualiza);
-      campos[k].addEventListener("change", atualiza);
+    for (var k2 in campos) {
+      if (!campos[k2]) continue;
+      campos[k2].addEventListener("input", atualiza);
+      campos[k2].addEventListener("change", atualiza);
     }
     form.addEventListener("submit", function (e) { e.preventDefault(); });
     atualiza();
