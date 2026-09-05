@@ -274,6 +274,106 @@
       "video": "",
       "categoria": "educacao",
       "sub": ""
+    },
+    {
+      "id": "epi",
+      "nome": "Gestor de EPI e CA — planilha de controle (NR-06)",
+      "resumo": "Ficha de entrega, controle do CA, estoque e matriz por função, com a validade do CA separada da vida útil do produto.",
+      "categoria": "seguranca-do-trabalho",
+      "sub": "",
+      "preco": "34,90",
+      "capa": "img/capa-epi.jpg",
+      "alt": "Gestor de EPI e CA — planilha de controle (NR-06)",
+      "pagina": "",
+      "destino": {
+        "tipo": "kiwify",
+        "checkout": "https://pay.kiwify.com.br/68Bv0Xr",
+        "area": "treinamentos"
+      },
+      "video": "",
+      "destaqueHome": false,
+      "ativo": true,
+      "arquivado": false
+    },
+    {
+      "id": "treinamentos-venc",
+      "nome": "Central de Treinamentos e Vencimentos — planilha (NR-01)",
+      "resumo": "Quem precisa de qual treinamento, o que já foi feito, o que venceu e o que vence agora — mais o certificado com os sete campos que a NR-01 exige.",
+      "categoria": "seguranca-do-trabalho",
+      "sub": "",
+      "preco": "34,90",
+      "capa": "img/capa-treinamentos-venc.jpg",
+      "alt": "Central de Treinamentos e Vencimentos — planilha (NR-01)",
+      "pagina": "",
+      "destino": {
+        "tipo": "kiwify",
+        "checkout": "https://pay.kiwify.com.br/BBeUMN0",
+        "area": "treinamentos"
+      },
+      "video": "",
+      "destaqueHome": false,
+      "ativo": true,
+      "arquivado": false
+    },
+    {
+      "id": "matriz-sst",
+      "nome": "Matriz de Documentos e Calendário de SST — planilha",
+      "resumo": "A resposta para o que todo técnico de SST pergunta: o que ter, de quanto em quanto revisar e por quanto tempo guardar.",
+      "categoria": "seguranca-do-trabalho",
+      "sub": "",
+      "preco": "34,90",
+      "capa": "img/capa-matriz-sst.jpg",
+      "alt": "Matriz de Documentos e Calendário de SST — planilha",
+      "pagina": "",
+      "destino": {
+        "tipo": "kiwify",
+        "checkout": "https://pay.kiwify.com.br/PRg6z9r",
+        "area": "treinamentos"
+      },
+      "video": "",
+      "destaqueHome": false,
+      "ativo": true,
+      "arquivado": false
+    },
+    {
+      "id": "cartoes-operador",
+      "nome": "Cartões de Operador e Inspeções — planilha (NR-11 e NR-12)",
+      "resumo": "Controle do cartão de identificação do operador, da aptidão médica e da inspeção dos equipamentos, com o cartão pronto para imprimir.",
+      "categoria": "seguranca-do-trabalho",
+      "sub": "",
+      "preco": "34,90",
+      "capa": "img/capa-cartoes-operador.jpg",
+      "alt": "Cartões de Operador e Inspeções — planilha (NR-11 e NR-12)",
+      "pagina": "",
+      "destino": {
+        "tipo": "kiwify",
+        "checkout": "https://pay.kiwify.com.br/PO7kDsp",
+        "area": "treinamentos"
+      },
+      "video": "",
+      "destaqueHome": false,
+      "ativo": true,
+      "arquivado": false
+    },
+    {
+      "id": "nr13",
+      "nome": "Controle de Inspeções da NR-13 — planilha por TAG",
+      "resumo": "Caldeiras, vasos de pressão, tubulações e tanques: uma TAG por equipamento, cada exame com o Profissional Habilitado e o número da ART, e o vencimento calculado.",
+      "categoria": "seguranca-do-trabalho",
+      "sub": "",
+      "preco": "34,90",
+      "capa": "img/capa-nr13.jpg",
+      "alt": "Controle de Inspeções da NR-13 — planilha por TAG",
+      "pagina": "",
+      "destino": {
+        "tipo": "kiwify",
+        "checkout": "https://pay.kiwify.com.br/dNRFpTZ",
+        "area": "treinamentos"
+      },
+      "video": "",
+      "destaqueHome": false,
+      "ativo": true,
+      "arquivado": false
     }
   ],
   "servicos": [
