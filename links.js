@@ -25,32 +25,32 @@ var PRODUTOS = {
 
   mat1: {
     checkout: "https://pay.kiwify.com.br/BRUOjDP",
-    preco: "34,90"
+    preco: "57,90"
   },
 
   mat2: {
     checkout: "https://pay.kiwify.com.br/izUs4JT",
-    preco: "34,90"
+    preco: "57,90"
   },
 
   mat3: {
     checkout: "https://pay.kiwify.com.br/7LegsJT",
-    preco: "34,90"
+    preco: "57,90"
   },
 
   combo: {
     checkout: "https://pay.kiwify.com.br/MqMD7iJ",
-    preco: "79,90"
+    preco: "97,90"
   },
 
   planilha: {
     checkout: "https://pay.kiwify.com.br/tKkVv1A",
-    preco: "29,90"
+    preco: "34,90"
   },
 
   niosh: {
     checkout: "https://pay.kiwify.com.br/BFF2tJd",
-    preco: "59,90"
+    preco: "64,90"
   },
 
   sst: {
