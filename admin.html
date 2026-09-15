@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel &mdash; N&uacute;cleo Exato</title>
+<link rel="stylesheet" href="css/estilo.css">
+<style>
+/* ---------- painel: usa as cores e fontes do site ---------- */
+body{background:var(--fundo)}
+.adm{max-width:1120px;margin:0 auto;padding:0 22px 60px}
+.adm-topo{display:flex;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--borda);flex-wrap:wrap}
+.adm-topo .marca{display:flex;align-items:center;gap:10px;text-decoration:none}
+.adm-topo .marca span{font-family:Cambria,Georgia,serif;font-weight:700;color:var(--grafite);font-size:17px}
+.adm-topo .tag-painel{font-size:12px;letter-spacing:1.8px;text-transform:uppercase;color:var(--verde-esc);font-weight:700}
+.adm-topo .dir{margin-left:auto;display:flex;align-items:center;gap:14px;font-size:14px;color:var(--suave)}
+.adm-topo .dir a,.adm-topo .dir button{font:inherit;color:var(--verde-esc);background:none;border:0;cursor:pointer;text-decoration:none;font-weight:700}
+.abas{display:flex;gap:6px;margin:22px 0 18px;border-bottom:2px solid var(--borda)}
+.abas button{font:inherit;font-size:15.5px;font-weight:700;color:var(--suave);background:none;border:0;padding:10px 16px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+.abas button.on{color:var(--verde-esc);border-bottom-color:var(--verde)}
+.painel{display:none}.painel.on{display:block}
+h1.adm-h{font-size:26px;margin:6px 0 6px}
+.sub{color:var(--suave);font-size:15px;margin-bottom:18px}
+.btn{display:inline-block;font:inherit;font-weight:700;font-size:15px;padding:10px 18px;border-radius:9px;border:0;cursor:pointer;background:var(--verde);color:#fff;text-decoration:none}
+.btn:hover{background:var(--verde-esc)}
+.btn.linha{background:#fff;border:1.5px solid var(--verde);color:var(--verde-esc)}
+.btn.cinza{background:#fff;border:1.5px solid var(--borda);color:var(--grafite)}
+.btn.peq{font-size:13.5px;padding:6px 12px;border-radius:7px}
+.btn:disabled{opacity:.5;cursor:default}
+.barra-acoes{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--borda);border-radius:12px;overflow:hidden;font-size:14.5px}
+.tb th{background:var(--claro);text-align:left;padding:10px 12px;font-size:12.5px;letter-spacing:1px;text-transform:uppercase;color:var(--suave);border-bottom:1px solid var(--borda)}
+.tb td{padding:10px 12px;border-bottom:1px solid #E6ECE8;vertical-align:middle}
+.tb tr:last-child td{border-bottom:0}
+.tb tr.inativo td{opacity:.55}
+.tb img.capa{width:46px;height:46px;object-fit:cover;border-radius:6px;border:1px solid var(--borda);background:#f2f2f2}
+.tb .nome b{display:block;color:var(--grafite)}
+.tb .nome small{color:var(--suave)}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:#E9F5EE;color:var(--verde-esc)}
+.pill.off{background:#F2E9E4;color:#9C4A1E}
+.pill.neutro{background:#EEF1F2;color:var(--suave)}
+.switch{position:relative;width:42px;height:24px;border-radius:999px;background:#C9D3CC;border:0;cursor:pointer;transition:background .15s;flex:none}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s}
+.switch.on{background:var(--verde)}.switch.on::after{left:21px}
+.vazio{background:#fff;border:1px dashed var(--borda);border-radius:12px;padding:34px;text-align:center;color:var(--suave)}
+/* formulário */
+.form{background:#fff;border:1px solid var(--borda);border-radius:12px;padding:22px}
+.form h2{font-size:21px;margin-bottom:14px}
+.campos{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
+.campos .c2{grid-column:1/-1}
+.campo label{display:block;font-size:13px;font-weight:700;color:var(--grafite);margin-bottom:5px}
+.campo small{display:block;color:var(--suave);font-size:12.5px;margin-top:4px}
+.campo input[type=text],.campo input[type=password],.campo input[type=number],.campo input[type=date],.campo select,.campo textarea{width:100%;font:inherit;font-size:15px;padding:9px 11px;border:1px solid var(--borda);border-radius:8px;background:#fff}
+.campo textarea{min-height:76px;resize:vertical}
+.adm .campo.chk{display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;text-align:left}
+.adm .campo.chk input{width:auto;margin:0;flex:none}
+.adm .campo.chk label{display:inline;margin:0;font-weight:400;font-size:15px}
+.form .rod{display:flex;gap:10px;align-items:center;margin-top:18px;flex-wrap:wrap}
+.msg{padding:10px 14px;border-radius:8px;font-size:14.5px;margin:12px 0}
+.msg.ok{background:#E9F5EE;color:#157347}.msg.erro{background:#FBEAEA;color:#9B2C2C}.msg.info{background:#EEF3F7;color:#2F4A63}
+/* login */
+.login{max-width:400px;margin:70px auto;background:#fff;border:1px solid var(--borda);border-radius:14px;padding:30px}
+.login h1{font-size:24px;margin:14px 0 4px}
+.login .campo{margin-top:14px}
+/* upload */
+.upload{background:#fff;border:1px solid var(--borda);border-radius:12px;padding:18px;margin-bottom:18px}
+.progresso{height:10px;background:#E6ECE8;border-radius:999px;overflow:hidden;margin-top:10px;display:none}
+.progresso i{display:block;height:100%;width:0;background:var(--verde);transition:width .2s}
+.codigo-box{background:var(--claro);border:1px solid var(--borda);border-radius:12px;padding:18px;margin-top:16px}
+.codigo-box .cod{font-family:Cambria,Georgia,serif;font-size:34px;letter-spacing:4px;color:var(--grafite)}
+.codigo-box textarea{width:100%;font:inherit;font-size:14px;padding:10px;border:1px solid var(--borda);border-radius:8px;margin-top:10px;min-height:120px}
+.mono{font-family:ui-monospace,Menlo,monospace;font-size:13px}
+@media(max-width:720px){.campos{grid-template-columns:1fr}.tb .esc{display:none}}
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div id="tela-login" class="login" hidden>
+  <span class="mk"><i class="a"></i><i class="b"></i><i class="c"></i><i class="d"></i></span>
+  <h1>Painel do N&uacute;cleo Exato</h1>
+  <p class="sub">Produtos da loja, arquivos de entrega e c&oacute;digos de acesso.</p>
+  <form id="f-login">
+    <div class="campo"><label>Usu&aacute;rio</label><input type="text" id="l-usuario" autocomplete="username" required></div>
+    <div class="campo"><label>Senha</label><input type="password" id="l-senha" autocomplete="current-password" required></div>
+    <div id="l-msg"></div>
+    <div class="rod" style="margin-top:18px"><button class="btn" type="submit" id="l-btn">Entrar</button></div>
+  </form>
+</div>
+
+<!-- ===== PAINEL ===== -->
+<div id="tela-adm" class="adm" hidden>
+  <div class="adm-topo">
+    <a class="marca" href="index.html"><span class="mk"><i class="a"></i><i class="b"></i><i class="c"></i><i class="d"></i></span><span>N&uacute;cleo Exato</span></a>
+    <span class="tag-painel">Painel</span>
+    <div class="dir"><span id="quem"></span><a href="materiais.html" target="_blank" rel="noopener">Ver a loja</a><button id="b-sair">Sair</button></div>
+  </div>
+
+  <div class="abas">
+    <button data-aba="produtos" class="on">Produtos</button>
+    <button data-aba="arquivos">Arquivos</button>
+    <button data-aba="codigos">C&oacute;digos de acesso</button>
+  </div>
+
+  <!-- PRODUTOS -->
+  <section id="aba-produtos" class="painel on">
+    <h1 class="adm-h">Produtos</h1>
+    <p class="sub">O que est&aacute; aqui &eacute; o que a loja mostra. Desligar a chave tira o produto do site na hora; ligar devolve. Nada &eacute; apagado.</p>
+    <div class="barra-acoes">
+      <button class="btn" id="b-novo">Novo produto</button>
+      <button class="btn linha" id="b-importar">Importar os produtos que j&aacute; est&atilde;o no site</button>
+      <button class="btn cinza peq" id="b-recarregar">Atualizar lista</button>
+    </div>
+    <div id="p-msg"></div>
+    <div id="p-lista"></div>
+
+    <div id="p-form" class="form" style="margin-top:22px" hidden>
+      <h2 id="pf-titulo">Novo produto</h2>
+      <div class="campos">
+        <div class="campo"><label>Identificador (id)</label><input type="text" id="pf-id" placeholder="epi, nr13, mat1"><small>S&oacute; letras min&uacute;sculas, n&uacute;meros e h&iacute;fen. N&atilde;o muda depois de criado.</small></div>
+        <div class="campo"><label>SKU</label><input type="text" id="pf-sku" placeholder="SST-EPI-01"><small>O mesmo usado no Mercado Livre e na Shopee.</small></div>
+        <div class="campo c2"><label>Nome</label><input type="text" id="pf-nome" placeholder="Gestor de EPI e CA"></div>
+        <div class="campo c2"><label>Resumo (texto do cart&atilde;o)</label><textarea id="pf-resumo" placeholder="1 a 2 frases: o que &eacute; e o que entrega."></textarea></div>
+        <div class="campo"><label>Pre&ccedil;o</label><input type="text" id="pf-preco" placeholder="34,90"><small>S&oacute; o n&uacute;mero, com v&iacute;rgula. O pre&ccedil;o de refer&ecirc;ncia &eacute; o da Kiwify.</small></div>
+        <div class="campo"><label>Categoria</label><select id="pf-categoria"><option value="seguranca-do-trabalho">Seguran&ccedil;a do Trabalho</option><option value="educacao">Educa&ccedil;&atilde;o</option></select></div>
+        <div class="campo c2"><label>Link de checkout (Kiwify)</label><input type="text" id="pf-checkout" placeholder="https://pay.kiwify.com.br/XXXXXXX"></div>
+        <div class="campo"><label>Capa</label><input type="text" id="pf-capa" placeholder="img/capa-epi.jpg"><small>Imagem que j&aacute; est&aacute; no site (img/...) ou enviada na aba Arquivos (/api/imagem/...).</small></div>
+        <div class="campo"><label>P&aacute;gina pr&oacute;pria (opcional)</label><input type="text" id="pf-pagina" placeholder="niosh.html"><small>Se n&atilde;o tiver, o cart&atilde;o leva direto ao checkout.</small></div>
+        <div class="campo c2"><label>Arquivo de entrega (para o c&oacute;digo de acesso)</label><select id="pf-arquivo"><option value="">&mdash; nenhum ainda &mdash;</option></select><small>Lista dos arquivos em entregas/ no R2. Suba novos na aba Arquivos.</small></div>
+        <div class="campo"><label>Ordem</label><input type="number" id="pf-ordem" value="100"><small>Menor aparece primeiro.</small></div>
+        <div class="campo"><label>Anota&ccedil;&otilde;es internas</label><input type="text" id="pf-obs" placeholder="n&atilde;o vai para o site"></div>
+        <div class="campo chk"><input type="checkbox" id="pf-ativo" checked><label for="pf-ativo">Ativo (aparece na loja)</label></div>
+        <div class="campo chk"><input type="checkbox" id="pf-home"><label for="pf-home">Destaque na p&aacute;gina inicial</label></div>
+        <div class="campo chk c2"><input type="checkbox" id="pf-arquivado"><label for="pf-arquivado">Arquivado (some deste painel; continua guardado no banco)</label></div>
+      </div>
+      <div id="pf-msg"></div>
+      <div class="rod"><button class="btn" id="pf-salvar">Salvar</button><button class="btn cinza" id="pf-cancelar">Cancelar</button></div>
+    </div>
+  </section>
+
+  <!-- ARQUIVOS -->
+  <section id="aba-arquivos" class="painel">
+    <h1 class="adm-h">Arquivos</h1>
+    <p class="sub">Os .zip que o cliente baixa com o c&oacute;digo de acesso ficam em <b>entregas/</b>. Capas enviadas por aqui ficam em <b>img/</b>. Subir um arquivo com o mesmo nome substitui o anterior, e o anterior vai para uma quarentena dentro do R2.</p>
+    <div class="upload">
+      <div class="campos">
+        <div class="campo"><label>Arquivo</label><input type="file" id="up-file"></div>
+        <div class="campo"><label>Nome no servidor</label><input type="text" id="up-chave" placeholder="entregas/epi.zip"><small>entregas/nome.zip para produto &middot; img/nome.jpg para capa. Sem espa&ccedil;os nem acentos.</small></div>
+      </div>
+      <div class="rod"><button class="btn" id="up-btn">Enviar</button><span id="up-msg" style="font-size:14px;color:var(--suave)"></span></div>
+      <div class="progresso" id="up-prog"><i></i></div>
+    </div>
+    <div id="a-msg"></div>
+    <div id="a-lista"></div>
+  </section>
+
+  <!-- CÓDIGOS -->
+  <section id="aba-codigos" class="painel">
+    <h1 class="adm-h">C&oacute;digos de acesso</h1>
+    <p class="sub">Para venda feita fora da Kiwify (Mercado Livre, Shopee). Gere o c&oacute;digo, copie a mensagem e cole no chat da plataforma. O cliente digita o c&oacute;digo em nucleoexato.com.br/acesso.html e baixa o arquivo cadastrado no produto.</p>
+    <div class="form">
+      <div class="campos">
+        <div class="campo"><label>Produto</label><select id="g-produto"></select></div>
+        <div class="campo"><label>Plataforma</label><select id="g-plataforma"><option>Mercado Livre</option><option>Shopee</option><option>Outra</option></select></div>
+        <div class="campo"><label>N&uacute;mero da venda</label><input type="text" id="g-venda" placeholder="2000018403648920"></div>
+        <div class="campo"><label>Data da venda</label><input type="date" id="g-data"></div>
+        <div class="campo"><label>Validade (meses)</label><input type="number" id="g-meses" value="6" min="1" max="24"></div>
+      </div>
+      <div id="g-msg"></div>
+      <div class="rod"><button class="btn" id="g-btn">Gerar c&oacute;digo</button></div>
+      <div id="g-resultado" class="codigo-box" hidden>
+        <div>C&oacute;digo gerado para <b id="g-r-produto"></b>, v&aacute;lido at&eacute; <b id="g-r-validade"></b>:</div>
+        <div class="cod" id="g-r-codigo"></div>
+        <textarea id="g-r-texto" readonly></textarea>
+        <div class="rod"><button class="btn peq" id="g-copiar">Copiar mensagem</button><span id="g-copiado" style="font-size:14px;color:var(--suave)"></span></div>
+      </div>
+    </div>
+    <h2 style="font-size:20px;margin:26px 0 10px">C&oacute;digos j&aacute; gerados</h2>
+    <div id="c-lista"></div>
+  </section>
+</div>
+
+<script>
+/* =========================================================================
+   PAINEL — tudo em JavaScript puro. As chamadas vão para /api/admin/*.
+   ========================================================================= */
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var estado = { produtos: [], arquivos: { "entregas/": [], "img/": [] }, editando: null };
+
+  function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  function msg(id, texto, tipo){ $(id).innerHTML = texto ? '<div class="msg '+(tipo||"info")+'">'+texto+'</div>' : ""; }
+  function dataBR(ms){ if(!ms) return "—"; var d=new Date(ms); return d.toLocaleDateString("pt-BR"); }
+  function tam(b){ if(b==null) return ""; if(b<1024) return b+" B"; if(b<1048576) return (b/1024).toFixed(0)+" KB"; return (b/1048576).toFixed(1)+" MB"; }
+
+  async function api(caminho, opcoes){
+    opcoes = opcoes || {};
+    var r = await fetch("/api/admin/"+caminho, Object.assign({ credentials: "same-origin" }, opcoes));
+    var j = {};
+    try { j = await r.json(); } catch(e) {}
+    if (r.status === 401 && caminho !== "entrar") { mostrarLogin(); throw new Error(j.erro || "sessão expirada"); }
+    if (!r.ok) throw new Error(j.erro || ("erro "+r.status));
+    return j;
+  }
+  function post(caminho, corpo){ return api(caminho, { method:"POST", headers:{"content-type":"application/json"}, body: JSON.stringify(corpo||{}) }); }
+
+  /* ---------- login ---------- */
+  function mostrarLogin(){ $("tela-adm").hidden = true; $("tela-login").hidden = false; $("l-usuario").focus(); }
+  function mostrarPainel(usuario){ $("tela-login").hidden = true; $("tela-adm").hidden = false; $("quem").textContent = usuario; carregarTudo(); }
+
+  $("f-login").addEventListener("submit", async function(e){
+    e.preventDefault(); $("l-btn").disabled = true; msg("l-msg","");
+    try {
+      var j = await post("entrar", { usuario: $("l-usuario").value, senha: $("l-senha").value });
+      $("l-senha").value = ""; mostrarPainel(j.usuario);
+    } catch(err) { msg("l-msg", esc(err.message), "erro"); }
+    $("l-btn").disabled = false;
+  });
+  $("b-sair").addEventListener("click", async function(){ try { await post("sair"); } catch(e){} mostrarLogin(); });
+
+  /* ---------- abas ---------- */
+  document.querySelectorAll(".abas button").forEach(function(b){
+    b.addEventListener("click", function(){
+      document.querySelectorAll(".abas button").forEach(function(x){ x.classList.toggle("on", x===b); });
+      document.querySelectorAll(".painel").forEach(function(p){ p.classList.toggle("on", p.id==="aba-"+b.dataset.aba); });
+      location.hash = b.dataset.aba;
+    });
+  });
+  function abrirAbaDoHash(){ var h=(location.hash||"").replace("#",""); var b=document.querySelector('.abas button[data-aba="'+h+'"]'); if(b) b.click(); }
+
+  async function carregarTudo(){
+    try { await carregarArquivos(); } catch(e){ msg("a-msg", esc(e.message), "erro"); }
+    try { await carregarProdutos(); } catch(e){ msg("p-msg", esc(e.message), "erro"); }
+    try { await carregarCodigos(); } catch(e){ /* mostra na aba */ }
+    abrirAbaDoHash();
+  }
+
+  /* ---------- produtos ---------- */
+  async function carregarProdutos(){
+    var j = await api("produtos");
+    estado.produtos = j.produtos || [];
+    desenharProdutos(); preencherSelectProdutos();
+  }
+  function temArquivo(chave){ return estado.arquivos["entregas/"].some(function(a){ return a.chave===chave; }); }
+
+  function desenharProdutos(){
+    var lista = estado.produtos.filter(function(p){ return !p.arquivado; });
+    if (!lista.length) {
+      $("p-lista").innerHTML = '<div class="vazio">Nenhum produto cadastrado ainda. Clique em <b>Importar os produtos que já estão no site</b> para trazer os 12 atuais.</div>';
+      return;
+    }
+    var h = '<table class="tb"><tr><th></th><th>Produto</th><th class="esc">Pre&ccedil;o</th><th class="esc">Arquivo de entrega</th><th>Na loja</th><th class="esc">Home</th><th></th></tr>';
+    lista.forEach(function(p){
+      var arq = !p.arquivo ? '<span class="pill neutro">sem arquivo</span>' : (temArquivo(p.arquivo) ? '<span class="pill">'+esc(p.arquivo.replace("entregas/",""))+'</span>' : '<span class="pill off">falta subir '+esc(p.arquivo.replace("entregas/",""))+'</span>');
+      h += '<tr class="'+(p.ativo?"":"inativo")+'">'+
+        '<td>'+(p.capa?'<img class="capa" src="'+esc(p.capa)+'" alt="">':'<span class="capa"></span>')+'</td>'+
+        '<td class="nome"><b>'+esc(p.nome)+'</b><small>'+esc(p.id)+(p.sku?' &middot; '+esc(p.sku):'')+'</small></td>'+
+        '<td class="esc">R$ '+esc(p.preco)+'</td>'+
+        '<td class="esc">'+arq+'</td>'+
+        '<td><button class="switch '+(p.ativo?"on":"")+'" data-alt="'+esc(p.id)+'" title="ligar/desligar na loja"></button></td>'+
+        '<td class="esc"><input type="checkbox" data-home="'+esc(p.id)+'" '+(p.destaqueHome?"checked":"")+'></td>'+
+        '<td><button class="btn cinza peq" data-editar="'+esc(p.id)+'">Editar</button></td></tr>';
+    });
+    h += '</table>';
+    $("p-lista").innerHTML = h;
+    $("p-lista").querySelectorAll("[data-alt]").forEach(function(b){ b.addEventListener("click", function(){ alternar(b.dataset.alt, "ativo"); }); });
+    $("p-lista").querySelectorAll("[data-home]").forEach(function(b){ b.addEventListener("change", function(){ alternar(b.dataset.home, "destaqueHome"); }); });
+    $("p-lista").querySelectorAll("[data-editar]").forEach(function(b){ b.addEventListener("click", function(){ abrirForm(b.dataset.editar); }); });
+  }
+
+  async function alternar(id, campo){
+    var p = estado.produtos.find(function(x){ return x.id===id; }); if(!p) return;
+    var novo = Object.assign({}, p); novo[campo] = !p[campo];
+    try { await post("produtos", novo); await carregarProdutos(); msg("p-msg", '"'+esc(p.nome)+'" '+(campo==="ativo" ? (novo.ativo?"voltou para a loja.":"saiu da loja.") : (novo.destaqueHome?"entrou na página inicial.":"saiu da página inicial.")), "ok"); }
+    catch(e){ msg("p-msg", esc(e.message), "erro"); }
+  }
+
+  function preencherSelectArquivos(atual){
+    var s = $("pf-arquivo"); s.innerHTML = '<option value="">&mdash; nenhum ainda &mdash;</option>';
+    var lista = estado.arquivos["entregas/"].map(function(a){ return a.chave; });
+    if (atual && lista.indexOf(atual)<0) lista.unshift(atual);
+    lista.forEach(function(c){ var o=document.createElement("option"); o.value=c; o.textContent=c+(temArquivo(c)?"":"  (ainda não enviado)"); s.appendChild(o); });
+    s.value = atual || "";
+  }
+
+  function abrirForm(id){
+    var p = id ? estado.produtos.find(function(x){ return x.id===id; }) : null;
+    estado.editando = p ? p.id : null;
+    $("pf-titulo").textContent = p ? "Editar: "+p.nome : "Novo produto";
+    $("pf-id").value = p?p.id:""; $("pf-id").disabled = !!p;
+    $("pf-sku").value = p?p.sku:""; $("pf-nome").value = p?p.nome:""; $("pf-resumo").value = p?p.resumo:"";
+    $("pf-preco").value = p?p.preco:""; $("pf-categoria").value = p?(p.categoria||"seguranca-do-trabalho"):"seguranca-do-trabalho";
+    $("pf-checkout").value = p?p.checkout:""; $("pf-capa").value = p?p.capa:""; $("pf-pagina").value = p?p.pagina:"";
+    preencherSelectArquivos(p?p.arquivo:"");
+    $("pf-ordem").value = p?p.ordem:100; $("pf-obs").value = p?p.obs:"";
+    $("pf-ativo").checked = p?!!p.ativo:true; $("pf-home").checked = p?!!p.destaqueHome:false; $("pf-arquivado").checked = p?!!p.arquivado:false;
+    msg("pf-msg",""); $("p-form").hidden = false; $("p-form").scrollIntoView({behavior:"smooth"});
+  }
+  $("b-novo").addEventListener("click", function(){ abrirForm(null); });
+  $("pf-cancelar").addEventListener("click", function(){ $("p-form").hidden = true; });
+  $("pf-salvar").addEventListener("click", async function(){
+    var p = {
+      id: $("pf-id").value.trim().toLowerCase(), sku: $("pf-sku").value, nome: $("pf-nome").value, resumo: $("pf-resumo").value,
+      preco: $("pf-preco").value.trim(), categoria: $("pf-categoria").value, checkout: $("pf-checkout").value.trim(), capa: $("pf-capa").value.trim(),
+      pagina: $("pf-pagina").value.trim(), arquivo: $("pf-arquivo").value, ordem: Number($("pf-ordem").value)||100, obs: $("pf-obs").value,
+      ativo: $("pf-ativo").checked, destaqueHome: $("pf-home").checked, arquivado: $("pf-arquivado").checked
+    };
+    if (!estado.editando && estado.produtos.some(function(x){ return x.id===p.id; })) { msg("pf-msg","Já existe um produto com esse id.","erro"); return; }
+    $("pf-salvar").disabled = true;
+    try { var j = await post("produtos", p); await carregarProdutos(); $("p-form").hidden = true; msg("p-msg", (j.novo?"Produto criado: ":"Produto salvo: ")+esc(j.produto.nome)+". Já está valendo no site.", "ok"); }
+    catch(e){ msg("pf-msg", esc(e.message), "erro"); }
+    $("pf-salvar").disabled = false;
+  });
+  $("b-recarregar").addEventListener("click", function(){ carregarTudo(); });
+  $("b-importar").addEventListener("click", async function(){
+    if (!confirm("Importar os produtos do site (links.js + conteudo.json publicados)? Os que já existem no painel não são alterados.")) return;
+    msg("p-msg","Importando…","info");
+    try { var j = await post("importar"); await carregarProdutos();
+      msg("p-msg", "Importados: "+(j.criados.length?j.criados.join(", "):"nenhum novo")+"."+(j.pulados.length?" Já existiam: "+j.pulados.join(", ")+".":"")+(j.avisos.length?"<br>Atenção: "+j.avisos.map(esc).join("; "):""), "ok"); }
+    catch(e){ msg("p-msg", esc(e.message), "erro"); }
+  });
+
+  /* ---------- arquivos ---------- */
+  async function carregarArquivos(){
+    var j = await api("arquivos");
+    estado.arquivos = j.arquivos || estado.arquivos;
+    var h = "";
+    ["entregas/","img/"].forEach(function(pref){
+      var l = estado.arquivos[pref] || [];
+      h += '<h2 style="font-size:19px;margin:18px 0 8px">'+(pref==="entregas/"?"Arquivos de entrega (entregas/)":"Capas enviadas (img/)")+'</h2>';
+      if (!l.length) { h += '<div class="vazio">Nenhum arquivo em '+pref+'</div>'; return; }
+      h += '<table class="tb"><tr><th>Nome</th><th>Tamanho</th><th class="esc">Enviado em</th><th class="esc">Usado por</th></tr>';
+      l.forEach(function(a){
+        var usa = estado.produtos.filter(function(p){ return p.arquivo===a.chave || p.capa==="/api/imagem/"+a.chave.replace("img/",""); }).map(function(p){ return esc(p.nome); }).join(", ");
+        h += '<tr><td class="mono">'+esc(a.chave)+'</td><td>'+tam(a.tamanho)+'</td><td class="esc">'+esc(a.enviadoEm?new Date(a.enviadoEm).toLocaleDateString("pt-BR"):"")+'</td><td class="esc">'+(usa||'<span class="pill neutro">nenhum produto</span>')+'</td></tr>';
+      });
+      h += '</table>';
+    });
+    $("a-lista").innerHTML = h;
+  }
+  $("up-file").addEventListener("change", function(){
+    var f = this.files[0]; if(!f) return;
+    var nome = f.name.normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/\s+/g,"-").replace(/[^A-Za-z0-9._-]/g,"").toLowerCase();
+    var pref = /\.(jpe?g|png|webp)$/i.test(nome) ? "img/" : "entregas/";
+    if (!$("up-chave").value) $("up-chave").value = pref+nome;
+  });
+  $("up-btn").addEventListener("click", function(){
+    var f = $("up-file").files[0]; var chave = $("up-chave").value.trim();
+    if (!f) { msg("a-msg","Escolha um arquivo.","erro"); return; }
+    if (!/^(entregas|img)\/[A-Za-z0-9._-]+$/.test(chave)) { msg("a-msg","Nome no servidor inválido: use entregas/nome.zip ou img/nome.jpg, sem espaços nem acentos.","erro"); return; }
+    if (f.size > 100*1024*1024) { msg("a-msg","Arquivo acima de 100 MB.","erro"); return; }
+    msg("a-msg",""); $("up-btn").disabled = true; $("up-prog").style.display="block"; $("up-prog").firstElementChild.style.width="0";
+    var x = new XMLHttpRequest();
+    x.open("PUT", "/api/admin/arquivos?chave="+encodeURIComponent(chave));
+    x.setRequestHeader("content-type", f.type || (chave.endsWith(".zip")?"application/zip":"application/octet-stream"));
+    x.upload.onprogress = function(e){ if(e.lengthComputable){ var pc=Math.round(e.loaded/e.total*100); $("up-prog").firstElementChild.style.width=pc+"%"; $("up-msg").textContent=pc+"%"; } };
+    x.onload = async function(){
+      $("up-btn").disabled = false; $("up-msg").textContent = "";
+      var j={}; try{ j=JSON.parse(x.responseText);}catch(e){}
+      if (x.status>=200 && x.status<300) { msg("a-msg","Enviado: "+esc(j.chave)+" ("+tam(j.tamanho)+")"+(j.substituiu?" — o anterior foi para a quarentena do R2.":"")+" Agora marque o arquivo no produto (Produtos → Editar → Arquivo de entrega).","ok"); $("up-file").value=""; $("up-chave").value=""; await carregarArquivos(); desenharProdutos(); }
+      else msg("a-msg", esc(j.erro||("erro "+x.status)), "erro");
+      $("up-prog").style.display="none";
+    };
+    x.onerror = function(){ $("up-btn").disabled=false; $("up-prog").style.display="none"; msg("a-msg","Falha de rede no envio.","erro"); };
+    x.send(f);
+  });
+
+  /* ---------- códigos ---------- */
+  function preencherSelectProdutos(){
+    var s = $("g-produto"); s.innerHTML = "";
+    estado.produtos.filter(function(p){ return !p.arquivado; }).forEach(function(p){
+      var o = document.createElement("option"); o.value = p.id; o.textContent = p.nome + (p.arquivo ? "" : "  (sem arquivo de entrega)"); o.disabled = !p.arquivo; s.appendChild(o);
+    });
+  }
+  $("g-btn").addEventListener("click", async function(){
+    msg("g-msg",""); $("g-btn").disabled = true;
+    try {
+      var j = await post("gerar", { produtoId: $("g-produto").value, plataforma: $("g-plataforma").value, numeroVenda: $("g-venda").value, dataVenda: $("g-data").value, meses: $("g-meses").value });
+      $("g-r-produto").textContent = j.produto; $("g-r-validade").textContent = dataBR(j.expiraEm); $("g-r-codigo").textContent = j.codigo;
+      $("g-r-texto").value = "Olá! Obrigado pela compra. Seu material \""+j.produto+"\" já está liberado.\n\n"+
+        "Seu código de acesso: "+j.codigo+"\n"+
+        "Link direto: "+j.link+"\n\n"+
+        "Se preferir, entre em nucleoexato.com.br/acesso.html e digite o código. Ele vale até "+dataBR(j.expiraEm)+" e pode ser usado mais de uma vez. Qualquer dúvida, é só responder por aqui.";
+      $("g-resultado").hidden = false; $("g-copiado").textContent = "";
+      await carregarCodigos();
+    } catch(e){ msg("g-msg", esc(e.message), "erro"); }
+    $("g-btn").disabled = false;
+  });
+  $("g-copiar").addEventListener("click", function(){ navigator.clipboard.writeText($("g-r-texto").value).then(function(){ $("g-copiado").textContent="Copiado."; }); });
+
+  async function carregarCodigos(){
+    var j = await api("codigos");
+    var l = j.codigos || [];
+    if (!l.length) { $("c-lista").innerHTML = '<div class="vazio">Nenhum código gerado ainda.</div>'; return; }
+    var h = '<table class="tb"><tr><th>C&oacute;digo</th><th>Produto</th><th class="esc">Venda</th><th class="esc">Gerado</th><th>Validade</th><th>Usos</th><th>Situa&ccedil;&atilde;o</th></tr>';
+    l.forEach(function(c){
+      var pill = c.status==="ativo"?'<span class="pill">ativo</span>':c.status==="usado"?'<span class="pill neutro">usado</span>':'<span class="pill off">'+esc(c.status)+'</span>';
+      h += '<tr><td class="mono">'+esc(c.codigo)+'</td><td>'+esc(c.produto)+'</td><td class="esc">'+esc(c.plataforma)+(c.numeroVenda?' &middot; '+esc(c.numeroVenda):'')+'</td><td class="esc">'+dataBR(c.criadoEm)+'</td><td>'+dataBR(c.expiraEm)+'</td><td>'+c.usos+'</td><td>'+pill+'</td></tr>';
+    });
+    $("c-lista").innerHTML = h + '</table>';
+  }
+
+  /* ---------- início ---------- */
+  (async function(){
+    try { var j = await api("sessao"); mostrarPainel(j.usuario); }
+    catch(e){ mostrarLogin(); }
+  })();
+})();
+</script>
+</body>
+</html>
