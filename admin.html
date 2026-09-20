@@ -127,7 +127,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
         <div class="campo c2"><label>Link de checkout (Kiwify)</label><input type="text" id="pf-checkout" placeholder="https://pay.kiwify.com.br/XXXXXXX"></div>
         <div class="campo"><label>Capa</label><input type="text" id="pf-capa" placeholder="img/capa-epi.jpg"><small>Imagem que j&aacute; est&aacute; no site (img/...) ou enviada na aba Arquivos (/api/imagem/...).</small></div>
         <div class="campo"><label>P&aacute;gina pr&oacute;pria (opcional)</label><input type="text" id="pf-pagina" placeholder="niosh.html"><small>Se n&atilde;o tiver, o cart&atilde;o leva direto ao checkout.</small></div>
-        <div class="campo c2"><label>Arquivo de entrega (para o c&oacute;digo de acesso)</label><select id="pf-arquivo"><option value="">&mdash; nenhum ainda &mdash;</option></select><small>Lista dos arquivos em entregas/ no R2. Suba novos na aba Arquivos.</small></div>
+        <div class="campo c2"><label>Arquivos de entrega (para o c&oacute;digo de acesso)</label><select id="pf-arquivo" multiple size="8"><option value="">&mdash; nenhum ainda &mdash;</option></select><small>Segure Cmd (ou Ctrl) para marcar v&aacute;rios. O cliente v&ecirc; a lista e baixa item por item, na ordem em que aparecem aqui. Suba novos na aba Arquivos.</small></div>
         <div class="campo"><label>Ordem</label><input type="number" id="pf-ordem" value="100"><small>Menor aparece primeiro.</small></div>
         <div class="campo"><label>Anota&ccedil;&otilde;es internas</label><input type="text" id="pf-obs" placeholder="n&atilde;o vai para o site"></div>
         <div class="campo chk"><input type="checkbox" id="pf-ativo" checked><label for="pf-ativo">Ativo (aparece na loja)</label></div>
@@ -158,7 +158,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
   <!-- CÓDIGOS -->
   <section id="aba-codigos" class="painel">
     <h1 class="adm-h">C&oacute;digos de acesso</h1>
-    <p class="sub">Para venda feita fora da Kiwify (Mercado Livre, Shopee). Gere o c&oacute;digo, copie a mensagem e cole no chat da plataforma. O cliente digita o c&oacute;digo em nucleoexato.com.br/acesso.html e baixa o arquivo cadastrado no produto.</p>
+    <p class="sub">Para venda feita fora da Kiwify (Mercado Livre, Shopee). Gere o c&oacute;digo, copie a mensagem e cole no chat da plataforma. O cliente digita o c&oacute;digo em nucleoexato.com.br/acesso.html e baixa os arquivos cadastrados no produto (se for mais de um, ele v&ecirc; a lista e baixa item por item).</p>
     <div class="form">
       <div class="campos">
         <div class="campo"><label>Produto</label><select id="g-produto"></select></div>
@@ -252,7 +252,13 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     }
     var h = '<table class="tb"><tr><th></th><th>Produto</th><th class="esc">Pre&ccedil;o</th><th class="esc">Arquivo de entrega</th><th>Na loja</th><th class="esc">Home</th><th></th></tr>';
     lista.forEach(function(p){
-      var arq = !p.arquivo ? '<span class="pill neutro">sem arquivo</span>' : (temArquivo(p.arquivo) ? '<span class="pill">'+esc(p.arquivo.replace("entregas/",""))+'</span>' : '<span class="pill off">falta subir '+esc(p.arquivo.replace("entregas/",""))+'</span>');
+      var lstArq = (p.arquivos&&p.arquivos.length) ? p.arquivos : (p.arquivo?[p.arquivo]:[]);
+      var faltam = lstArq.filter(function(c){ return !temArquivo(c); });
+      var arq;
+      if (!lstArq.length) arq = '<span class="pill neutro">sem arquivo</span>';
+      else if (faltam.length) arq = '<span class="pill off">falta subir '+faltam.length+' de '+lstArq.length+'</span>';
+      else if (lstArq.length===1) arq = '<span class="pill">'+esc(lstArq[0].replace("entregas/",""))+'</span>';
+      else arq = '<span class="pill">'+lstArq.length+' arquivos</span>';
       h += '<tr class="'+(p.ativo?"":"inativo")+'">'+
         '<td>'+(p.capa?'<img class="capa" src="'+esc(p.capa)+'" alt="">':'<span class="capa"></span>')+'</td>'+
         '<td class="nome"><b>'+esc(p.nome)+'</b><small>'+esc(p.id)+(p.sku?' &middot; '+esc(p.sku):'')+'</small></td>'+
@@ -276,12 +282,22 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     catch(e){ msg("p-msg", esc(e.message), "erro"); }
   }
 
-  function preencherSelectArquivos(atual){
-    var s = $("pf-arquivo"); s.innerHTML = '<option value="">&mdash; nenhum ainda &mdash;</option>';
-    var lista = estado.arquivos["entregas/"].map(function(a){ return a.chave; });
-    if (atual && lista.indexOf(atual)<0) lista.unshift(atual);
-    lista.forEach(function(c){ var o=document.createElement("option"); o.value=c; o.textContent=c+(temArquivo(c)?"":"  (ainda não enviado)"); s.appendChild(o); });
-    s.value = atual || "";
+  function preencherSelectArquivos(atuais){
+    var marcados = Array.isArray(atuais) ? atuais.slice() : (atuais ? [atuais] : []);
+    var s = $("pf-arquivo"); s.innerHTML = "";
+    // os já marcados vêm primeiro, na ordem gravada; depois o resto do R2
+    var lista = marcados.slice();
+    estado.arquivos["entregas/"].forEach(function(a){ if (lista.indexOf(a.chave)<0) lista.push(a.chave); });
+    lista.forEach(function(c){
+      var o=document.createElement("option"); o.value=c;
+      o.textContent=c.replace("entregas/","")+(temArquivo(c)?"":"  (ainda não enviado)");
+      o.selected = marcados.indexOf(c)>=0;
+      s.appendChild(o);
+    });
+    if (!lista.length) { var v=document.createElement("option"); v.value=""; v.textContent="— nenhum arquivo em entregas/ ainda —"; v.disabled=true; s.appendChild(v); }
+  }
+  function arquivosMarcados(){
+    return [].slice.call($("pf-arquivo").selectedOptions).map(function(o){ return o.value; }).filter(Boolean);
   }
 
   function abrirForm(id){
@@ -292,7 +308,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     $("pf-sku").value = p?p.sku:""; $("pf-nome").value = p?p.nome:""; $("pf-resumo").value = p?p.resumo:"";
     $("pf-preco").value = p?p.preco:""; $("pf-categoria").value = p?(p.categoria||"seguranca-do-trabalho"):"seguranca-do-trabalho";
     $("pf-checkout").value = p?p.checkout:""; $("pf-capa").value = p?p.capa:""; $("pf-pagina").value = p?p.pagina:"";
-    preencherSelectArquivos(p?p.arquivo:"");
+    preencherSelectArquivos(p?(p.arquivos&&p.arquivos.length?p.arquivos:(p.arquivo?[p.arquivo]:[])):[]);
     $("pf-ordem").value = p?p.ordem:100; $("pf-obs").value = p?p.obs:"";
     $("pf-ativo").checked = p?!!p.ativo:true; $("pf-home").checked = p?!!p.destaqueHome:false; $("pf-arquivado").checked = p?!!p.arquivado:false;
     msg("pf-msg",""); $("p-form").hidden = false; $("p-form").scrollIntoView({behavior:"smooth"});
@@ -303,7 +319,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     var p = {
       id: $("pf-id").value.trim().toLowerCase(), sku: $("pf-sku").value, nome: $("pf-nome").value, resumo: $("pf-resumo").value,
       preco: $("pf-preco").value.trim(), categoria: $("pf-categoria").value, checkout: $("pf-checkout").value.trim(), capa: $("pf-capa").value.trim(),
-      pagina: $("pf-pagina").value.trim(), arquivo: $("pf-arquivo").value, ordem: Number($("pf-ordem").value)||100, obs: $("pf-obs").value,
+      pagina: $("pf-pagina").value.trim(), arquivos: arquivosMarcados(), arquivo: (arquivosMarcados()[0]||""), ordem: Number($("pf-ordem").value)||100, obs: $("pf-obs").value,
       ativo: $("pf-ativo").checked, destaqueHome: $("pf-home").checked, arquivado: $("pf-arquivado").checked
     };
     if (!estado.editando && estado.produtos.some(function(x){ return x.id===p.id; })) { msg("pf-msg","Já existe um produto com esse id.","erro"); return; }
@@ -332,7 +348,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
       if (!l.length) { h += '<div class="vazio">Nenhum arquivo em '+pref+'</div>'; return; }
       h += '<table class="tb"><tr><th>Nome</th><th>Tamanho</th><th class="esc">Enviado em</th><th class="esc">Usado por</th></tr>';
       l.forEach(function(a){
-        var usa = estado.produtos.filter(function(p){ return p.arquivo===a.chave || p.capa==="/api/imagem/"+a.chave.replace("img/",""); }).map(function(p){ return esc(p.nome); }).join(", ");
+        var usa = estado.produtos.filter(function(p){ var l=(p.arquivos&&p.arquivos.length)?p.arquivos:(p.arquivo?[p.arquivo]:[]); return l.indexOf(a.chave)>=0 || p.capa==="/api/imagem/"+a.chave.replace("img/",""); }).map(function(p){ return esc(p.nome); }).join(", ");
         h += '<tr><td class="mono">'+esc(a.chave)+'</td><td>'+tam(a.tamanho)+'</td><td class="esc">'+esc(a.enviadoEm?new Date(a.enviadoEm).toLocaleDateString("pt-BR"):"")+'</td><td class="esc">'+(usa||'<span class="pill neutro">nenhum produto</span>')+'</td></tr>';
       });
       h += '</table>';
@@ -358,7 +374,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     x.onload = async function(){
       $("up-btn").disabled = false; $("up-msg").textContent = "";
       var j={}; try{ j=JSON.parse(x.responseText);}catch(e){}
-      if (x.status>=200 && x.status<300) { msg("a-msg","Enviado: "+esc(j.chave)+" ("+tam(j.tamanho)+")"+(j.substituiu?" — o anterior foi para a quarentena do R2.":"")+" Agora marque o arquivo no produto (Produtos → Editar → Arquivo de entrega).","ok"); $("up-file").value=""; $("up-chave").value=""; await carregarArquivos(); desenharProdutos(); }
+      if (x.status>=200 && x.status<300) { msg("a-msg","Enviado: "+esc(j.chave)+" ("+tam(j.tamanho)+")"+(j.substituiu?" — o anterior foi para a quarentena do R2.":"")+" Agora marque o arquivo no produto (Produtos → Editar → Arquivos de entrega).","ok"); $("up-file").value=""; $("up-chave").value=""; await carregarArquivos(); desenharProdutos(); }
       else msg("a-msg", esc(j.erro||("erro "+x.status)), "erro");
       $("up-prog").style.display="none";
     };
@@ -370,7 +386,8 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
   function preencherSelectProdutos(){
     var s = $("g-produto"); s.innerHTML = "";
     estado.produtos.filter(function(p){ return !p.arquivado; }).forEach(function(p){
-      var o = document.createElement("option"); o.value = p.id; o.textContent = p.nome + (p.arquivo ? "" : "  (sem arquivo de entrega)"); o.disabled = !p.arquivo; s.appendChild(o);
+      var temEntrega = !!((p.arquivos&&p.arquivos.length) || p.arquivo);
+      var o = document.createElement("option"); o.value = p.id; o.textContent = p.nome + (temEntrega ? "" : "  (sem arquivo de entrega)"); o.disabled = !temEntrega; s.appendChild(o);
     });
   }
   $("g-btn").addEventListener("click", async function(){

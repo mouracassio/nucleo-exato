@@ -15,7 +15,8 @@ export const CAMPOS = {
   alt: "",             // texto alternativo da capa
   pagina: "",          // página própria (niosh.html) ou vazio
   checkout: "",        // link de checkout da Kiwify
-  arquivo: "",         // chave no R2 do arquivo entregue por código: entregas/epi.zip
+  arquivo: "",         // 1º arquivo da entrega (compatibilidade com o cadastro antigo)
+  arquivos: [],        // lista de chaves no R2 entregues pelo código: ["entregas/mat3-01.zip", ...]
   sku: "",             // SST-EPI-01
   categoria: "",       // seguranca-do-trabalho | educacao (ids de dados/conteudo.json)
   ativo: true,         // aparece na loja e pode ser comprado
@@ -50,6 +51,11 @@ export function validarProduto(p) {
   if (p.checkout && !/^https:\/\/pay\.kiwify\.com\.br\//.test(p.checkout)) erros.push("checkout precisa começar com https://pay.kiwify.com.br/");
   if (p.pagina && !/^[a-z0-9-]+\.html$/.test(p.pagina)) erros.push("página: nome-do-arquivo.html, sem barra");
   if (p.arquivo && !/^entregas\/[A-Za-z0-9._-]+$/.test(p.arquivo)) erros.push("arquivo: entregas/nome.zip");
+  if (!Array.isArray(p.arquivos)) erros.push("arquivos: precisa ser uma lista");
+  else {
+    if (p.arquivos.length > 40) erros.push("arquivos: no máximo 40 por produto");
+    for (const a of p.arquivos) if (!/^entregas\/[A-Za-z0-9._-]+$/.test(String(a || ""))) erros.push("arquivos: " + a + " (use entregas/nome.zip)");
+  }
   if (p.capa && !/^(img\/[A-Za-z0-9._-]+|\/api\/imagem\/[A-Za-z0-9._-]+)$/.test(p.capa)) erros.push("capa: img/nome.jpg ou /api/imagem/nome.jpg");
   return erros;
 }
@@ -71,6 +77,10 @@ export async function onRequestPost({ request, env }) {
   for (const k of Object.keys(CAMPOS)) if (k in corpo) p[k] = corpo[k];
   p.id = String(p.id || "").trim().toLowerCase();
   for (const k of ["nome", "resumo", "preco", "capa", "alt", "pagina", "checkout", "arquivo", "sku", "categoria", "obs"]) p[k] = String(p[k] || "").trim();
+  p.arquivos = Array.isArray(p.arquivos) ? p.arquivos.map(a => String(a || "").trim()).filter(Boolean) : [];
+  // compatibilidade nos dois sentidos com o cadastro antigo de arquivo único
+  if (!p.arquivos.length && p.arquivo) p.arquivos = [p.arquivo];
+  if (p.arquivos.length) p.arquivo = p.arquivos[0];
   p.ativo = !!p.ativo; p.destaqueHome = !!p.destaqueHome; p.arquivado = !!p.arquivado;
   p.ordem = Number(p.ordem) || 100;
   if (!p.alt) p.alt = p.nome;

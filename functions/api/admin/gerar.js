@@ -15,9 +15,12 @@ export async function onRequestPost({ request, env }) {
   const txt = await env.PRODUTOS.get("produto:" + String(produtoId || ""));
   if (!txt) return json({ erro: "produto não encontrado" }, 404);
   const p = JSON.parse(txt);
-  if (!p.arquivo) return json({ erro: "Este produto ainda não tem arquivo de entrega cadastrado. Suba o arquivo na aba Arquivos e marque no produto." }, 400);
-  if (env.ARQUIVOS && !(await env.ARQUIVOS.head(p.arquivo))) {
-    return json({ erro: "O arquivo " + p.arquivo + " não está no R2. Suba na aba Arquivos antes de gerar o código." }, 400);
+  const arquivos = (Array.isArray(p.arquivos) && p.arquivos.length) ? p.arquivos : (p.arquivo ? [p.arquivo] : []);
+  if (!arquivos.length) return json({ erro: "Este produto ainda não tem arquivo de entrega cadastrado. Suba os arquivos na aba Arquivos e marque no produto." }, 400);
+  if (env.ARQUIVOS) {
+    const faltando = [];
+    for (const a of arquivos) if (!(await env.ARQUIVOS.head(a))) faltando.push(a);
+    if (faltando.length) return json({ erro: "Não está(ão) no R2: " + faltando.join(", ") + ". Suba na aba Arquivos antes de gerar o código." }, 400);
   }
 
   const validadeMeses = Number(meses) > 0 ? Number(meses) : 6;
@@ -26,7 +29,7 @@ export async function onRequestPost({ request, env }) {
   const expiraEm = criadoEm + validadeMeses * 30 * 24 * 60 * 60 * 1000;
 
   const registro = {
-    produto: p.nome, produtoId: p.id, arquivo: p.arquivo, sku: p.sku || "",
+    produto: p.nome, produtoId: p.id, arquivo: arquivos[0], arquivos, sku: p.sku || "",
     plataforma: String(plataforma || ""), numeroVenda: String(numeroVenda || ""), dataVenda: String(dataVenda || ""),
     criadoEm, expiraEm, usos: 0,
   };

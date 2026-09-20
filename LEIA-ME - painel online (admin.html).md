@@ -65,7 +65,7 @@ Depois de criar segredos ou bindings: Deployments → Retry deployment (eles só
 1. Entrar em `admin.html`.
 2. Produtos → **Importar os produtos que já estão no site** (traz os 12 do `links.js` + `conteudo.json` publicados).
 3. Arquivos → subir os .zip que faltam (os 5 do bloco A e o `nr01.zip` novo com o certificado corrigido).
-4. Produtos → Editar → conferir "Arquivo de entrega" de cada um.
+4. Produtos → Editar → conferir "Arquivos de entrega" de cada um.
 5. Códigos → gerar um de teste, abrir o link, baixar.
 
 ## Limites conhecidos
@@ -75,3 +75,16 @@ Depois de criar segredos ou bindings: Deployments → Retry deployment (eles só
 - Produto novo criado pelo painel aparece como cartão na loja, mas não ganha página própria
   (`xxx.html`); para ter página, criar o HTML no repositório como as outras e preencher o campo "Página própria".
 - Textos de banner, serviços e categorias continuam no `painel.html` local + GitHub.
+
+
+## Atualização de 20/09/2026 — vários arquivos por produto
+
+Antes cada produto entregava **um** arquivo pelo código de acesso. Agora entrega **uma lista**.
+
+No painel, em Produtos → Editar, o campo virou "Arquivos de entrega" com seleção múltipla (segure Cmd no Mac, Ctrl no Windows). A ordem em que aparecem marcados é a ordem que o cliente vê.
+
+Quando o produto tem mais de um arquivo, o cliente digita o código em `nucleoexato.com.br/acesso.html` e cai numa página com a lista, baixando item por item. Com um arquivo só, continua baixando direto, como antes — nada do que já estava cadastrado mudou.
+
+Motivo: os produtos de Matemática passaram a ser entregues em blocos pequenos (um zip a cada 5 aulas, com 10 arquivos Word dentro), mais o Plano Anual, o bônus em PDF e o explicativo. Isso evita download de centenas de MB de uma vez e deixa o cliente baixar só o que quer.
+
+Os arquivos desses blocos ficam em cada ano, na pasta `10_Pacote_Site (zips para o painel)`, e sobem para o R2 pelo comando `4 - subir entregas para o R2.command` com as chaves `entregas/mat1-...`, `entregas/mat2-...`, `entregas/mat3-...`.
