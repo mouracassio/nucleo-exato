@@ -57,7 +57,18 @@ async function registrarUso(env, codigo, registro) {
 }
 
 function nomeBonito(chave) {
-  return chave.split("/").pop().replace(/\.[a-z0-9]+$/i, "").replace(/[_-]+/g, " ").trim();
+  let n = chave.split("/").pop().replace(/\.[a-z0-9]+$/i, "");
+  n = n.replace(/^mat[0-9]+-/i, "").replace(/^[0-9]{2}-/, "");
+  n = n.replace(/[_-]+/g, " ").trim().toLowerCase();
+  const mapa = {
+    "leia me como usar o material": "Leia-me — como usar o material",
+    "plano anual": "Plano anual",
+    "bonus apostila gabaritada pdf": "Bônus — Apostila gabaritada",
+  };
+  if (mapa[n]) return mapa[n];
+  const m = n.match(/^aulas (\d+) a (\d+)$/);
+  if (m) return "Aulas " + m[1] + " a " + m[2];
+  return n.charAt(0).toUpperCase() + n.slice(1);
 }
 
 function paginaLista(codigo, registro, arquivos) {
