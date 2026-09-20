@@ -1,5 +1,8 @@
 :root{
   --verde:#1F9D66; --verde-esc:#157347; --grafite:#333F48; --escuro:#2B333A;
+  /* barra do preço no cartão: verde-grafite bem fechado, mais forte que a faixa
+     verde da arte logo acima — dá hierarquia e faz o botão verde saltar */
+  --preco-fundo:#18261F;
   --claro:#F4F8F5; --borda:#C3D4C9; --texto:#3A444B; --suave:#6B7480; --fundo:#FAFBF8;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -94,7 +97,7 @@ ul.lista li::before{content:"";position:absolute;left:0;top:8px;width:11px;heigh
 .prod h3{font-size:20px;margin-bottom:8px}
 .prod p{font-size:15.5px;color:var(--suave);flex:1}
 .prod .rod{display:flex;align-items:center;justify-content:space-between;margin-top:18px;gap:12px;
-  background:var(--grafite);border-radius:10px;padding:14px 16px}
+  background:var(--preco-fundo);border-radius:10px;padding:14px 16px}
 .prod .val{font-family:Cambria,Georgia,serif;font-size:25px;color:#fff;white-space:nowrap}
 .prod .val span{color:#fff}
 .prod .bt{background:var(--verde);color:#fff;text-decoration:none;font-weight:700;font-size:16px;
