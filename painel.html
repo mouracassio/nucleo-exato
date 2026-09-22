@@ -1888,6 +1888,37 @@ var MOTOR_LINKS =
 '\n' +
 '  document.addEventListener("DOMContentLoaded", function () {\n' +
 '\n' +
+'  /* preco e checkout sempre atuais: o painel online manda os valores de agora */\n' +
+'  function aplicarProdutos() {\n' +
+'    var bs = document.querySelectorAll("[data-produto]");\n' +
+'    for (var a = 0; a < bs.length; a++) {\n' +
+'      var e2 = bs[a]; var p2 = PRODUTOS[e2.getAttribute("data-produto")];\n' +
+'      if (!p2) continue;\n' +
+'      var rot = e2.querySelector("[data-rotulo]");\n' +
+'      if (pronto(p2.checkout)) {\n' +
+'        e2.setAttribute("href", p2.checkout); e2.setAttribute("rel", "noopener"); e2.classList.remove("off");\n' +
+'        if (rot && rot.textContent === "Em breve") { rot.textContent = "Comprar agora"; }\n' +
+'      } else {\n' +
+'        e2.classList.add("off"); e2.removeAttribute("href");\n' +
+'        if (rot) { rot.textContent = "Em breve"; } else { e2.textContent = "Em breve"; }\n' +
+'      }\n' +
+'    }\n' +
+'    var pr = document.querySelectorAll("[data-preco]");\n' +
+'    for (var b = 0; b < pr.length; b++) {\n' +
+'      var q2 = PRODUTOS[pr[b].getAttribute("data-preco")];\n' +
+'      if (q2 && q2.preco) { pr[b].textContent = q2.preco; }\n' +
+'    }\n' +
+'  }\n' +
+'  try {\n' +
+'    fetch("/api/produtos.json", { cache: "no-store" })\n' +
+'      .then(function (r) { return r.ok ? r.json() : null; })\n' +
+'      .then(function (novos) {\n' +
+'        if (!novos) return; var mudou = false;\n' +
+'        for (var id in novos) { if (novos[id] && novos[id].preco) { PRODUTOS[id] = novos[id]; mudou = true; } }\n' +
+'        if (mudou) { aplicarProdutos(); }\n' +
+'      }).catch(function () {});\n' +
+'  } catch (e) {}\n' +
+'\n' +
 '    var botoes = document.querySelectorAll("[data-produto]");\n' +
 '    for (var i = 0; i < botoes.length; i++) {\n' +
 '      var el = botoes[i];\n' +
@@ -2406,7 +2437,7 @@ var RODAPE =
 '  <div class="regs">Eng. C&aacute;ssio Resende de Moura (CREA-MG 401683)</div>\n' +
 '  <div class="links"><a href="servicos.html">Servi&ccedil;os</a><a href="materiais.html">Materiais</a><a href="quem-somos.html">Quem somos</a><a href="contato.html">Contato</a><a href="acesso.html">J&aacute; comprei</a><a data-email href="#">contato</a></div>\n' +
 '</div></footer>\n\n' +
-'<script src="/api/links.js"><\/script>\n</body>\n</html>\n';
+'<script src="links.js"><\/script>\n</body>\n</html>\n';
 
 function MOLDE_MATERIAIS(){
 var t = D.topos.materiais;

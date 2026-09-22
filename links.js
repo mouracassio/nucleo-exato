@@ -94,6 +94,51 @@ return String(v).replace(/[^0-9]/g, "");
 
 document.addEventListener("DOMContentLoaded", function () {
 
+/* Preço e checkout sempre atuais -----------------------------------------
+   O bloco PRODUTOS acima é o que veio no arquivo publicado, e o CDN guarda
+   este arquivo por horas. Então, ao abrir a página, perguntamos ao painel
+   (/api/produtos.json, que nunca é cacheado) quais são os valores de agora e
+   aplicamos por cima. Se a chamada falhar, fica valendo o que está no arquivo. */
+function aplicarProdutos() {
+var botoes = document.querySelectorAll("[data-produto]");
+for (var a = 0; a < botoes.length; a++) {
+var e2 = botoes[a];
+var p2 = PRODUTOS[e2.getAttribute("data-produto")];
+if (!p2) continue;
+var rot = e2.querySelector("[data-rotulo]");
+if (pronto(p2.checkout)) {
+e2.setAttribute("href", p2.checkout);
+e2.setAttribute("rel", "noopener");
+e2.classList.remove("off");
+if (rot && rot.textContent === "Em breve") { rot.textContent = "Comprar agora"; }
+} else {
+e2.classList.add("off");
+e2.removeAttribute("href");
+if (rot) { rot.textContent = "Em breve"; } else { e2.textContent = "Em breve"; }
+}
+}
+var pr = document.querySelectorAll("[data-preco]");
+for (var b = 0; b < pr.length; b++) {
+var q2 = PRODUTOS[pr[b].getAttribute("data-preco")];
+if (q2 && q2.preco) { pr[b].textContent = q2.preco; }
+}
+}
+try {
+fetch("/api/produtos.json", { cache: "no-store" })
+.then(function (r) { return r.ok ? r.json() : null; })
+.then(function (novos) {
+if (!novos) return;
+var mudou = false;
+for (var id in novos) {
+if (!novos[id] || !novos[id].preco) continue;
+PRODUTOS[id] = novos[id];
+mudou = true;
+}
+if (mudou) { aplicarProdutos(); }
+})
+.catch(function () {});
+} catch (e) {}
+
 var botoes = document.querySelectorAll("[data-produto]");
 for (var i = 0; i < botoes.length; i++) {
 var el = botoes[i];
