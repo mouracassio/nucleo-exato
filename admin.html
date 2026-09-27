@@ -28,6 +28,13 @@ h1.adm-h{font-size:26px;margin:6px 0 6px}
 .btn.cinza{background:#fff;border:1.5px solid var(--borda);color:var(--grafite)}
 .btn.peq{font-size:13.5px;padding:6px 12px;border-radius:7px}
 .btn:disabled{opacity:.5;cursor:default}
+.filtros{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 10px}
+.filtros button{font:inherit;font-size:13.5px;font-weight:700;padding:7px 13px;border-radius:999px;border:1.5px solid var(--borda);background:#fff;color:var(--grafite);cursor:pointer}
+.filtros button .n{display:inline-block;min-width:18px;margin-left:6px;padding:0 6px;border-radius:999px;background:#eef1f3;color:#5f6a74;font-size:12px}
+.filtros button:hover{border-color:var(--verde)}
+.filtros button.on{background:var(--verde);border-color:var(--verde);color:#fff}
+.filtros button.on .n{background:rgba(255,255,255,.25);color:#fff}
+.filtros button.alerta.on{background:#b85b0a;border-color:#b85b0a}
 .barra-acoes{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
 table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--borda);border-radius:12px;overflow:hidden;font-size:14.5px}
 .tb th{background:var(--claro);text-align:left;padding:10px 12px;font-size:12.5px;letter-spacing:1px;text-transform:uppercase;color:var(--suave);border-bottom:1px solid var(--borda)}
@@ -112,6 +119,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
       <button class="btn linha" id="b-importar">Importar os produtos que j&aacute; est&atilde;o no site</button>
       <button class="btn cinza peq" id="b-recarregar">Atualizar lista</button>
     </div>
+    <div class="filtros" id="p-filtros"></div>
     <div id="p-msg"></div>
     <div id="p-lista"></div>
 
@@ -244,10 +252,45 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
   }
   function temArquivo(chave){ return estado.arquivos["entregas/"].some(function(a){ return a.chave===chave; }); }
 
+  // ---- filtros da lista de produtos (botões em cima da tabela) ----
+  var FILTROS = [
+    ["loja",   "Na loja",            function(p){ return !!p.ativo; }],
+    ["fora",   "Fora da loja",       function(p){ return !p.ativo; }],
+    ["home",   "Na home",            function(p){ return !!p.destaqueHome; }],
+    ["falta",  "Falta subir arquivo",function(p){ return faltaArquivo(p); }, "alerta"],
+    ["semarq", "Sem arquivo",        function(p){ return !arquivosDe(p).length; }, "alerta"],
+    ["todos",  "Todos",              function(p){ return true; }]
+  ];
+  var filtroAtual = (function(){ try { return localStorage.getItem("ne_filtro_produtos") || "loja"; } catch(e){ return "loja"; } })();
+  function arquivosDe(p){ return (p.arquivos&&p.arquivos.length) ? p.arquivos : (p.arquivo?[p.arquivo]:[]); }
+  function faltaArquivo(p){ var l = arquivosDe(p); return l.length>0 && l.some(function(c){ return !temArquivo(c); }); }
+  function desenharFiltros(base){
+    var h = "";
+    FILTROS.forEach(function(f){
+      var n = base.filter(f[2]).length;
+      h += '<button data-filtro="'+f[0]+'" class="'+(f[3]||"")+(filtroAtual===f[0]?" on":"")+'">'+f[1]+'<span class="n">'+n+'</span></button>';
+    });
+    $("p-filtros").innerHTML = h;
+    $("p-filtros").querySelectorAll("[data-filtro]").forEach(function(b){
+      b.addEventListener("click", function(){
+        filtroAtual = b.dataset.filtro;
+        try { localStorage.setItem("ne_filtro_produtos", filtroAtual); } catch(e){}
+        desenharProdutos();
+      });
+    });
+  }
+
   function desenharProdutos(){
-    var lista = estado.produtos.filter(function(p){ return !p.arquivado; });
-    if (!lista.length) {
+    var base = estado.produtos.filter(function(p){ return !p.arquivado; });
+    desenharFiltros(base);
+    if (!base.length) {
       $("p-lista").innerHTML = '<div class="vazio">Nenhum produto cadastrado ainda. Clique em <b>Importar os produtos que já estão no site</b> para trazer os 12 atuais.</div>';
+      return;
+    }
+    var f = FILTROS.filter(function(x){ return x[0]===filtroAtual; })[0] || FILTROS[FILTROS.length-1];
+    var lista = base.filter(f[2]);
+    if (!lista.length) {
+      $("p-lista").innerHTML = '<div class="vazio">Nenhum produto em <b>'+f[1]+'</b>. Use os botões acima para ver os outros.</div>';
       return;
     }
     var h = '<table class="tb"><tr><th></th><th>Produto</th><th class="esc">Pre&ccedil;o</th><th class="esc">Arquivo de entrega</th><th>Na loja</th><th class="esc">Home</th><th></th></tr>';
