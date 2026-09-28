@@ -486,6 +486,15 @@
       "ativo": true,
       "arquivado": false,
       "subs": []
+    },
+    {
+      "id": "gestao",
+      "nome": "Gestão e Finanças",
+      "intro": "Planilhas em Excel para o dia a dia de quem cuida do dinheiro e da operação: caixa, estoque, vendas, preço, ponto, contas, obra, frota e condomínio. Sem macro, sem senha, prontas para usar.",
+      "cor": "#157347",
+      "ativo": true,
+      "arquivado": false,
+      "subs": []
     }
   ]
 }
