@@ -88,7 +88,7 @@ function reescreverHtml(resposta, caminho, dados) {
   const inativos = produtos.filter(p => !p.ativo || p.arquivado).map(p => p.id);
   const ativos = produtos.filter(p => p.ativo && !p.arquivado);
   const ehHome = caminho === "/" || caminho === "/index.html";
-  const ehLoja = caminho === "/materiais.html";
+  const ehLoja = caminho === "/materiais.html" || caminho === "/materiais";
 
   let grade = -1;               // índice da grade .produtos atual
   const vistos = new Set();     // ids que já têm cartão em alguma grade da página
