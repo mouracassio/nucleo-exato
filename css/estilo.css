@@ -320,9 +320,9 @@ footer .links a{margin:0 9px;white-space:nowrap}
 :root{  /* Educação e Material Didático — azul-marinho */
   --educacao:#174197; --educacao-esc:#10306F; --educacao-hero:#9DB6F0;
   --educacao-fundo:#E8EEFA; --educacao-borda:#BFD0F2; --educacao-selo:#6F8AC4; --educacao-viva:#174197;
-  /* Treinamentos — laranja (inclui Segurança do Trabalho e o NIOSH) */
-  --treinamentos:#B85B0A; --treinamentos-esc:#96490A; --treinamentos-hero:#F0A868;
-  --treinamentos-fundo:#FDE9D6; --treinamentos-borda:#F3CBA0; --treinamentos-selo:#9C5A22; --treinamentos-viva:#E9730C;
+  /* Treinamentos — vermelho (inclui Segurança do Trabalho e o NIOSH; mesmo vermelho das artes de SST) */
+  --treinamentos:#BE2828; --treinamentos-esc:#781616; --treinamentos-hero:#FFA096;
+  --treinamentos-fundo:#FCE6E6; --treinamentos-borda:#F0BDBD; --treinamentos-selo:#B45A5A; --treinamentos-viva:#BE2828;
   /* Palestras e SIPAT — vermelho-carmim */
   --palestras:#D92641; --palestras-esc:#B01C33; --palestras-hero:#F48A9B;
   --palestras-fundo:#FCE6EA; --palestras-borda:#F4BCC6; --palestras-selo:#C96A79; --palestras-viva:#D92641;
