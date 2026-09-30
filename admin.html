@@ -79,6 +79,19 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
 .codigo-box .cod{font-family:Cambria,Georgia,serif;font-size:34px;letter-spacing:4px;color:var(--grafite)}
 .codigo-box textarea{width:100%;font:inherit;font-size:14px;padding:10px;border:1px solid var(--borda);border-radius:8px;margin-top:10px;min-height:120px}
 .mono{font-family:ui-monospace,Menlo,monospace;font-size:13px}
+/* vendas */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:0 0 18px}
+.kpi{background:#fff;border:1px solid var(--borda);border-radius:12px;padding:14px 16px}
+.kpi small{display:block;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--suave)}
+.kpi b{display:block;font-family:Cambria,Georgia,serif;font-size:26px;color:var(--grafite);margin-top:4px}
+.kpi span{font-size:12.5px;color:var(--suave)}
+.chk-linha{display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--grafite);cursor:pointer;white-space:nowrap}
+.chk-linha input{margin:0}
+.pill.pago{background:#E9F5EE;color:var(--verde-esc)}.pill.reemb{background:#FBEAEA;color:#9B2C2C}
+.tb .canal{font-size:12.5px;color:var(--suave)}
+.aviso-web{background:#fff;border:1px solid var(--borda);border-radius:12px;padding:16px 18px;margin-top:22px;font-size:14px;color:var(--suave)}
+.aviso-web code{background:var(--claro);padding:2px 6px;border-radius:5px;color:var(--grafite)}
+@media(max-width:720px){.kpis{grid-template-columns:1fr 1fr}}
 @media(max-width:720px){.campos{grid-template-columns:1fr}.tb .esc{display:none}}
 </style>
 </head>
@@ -109,6 +122,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     <button data-aba="produtos" class="on">Produtos</button>
     <button data-aba="arquivos">Arquivos</button>
     <button data-aba="codigos">C&oacute;digos de acesso</button>
+    <button data-aba="vendas">Vendas</button>
   </div>
 
   <!-- PRODUTOS -->
@@ -173,6 +187,8 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
         <div class="campo"><label>Produto</label><select id="g-produto"></select></div>
         <div class="campo"><label>Plataforma</label><select id="g-plataforma"><option>Mercado Livre</option><option>Shopee</option><option>Outra</option></select></div>
         <div class="campo"><label>N&uacute;mero da venda</label><input type="text" id="g-venda" placeholder="2000018403648920"></div>
+        <div class="campo"><label>Nome do comprador</label><input type="text" id="g-nome" placeholder="Como aparece na venda"><small>Entra na sauda&ccedil;&atilde;o da mensagem e na aba Vendas.</small></div>
+        <div class="campo"><label>Valor pago (R$)</label><input type="text" id="g-valor" placeholder="18,90"><small>Se deixar vazio, usa o pre&ccedil;o do produto.</small></div>
         <div class="campo"><label>Data da venda</label><input type="date" id="g-data"></div>
         <div class="campo"><label>Validade (meses)</label><input type="number" id="g-meses" value="6" min="1" max="24"></div>
       </div>
@@ -187,6 +203,44 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     </div>
     <h2 style="font-size:20px;margin:26px 0 10px">C&oacute;digos j&aacute; gerados</h2>
     <div id="c-lista"></div>
+  </section>
+
+  <!-- VENDAS -->
+  <section id="aba-vendas" class="painel">
+    <h1 class="adm-h">Vendas</h1>
+    <p class="sub">Uma linha por venda, em todos os canais. Venda do Mercado Livre entra sozinha quando voc&ecirc; gera o c&oacute;digo; venda da Kiwify entra sozinha pelo webhook (veja no fim da p&aacute;gina); as outras voc&ecirc; registra aqui.</p>
+    <div class="kpis">
+      <div class="kpi"><small>Vendas no m&ecirc;s</small><b id="v-k-mes-n">0</b><span id="v-k-mes-lbl"></span></div>
+      <div class="kpi"><small>Faturado no m&ecirc;s</small><b id="v-k-mes-r">R$ 0,00</b><span>vendas pagas</span></div>
+      <div class="kpi"><small>Total de vendas</small><b id="v-k-tot-n">0</b><span>desde o in&iacute;cio</span></div>
+      <div class="kpi"><small>Total faturado</small><b id="v-k-tot-r">R$ 0,00</b><span>vendas pagas</span></div>
+    </div>
+    <div class="barra-acoes">
+      <button class="btn" id="v-nova">Registrar venda</button>
+      <button class="btn cinza" id="v-atualizar">Atualizar lista</button>
+    </div>
+    <div class="form" id="v-form" hidden>
+      <h2 id="v-form-titulo">Registrar venda</h2>
+      <div class="campos">
+        <div class="campo"><label>Canal</label><select id="v-canal"><option>Kiwify</option><option>Site</option><option>Direta</option><option>Mercado Livre</option><option>Shopee</option><option>Outra</option></select><small>Mercado Livre e Shopee normalmente entram pela aba C&oacute;digos.</small></div>
+        <div class="campo"><label>Produto</label><select id="v-produto"></select></div>
+        <div class="campo"><label>Nome do comprador</label><input type="text" id="v-comprador"></div>
+        <div class="campo"><label>E-mail (fora do ML)</label><input type="text" id="v-email" placeholder="opcional"></div>
+        <div class="campo"><label>Valor pago (R$)</label><input type="text" id="v-valor" placeholder="19,90"></div>
+        <div class="campo"><label>Data da venda</label><input type="date" id="v-data"></div>
+        <div class="campo"><label>N&uacute;mero do pedido</label><input type="text" id="v-numero" placeholder="opcional"></div>
+        <div class="campo"><label>C&oacute;digo de acesso</label><input type="text" id="v-codigo" placeholder="se houver"></div>
+        <div class="campo c2"><label>Observa&ccedil;&atilde;o</label><input type="text" id="v-obs" placeholder="opcional"></div>
+      </div>
+      <div id="v-msg"></div>
+      <div class="rod"><button class="btn" id="v-salvar">Salvar venda</button><button class="btn cinza" id="v-cancelar">Cancelar</button></div>
+    </div>
+    <div id="v-msg2"></div>
+    <div id="v-lista"></div>
+    <div class="aviso-web">
+      <b style="color:var(--grafite)">Vendas da Kiwify entrando sozinhas</b><br>
+      Na Kiwify: Apps &gt; Webhooks &gt; Criar webhook, URL <code>https://nucleoexato.com.br/api/webhook/kiwify</code>, eventos Compra aprovada e Reembolso, todos os produtos. A Kiwify mostra um token: cole na Cloudflare (Pages &gt; nucleo-exato &gt; Settings &gt; Variables and Secrets) como segredo <code>KIWIFY_WEBHOOK_TOKEN</code> e fa&ccedil;a Retry deployment. Sem o token, o painel recusa qualquer chamada.
+    </div>
   </section>
 </div>
 
@@ -242,6 +296,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     try { await carregarArquivos(); } catch(e){ msg("a-msg", esc(e.message), "erro"); }
     try { await carregarProdutos(); } catch(e){ msg("p-msg", esc(e.message), "erro"); }
     try { await carregarCodigos(); } catch(e){ /* mostra na aba */ }
+    try { await carregarVendas(); } catch(e){ msg("v-msg2", esc(e.message), "erro"); }
     abrirAbaDoHash();
   }
 
@@ -433,6 +488,10 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
       var temEntrega = !!((p.arquivos&&p.arquivos.length) || p.arquivo);
       var o = document.createElement("option"); o.value = p.id; o.textContent = p.nome + (temEntrega ? "" : "  (sem arquivo de entrega)"); o.disabled = !temEntrega; s.appendChild(o);
     });
+    var sv = $("v-produto"); sv.innerHTML = "";
+    estado.produtos.filter(function(p){ return !p.arquivado; }).forEach(function(p){
+      var o = document.createElement("option"); o.value = p.id; o.textContent = p.nome; o.setAttribute("data-preco", p.preco||""); sv.appendChild(o);
+    });
   }
   $("g-btn").addEventListener("click", async function(){
     if (travado || $("g-btn").disabled) return;
@@ -441,19 +500,22 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     if ($("g-venda").value === ultimaVenda) { msg("g-msg","Esta venda acabou de receber um código. Para outra venda, digite o novo número.","erro"); return; }
     msg("g-msg",""); $("g-btn").disabled = true;
     try {
-      var j = await post("gerar", { produtoId: $("g-produto").value, plataforma: $("g-plataforma").value, numeroVenda: $("g-venda").value, dataVenda: $("g-data").value, meses: $("g-meses").value });
+      var j = await post("gerar", { produtoId: $("g-produto").value, plataforma: $("g-plataforma").value, numeroVenda: $("g-venda").value, dataVenda: $("g-data").value, meses: $("g-meses").value, comprador: $("g-nome").value.trim(), valor: $("g-valor").value.trim() });
       $("g-r-produto").textContent = j.produto; $("g-r-validade").textContent = dataBR(j.expiraEm); $("g-r-codigo").textContent = j.codigo;
-      $("g-r-texto").value = "Olá! Obrigado pela compra. Seu material \""+j.produto+"\" já está liberado.\n\n"+
-        "Seu código de acesso: "+j.codigo+"\n"+
+      var nome = primeiroNome($("g-nome").value);
+      $("g-r-texto").value = "Olá"+(nome?", "+nome:"")+"! Obrigado pela compra. Aqui está o seu acesso ao arquivo \""+j.produto+"\":\n\n"+
+        "Código de acesso: "+j.codigo+"\n"+
         "Link direto: "+j.link+"\n\n"+
-        "Se preferir, entre em nucleoexato.com.br/acesso.html e digite o código. Ele vale até "+dataBR(j.expiraEm)+" e pode ser usado mais de uma vez. Qualquer dúvida, é só responder por aqui.";
+        "Basta abrir o link, informar o código e baixar o arquivo. Abra no Excel (a planilha usa fórmulas e formatação condicional). O código vale até "+dataBR(j.expiraEm)+" e pode ser usado mais de uma vez. Qualquer dúvida sobre o uso, é só responder por aqui.\n\n"+
+        "Prof. Eng. Cássio Moura, Núcleo Exato";
       $("g-resultado").hidden = false; $("g-copiado").textContent = "";
       /* limpa o formulário e trava o botão: só libera com um novo número de venda */
       ultimaVenda = $("g-venda").value;
-      $("g-venda").value = ""; $("g-data").value = ""; $("g-meses").value = "6";
+      $("g-venda").value = ""; $("g-data").value = ""; $("g-meses").value = "6"; $("g-nome").value = ""; $("g-valor").value = "";
       travado = true; $("g-btn").disabled = true;
       $("g-venda").focus();
       await carregarCodigos();
+      try { await carregarVendas(); } catch(e){}
       return;
     } catch(e){ msg("g-msg", esc(e.message), "erro"); }
     $("g-btn").disabled = false;
@@ -483,6 +545,68 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
       });
     });
   }
+
+  /* ---------- vendas ---------- */
+  function primeiroNome(s){ s = String(s||"").trim().split(/\s+/)[0] || ""; return s ? s.charAt(0).toUpperCase()+s.slice(1).toLowerCase() : ""; }
+  function reais(n){ return "R$ "+(Number(n)||0).toFixed(2).replace(".",",").replace(/\B(?=(\d{3})+(?!\d))/g,"."); }
+  function dataISO(s){ if(!s) return "—"; var p=String(s).split("-"); return p.length===3 ? p[2]+"/"+p[1]+"/"+p[0] : s; }
+  estado.vendas = [];
+  async function carregarVendas(){
+    var j = await api("vendas");
+    estado.vendas = j.vendas || [];
+    var hoje = new Date(); var mes = hoje.toISOString().slice(0,7);
+    var pagas = estado.vendas.filter(function(v){ return v.status==="paga"; });
+    var doMes = pagas.filter(function(v){ return (v.dataVenda||"").slice(0,7)===mes; });
+    $("v-k-mes-n").textContent = doMes.length; $("v-k-mes-lbl").textContent = hoje.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
+    $("v-k-mes-r").textContent = reais(doMes.reduce(function(a,v){ return a+(Number(v.valor)||0); },0));
+    $("v-k-tot-n").textContent = pagas.length;
+    $("v-k-tot-r").textContent = reais(pagas.reduce(function(a,v){ return a+(Number(v.valor)||0); },0));
+    if (!estado.vendas.length) { $("v-lista").innerHTML = '<div class="vazio">Nenhuma venda registrada ainda.</div>'; return; }
+    var h = '<table class="tb"><tr><th>Data</th><th>Produto</th><th>Comprador</th><th class="esc">Canal &middot; pedido</th><th>Valor</th><th>Situa&ccedil;&atilde;o</th><th>Entregue</th><th>Avaliado</th><th></th></tr>';
+    estado.vendas.forEach(function(v){
+      var pill = v.status==="paga" ? '<span class="pill pago">paga</span>' : '<span class="pill reemb">'+esc(v.status)+'</span>';
+      h += '<tr'+(v.status!=="paga"?' class="inativo"':'')+'><td>'+dataISO(v.dataVenda)+'</td><td class="nome"><b>'+esc(v.produto)+'</b>'+(v.codigo?'<small class="mono">'+esc(v.codigo)+'</small>':'')+'</td><td>'+esc(v.comprador||"—")+(v.email?'<br><small style="color:var(--suave)">'+esc(v.email)+'</small>':'')+'</td><td class="esc canal">'+esc(v.canal)+(v.numeroVenda?' &middot; '+esc(v.numeroVenda):'')+'</td><td>'+reais(v.valor)+'</td><td>'+pill+'</td>'+
+        '<td><label class="chk-linha"><input type="checkbox" data-id="'+esc(v.id)+'" data-campo="entregue"'+(v.entregue?' checked':'')+'> sim</label></td>'+
+        '<td><label class="chk-linha"><input type="checkbox" data-id="'+esc(v.id)+'" data-campo="avaliado"'+(v.avaliado?' checked':'')+'> sim</label></td>'+
+        '<td><button type="button" class="bt-ex" data-vid="'+esc(v.id)+'">Excluir</button></td></tr>';
+    });
+    $("v-lista").innerHTML = h + '</table>';
+    Array.prototype.forEach.call($("v-lista").querySelectorAll("input[type=checkbox]"), function(c){
+      c.addEventListener("change", async function(){
+        var v = estado.vendas.find(function(x){ return x.id===c.getAttribute("data-id"); }); if(!v) return;
+        var novo = {}; novo.id = v.id; novo[c.getAttribute("data-campo")] = c.checked;
+        try { await post("vendas", novo); await carregarVendas(); } catch(e){ msg("v-msg2", esc(e.message), "erro"); }
+      });
+    });
+    Array.prototype.forEach.call($("v-lista").querySelectorAll(".bt-ex"), function(b){
+      b.addEventListener("click", async function(){
+        if (!b.classList.contains("conf")) { b.classList.add("conf"); b.textContent = "Confirmar exclusão?"; setTimeout(function(){ b.classList.remove("conf"); b.textContent = "Excluir"; }, 5000); return; }
+        b.disabled = true;
+        try { await api("vendas", { method:"DELETE", headers:{"content-type":"application/json"}, body: JSON.stringify({ id: b.getAttribute("data-vid") }) }); await carregarVendas(); }
+        catch(e){ b.disabled = false; msg("v-msg2", esc(e.message), "erro"); }
+      });
+    });
+  }
+  $("v-nova").addEventListener("click", function(){
+    $("v-form").hidden = false; msg("v-msg","");
+    $("v-comprador").value = ""; $("v-email").value = ""; $("v-numero").value = ""; $("v-codigo").value = ""; $("v-obs").value = "";
+    $("v-data").value = new Date(Date.now()-3*3600*1000).toISOString().slice(0,10);
+    var op = $("v-produto").selectedOptions[0]; $("v-valor").value = op ? (op.getAttribute("data-preco")||"") : "";
+    $("v-comprador").focus();
+  });
+  $("v-produto").addEventListener("change", function(){ var op = $("v-produto").selectedOptions[0]; if(op && !$("v-valor").value) $("v-valor").value = op.getAttribute("data-preco")||""; });
+  $("v-cancelar").addEventListener("click", function(){ $("v-form").hidden = true; });
+  $("v-atualizar").addEventListener("click", async function(){ try { await carregarVendas(); msg("v-msg2","Lista atualizada.","ok"); } catch(e){ msg("v-msg2", esc(e.message), "erro"); } });
+  $("v-salvar").addEventListener("click", async function(){
+    var op = $("v-produto").selectedOptions[0]; if(!op){ msg("v-msg","Escolha o produto.","erro"); return; }
+    var p = estado.produtos.find(function(x){ return x.id===op.value; }) || {};
+    $("v-salvar").disabled = true; msg("v-msg","");
+    try {
+      await post("vendas", { canal: $("v-canal").value, produtoId: op.value, produto: p.nome||op.textContent, sku: p.sku||"", comprador: $("v-comprador").value, email: $("v-email").value, valor: $("v-valor").value, dataVenda: $("v-data").value, numeroVenda: $("v-numero").value, codigo: $("v-codigo").value, obs: $("v-obs").value, entregue: $("v-canal").value==="Kiwify"||$("v-canal").value==="Site" });
+      $("v-form").hidden = true; await carregarVendas(); msg("v-msg2","Venda registrada.","ok");
+    } catch(e){ msg("v-msg", esc(e.message), "erro"); }
+    $("v-salvar").disabled = false;
+  });
 
   /* ---------- início ---------- */
   (async function(){

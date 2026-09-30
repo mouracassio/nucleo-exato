@@ -3,6 +3,7 @@
 // numeroVenda, dataVenda }. O arquivo entregue é o cadastrado no produto.
 // Substitui o antigo /api/gerar (que pedia a SENHA_ADMIN solta).
 import { json, exigirSessao } from "./sessao.js";
+import { PREFIXO as PREFIXO_VENDA, normalizarVenda, salvarVenda } from "./vendas.js";
 
 export async function onRequestPost({ request, env }) {
   const erro = await exigirSessao(request, env); if (erro) return erro;
@@ -10,7 +11,7 @@ export async function onRequestPost({ request, env }) {
 
   let corpo;
   try { corpo = await request.json(); } catch { return json({ erro: "corpo inválido" }, 400); }
-  const { produtoId, meses, plataforma, numeroVenda, dataVenda } = corpo;
+  const { produtoId, meses, plataforma, numeroVenda, dataVenda, comprador, valor } = corpo;
 
   const venda = String(numeroVenda || "").replace(/[#\s]/g, "");
   if (!venda) return json({ erro: "Informe o número da venda da plataforma antes de gerar o código." }, 400);
@@ -53,8 +54,26 @@ export async function onRequestPost({ request, env }) {
   };
   await env.ACESSOS.put(codigo, JSON.stringify(registro), { metadata: registro });
 
+  // registra a venda na aba Vendas (uma linha por venda + produto)
+  let vendaId = "";
+  try {
+    const canal = String(plataforma || "Outra");
+    vendaId = (canal === "Mercado Livre" ? "ml-" : canal === "Shopee" ? "shopee-" : "outra-") + venda + (p.id ? "-" + p.id : "");
+    const txtV = await env.PRODUTOS.get(PREFIXO_VENDA + vendaId);
+    const anterior = txtV ? JSON.parse(txtV) : null;
+    const hoje = new Date(Date.now() - 3 * 3600 * 1000).toISOString().slice(0, 10);
+    const v = normalizarVenda({
+      id: vendaId, canal, produtoId: p.id, produto: p.nome, sku: p.sku || "",
+      comprador: String(comprador || (anterior && anterior.comprador) || ""),
+      valor: (valor !== undefined && valor !== "" && valor !== null) ? valor : (anterior ? anterior.valor : precoNumero(p.preco)),
+      numeroVenda: venda, dataVenda: String(dataVenda || (anterior && anterior.dataVenda) || hoje),
+      codigo, origem: "gerar",
+    }, anterior);
+    await salvarVenda(env, v);
+  } catch (e) { vendaId = ""; }
+
   const link = new URL(request.url).origin + "/acesso.html?codigo=" + codigo;
-  return json({ codigo, expiraEm, link, produto: p.nome });
+  return json({ codigo, expiraEm, link, produto: p.nome, vendaId, comprador: String(comprador || "") });
 }
 
 function gerarCodigo() {
@@ -63,4 +82,9 @@ function gerarCodigo() {
   const bytes = crypto.getRandomValues(new Uint8Array(8));
   for (let i = 0; i < 8; i++) c += alfabeto[bytes[i] % alfabeto.length];
   return c;
+}
+
+function precoNumero(preco) {
+  const n = Number(String(preco || "").replace(/\./g, "").replace(",", "."));
+  return Number.isFinite(n) ? n : 0;
 }
