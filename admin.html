@@ -46,6 +46,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
 .tb .nome small{color:var(--suave)}
 .pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:#E9F5EE;color:var(--verde-esc)}
 .pill.off{background:#F2E9E4;color:#9C4A1E}
+.bt-ex{font-size:12.5px;padding:3px 9px;border-radius:6px;border:1px solid #D9C2B5;background:#fff;color:#9C4A1E;cursor:pointer}.bt-ex.conf{background:#9C4A1E;color:#fff;border-color:#9C4A1E}
 .pill.neutro{background:#EEF1F2;color:var(--suave)}
 .switch{position:relative;width:42px;height:24px;border-radius:999px;background:#C9D3CC;border:0;cursor:pointer;transition:background .15s;flex:none}
 .switch::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s}
@@ -434,6 +435,10 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     });
   }
   $("g-btn").addEventListener("click", async function(){
+    if (travado || $("g-btn").disabled) return;
+    $("g-venda").value = $("g-venda").value.replace(/[#\s]/g, "");
+    if (!$("g-venda").value) { msg("g-msg","Informe o número da venda da plataforma.","erro"); return; }
+    if ($("g-venda").value === ultimaVenda) { msg("g-msg","Esta venda acabou de receber um código. Para outra venda, digite o novo número.","erro"); return; }
     msg("g-msg",""); $("g-btn").disabled = true;
     try {
       var j = await post("gerar", { produtoId: $("g-produto").value, plataforma: $("g-plataforma").value, numeroVenda: $("g-venda").value, dataVenda: $("g-data").value, meses: $("g-meses").value });
@@ -443,9 +448,19 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
         "Link direto: "+j.link+"\n\n"+
         "Se preferir, entre em nucleoexato.com.br/acesso.html e digite o código. Ele vale até "+dataBR(j.expiraEm)+" e pode ser usado mais de uma vez. Qualquer dúvida, é só responder por aqui.";
       $("g-resultado").hidden = false; $("g-copiado").textContent = "";
+      /* limpa o formulário e trava o botão: só libera com um novo número de venda */
+      ultimaVenda = $("g-venda").value;
+      $("g-venda").value = ""; $("g-data").value = ""; $("g-meses").value = "6";
+      travado = true; $("g-btn").disabled = true;
+      $("g-venda").focus();
       await carregarCodigos();
+      return;
     } catch(e){ msg("g-msg", esc(e.message), "erro"); }
     $("g-btn").disabled = false;
+  });
+  var travado = false, ultimaVenda = "";
+  $("g-venda").addEventListener("input", function(){
+    if (travado && $("g-venda").value.trim()) { travado = false; $("g-btn").disabled = false; }
   });
   $("g-copiar").addEventListener("click", function(){ navigator.clipboard.writeText($("g-r-texto").value).then(function(){ $("g-copiado").textContent="Copiado."; }); });
 
@@ -453,12 +468,20 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     var j = await api("codigos");
     var l = j.codigos || [];
     if (!l.length) { $("c-lista").innerHTML = '<div class="vazio">Nenhum código gerado ainda.</div>'; return; }
-    var h = '<table class="tb"><tr><th>C&oacute;digo</th><th>Produto</th><th class="esc">Venda</th><th class="esc">Gerado</th><th>Validade</th><th>Usos</th><th>Situa&ccedil;&atilde;o</th></tr>';
+    var h = '<table class="tb"><tr><th>C&oacute;digo</th><th>Produto</th><th class="esc">Venda</th><th class="esc">Gerado</th><th>Validade</th><th>Usos</th><th>Situa&ccedil;&atilde;o</th><th></th></tr>';
     l.forEach(function(c){
       var pill = c.status==="ativo"?'<span class="pill">ativo</span>':c.status==="usado"?'<span class="pill neutro">usado</span>':'<span class="pill off">'+esc(c.status)+'</span>';
-      h += '<tr><td class="mono">'+esc(c.codigo)+'</td><td>'+esc(c.produto)+'</td><td class="esc">'+esc(c.plataforma)+(c.numeroVenda?' &middot; '+esc(c.numeroVenda):'')+'</td><td class="esc">'+dataBR(c.criadoEm)+'</td><td>'+dataBR(c.expiraEm)+'</td><td>'+c.usos+'</td><td>'+pill+'</td></tr>';
+      h += '<tr><td class="mono">'+esc(c.codigo)+'</td><td>'+esc(c.produto)+'</td><td class="esc">'+esc(c.plataforma)+(c.numeroVenda?' &middot; '+esc(c.numeroVenda):'')+'</td><td class="esc">'+dataBR(c.criadoEm)+'</td><td>'+dataBR(c.expiraEm)+'</td><td>'+c.usos+'</td><td>'+pill+'</td><td><button type="button" class="bt-ex" data-cod="'+esc(c.codigo)+'">Excluir</button></td></tr>';
     });
     $("c-lista").innerHTML = h + '</table>';
+    Array.prototype.forEach.call($("c-lista").querySelectorAll(".bt-ex"), function(b){
+      b.addEventListener("click", async function(){
+        if (!b.classList.contains("conf")) { b.classList.add("conf"); b.textContent = "Confirmar exclusão?"; setTimeout(function(){ b.classList.remove("conf"); b.textContent = "Excluir"; }, 5000); return; }
+        b.disabled = true;
+        try { await api("codigos", { method:"DELETE", headers:{"content-type":"application/json"}, body: JSON.stringify({ codigo: b.getAttribute("data-cod") }) }); await carregarCodigos(); }
+        catch(e){ b.disabled = false; msg("g-msg", esc(e.message), "erro"); }
+      });
+    });
   }
 
   /* ---------- início ---------- */

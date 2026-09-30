@@ -26,3 +26,17 @@ export async function onRequestGet({ request, env }) {
   lista.sort((a, b) => (b.criadoEm || 0) - (a.criadoEm || 0));
   return json({ total: lista.length, codigos: lista });
 }
+
+// DELETE /api/admin/codigos — exclui UM código de acesso (usado para limpar
+// códigos de teste). Corpo: { codigo }. Exige sessão do painel.
+export async function onRequestDelete({ request, env }) {
+  const erro = await exigirSessao(request, env); if (erro) return erro;
+  if (!env.ACESSOS) return json({ erro: "Falta ligar o KV ACESSOS na Cloudflare." }, 503);
+  let corpo;
+  try { corpo = await request.json(); } catch { return json({ erro: "corpo inválido" }, 400); }
+  const codigo = String((corpo && corpo.codigo) || "").trim().toUpperCase();
+  if (!/^[A-Z0-9]{4,16}$/.test(codigo)) return json({ erro: "código inválido" }, 400);
+  if (!(await env.ACESSOS.get(codigo))) return json({ erro: "código não encontrado" }, 404);
+  await env.ACESSOS.delete(codigo);
+  return json({ ok: true, codigo });
+}

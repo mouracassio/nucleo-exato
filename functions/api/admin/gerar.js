@@ -12,6 +12,24 @@ export async function onRequestPost({ request, env }) {
   try { corpo = await request.json(); } catch { return json({ erro: "corpo inválido" }, 400); }
   const { produtoId, meses, plataforma, numeroVenda, dataVenda } = corpo;
 
+  const venda = String(numeroVenda || "").replace(/[#\s]/g, "");
+  if (!venda) return json({ erro: "Informe o número da venda da plataforma antes de gerar o código." }, 400);
+
+  // Trava contra código duplicado: mesma plataforma + mesmo nº de venda + mesmo produto.
+  {
+    let cur;
+    do {
+      const pag = await env.ACESSOS.list({ cursor: cur, limit: 1000 });
+      for (const k of pag.keys) {
+        const m = k.metadata || {};
+        if (String(m.numeroVenda || "").replace(/[#\s]/g, "") === venda && String(m.plataforma || "") === String(plataforma || "") && String(m.produtoId || "") === String(produtoId || "")) {
+          return json({ erro: "Já existe o código " + k.name + " para esta venda e este produto. Use o que já foi gerado (aparece na lista abaixo) em vez de gerar outro." }, 409);
+        }
+      }
+      cur = pag.list_complete ? null : pag.cursor;
+    } while (cur);
+  }
+
   const txt = await env.PRODUTOS.get("produto:" + String(produtoId || ""));
   if (!txt) return json({ erro: "produto não encontrado" }, 404);
   const p = JSON.parse(txt);
@@ -30,7 +48,7 @@ export async function onRequestPost({ request, env }) {
 
   const registro = {
     produto: p.nome, produtoId: p.id, arquivo: arquivos[0], arquivos, sku: p.sku || "",
-    plataforma: String(plataforma || ""), numeroVenda: String(numeroVenda || ""), dataVenda: String(dataVenda || ""),
+    plataforma: String(plataforma || ""), numeroVenda: venda, dataVenda: String(dataVenda || ""),
     criadoEm, expiraEm, usos: 0,
   };
   await env.ACESSOS.put(codigo, JSON.stringify(registro), { metadata: registro });
