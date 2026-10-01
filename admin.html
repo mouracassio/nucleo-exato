@@ -554,7 +554,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
   async function carregarVendas(){
     var j = await api("vendas");
     estado.vendas = j.vendas || [];
-    var hoje = new Date(); var mes = hoje.toISOString().slice(0,7);
+    var hoje = new Date(); var mes = hoje.getFullYear()+"-"+String(hoje.getMonth()+1).padStart(2,"0");
     var pagas = estado.vendas.filter(function(v){ return v.status==="paga"; });
     var doMes = pagas.filter(function(v){ return (v.dataVenda||"").slice(0,7)===mes; });
     $("v-k-mes-n").textContent = doMes.length; $("v-k-mes-lbl").textContent = hoje.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
