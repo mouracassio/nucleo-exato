@@ -24,6 +24,8 @@ export const CAMPOS = {
   arquivado: false,    // some do painel (nunca é apagado do banco)
   ordem: 100,          // menor aparece primeiro
   obs: "",             // anotações internas (não vai pro site)
+  entrega: "",         // o que o cliente recebe: "planilha Excel (.xlsx)", "arquivo Word e PDF (.zip)"...
+  comoUsar: "",        // 1 a 3 frases de "no dia a dia" para o texto de entrega (vem do LEIA-ME)
 };
 
 const PREFIXO = "produto:";
@@ -76,7 +78,7 @@ export async function onRequestPost({ request, env }) {
   const p = { ...CAMPOS };
   for (const k of Object.keys(CAMPOS)) if (k in corpo) p[k] = corpo[k];
   p.id = String(p.id || "").trim().toLowerCase();
-  for (const k of ["nome", "resumo", "preco", "capa", "alt", "pagina", "checkout", "arquivo", "sku", "categoria", "obs"]) p[k] = String(p[k] || "").trim();
+  for (const k of ["nome", "resumo", "preco", "capa", "alt", "pagina", "checkout", "arquivo", "sku", "categoria", "obs", "entrega", "comoUsar"]) p[k] = String(p[k] || "").trim();
   p.arquivos = Array.isArray(p.arquivos) ? p.arquivos.map(a => String(a || "").trim()).filter(Boolean) : [];
   // compatibilidade nos dois sentidos com o cadastro antigo de arquivo único
   if (!p.arquivos.length && p.arquivo) p.arquivos = [p.arquivo];

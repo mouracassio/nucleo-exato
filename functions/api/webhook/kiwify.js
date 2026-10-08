@@ -12,6 +12,7 @@
 import { json } from "../admin/sessao.js";
 import { PREFIXO, normalizarVenda, salvarVenda } from "../admin/vendas.js";
 import { listarProdutos } from "../admin/produtos.js";
+import { gerarAcesso, encontrarOuCriarCliente } from "../admin/acesso-lib.js";
 
 export async function onRequestPost({ request, env }) {
   if (!env.PRODUTOS) return json({ erro: "Falta ligar o KV PRODUTOS." }, 503);
@@ -59,8 +60,30 @@ export async function onRequestPost({ request, env }) {
   else if (/approved|paid/i.test(evento + statusPedido)) status = "paga";
   else if (!anterior) return json({ ok: true, ignorado: evento || statusPedido }); // pendente, boleto gerado etc.
 
+  // cadastro do cliente com tudo que a Kiwify manda (nome, e-mail, celular, CPF/CNPJ, cidade/UF)
+  let cliente = null;
+  try {
+    cliente = await encontrarOuCriarCliente(env, {
+      nome: cli.full_name || cli.first_name || "", email: cli.email || "", telefone: cli.mobile || cli.phone || "",
+      cpfCnpj: cli.CPF || cli.cpf || cli.CNPJ || cli.cnpj || "", cidade: cli.city || "", uf: cli.state || "",
+      cep: cli.zipcode || cli.zip_code || "", endereco: cli.street || "", numero: cli.number || "", complemento: cli.complement || "", bairro: cli.neighborhood || "",
+      origem: "Kiwify",
+    });
+  } catch {}
+
+  // código de acesso no painel (a Kiwify entrega pela área de membros; o código é o reforço e o link do e-mail/WhatsApp)
+  let codigo = anterior ? (anterior.codigo || "") : "", codigoExpiraEm = anterior ? (anterior.codigoExpiraEm || 0) : 0;
+  if (status === "paga" && !codigo && produtoId && env.ACESSOS) {
+    try {
+      const r = await gerarAcesso(env, { produtoId, plataforma: "Kiwify", numeroVenda: orderId, dataVenda, origin: url.origin });
+      codigo = r.codigo; codigoExpiraEm = r.expiraEm;
+    } catch {}
+  }
+
   const v = normalizarVenda({
     id, canal: "Kiwify",
+    clienteId: cliente ? cliente.id : undefined, comoChamar: cliente ? cliente.comoChamar : undefined, telefone: cliente ? cliente.telefone : undefined,
+    codigo, codigoExpiraEm,
     produtoId: anterior ? (anterior.produtoId || produtoId) : produtoId,
     produto: String(prod.product_name || (anterior && anterior.produto) || "Produto Kiwify"),
     sku,

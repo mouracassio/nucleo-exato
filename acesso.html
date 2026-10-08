@@ -24,6 +24,18 @@
     <input type="text" name="codigo" maxlength="8" autocomplete="off" autocapitalize="characters" required placeholder="EX: 7K2P9XQF">
     <button type="submit">Acessar material</button>
   </form>
+  <script>
+  /* link direto (acesso.html?codigo=XXXXXXXX): o código já vem preenchido, é só clicar */
+  (function(){
+    try {
+      var c = (new URLSearchParams(location.search).get("codigo") || "").trim().toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8);
+      if (!c) return;
+      var i = document.querySelector('input[name="codigo"]'); i.value = c;
+      document.querySelector(".acesso-wrap .sub").textContent = "Seu código já está preenchido. Clique em Acessar material para baixar.";
+      document.querySelector("button[type=submit]").focus();
+    } catch (e) {}
+  })();
+  </script>
   <p style="margin-top:30px;font-size:13.5px;color:var(--suave)">Prof. Eng. C&aacute;ssio Moura &middot; N&uacute;cleo Exato</p>
 </div>
 </body>

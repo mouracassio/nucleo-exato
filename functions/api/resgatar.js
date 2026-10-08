@@ -95,7 +95,7 @@ function paginaLista(codigo, registro, arquivos) {
     '<p class="sub">Clique em cada item para baixar. Baixe todos e guarde no seu computador. ' +
     'Este código vale até ' + venceEm + ' e pode ser usado quantas vezes você precisar até lá.</p>' +
     '<ul>' + itens + '</ul>' +
-    '<p class="rodape">Dúvida ou problema para baixar: nucleoexato@gmail.com · WhatsApp (34) 99913-1399.<br>' +
+    '<p class="rodape">Dúvida ou problema para baixar: responda pela mesma mensagem em que recebeu este acesso.<br>' +
     'Tudo que é verdadeiro respeita o tempo. — Prof. Eng. Cássio Moura</p>' +
     '</body></html>';
   return new Response(html, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
