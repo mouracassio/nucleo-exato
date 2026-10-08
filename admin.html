@@ -104,10 +104,11 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
 .mensagem .acao span{font-size:13px;color:var(--suave)}
 .entrega .sem{font-size:14px;color:var(--suave);margin:6px 0 10px}
 /* vendas */
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:0 0 18px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 18px}
 .kpi{background:#fff;border:1px solid var(--borda);border-radius:12px;padding:14px 16px}
 .kpi small{display:block;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--suave)}
 .kpi b{display:block;font-family:Cambria,Georgia,serif;font-size:26px;color:var(--grafite);margin-top:4px}
+.kpi.liq b{color:var(--verde-esc)}
 .kpi span{font-size:12.5px;color:var(--suave)}
 .chk-linha{display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--grafite);cursor:pointer;white-space:nowrap}
 .chk-linha input{margin:0}
@@ -161,9 +162,11 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     <p class="sub">Uma linha por venda, em todos os canais. Ao salvar a venda, o painel cadastra o cliente, gera o c&oacute;digo de acesso na hora e monta os textos de entrega para Mercado Livre, e-mail e WhatsApp. Venda da Kiwify entra sozinha pelo webhook.</p>
     <div class="kpis">
       <div class="kpi"><small>Vendas no m&ecirc;s</small><b id="v-k-mes-n">0</b><span id="v-k-mes-lbl"></span></div>
-      <div class="kpi"><small>Faturado no m&ecirc;s</small><b id="v-k-mes-r">R$ 0,00</b><span>vendas pagas</span></div>
+      <div class="kpi"><small>Faturado no m&ecirc;s</small><b id="v-k-mes-r">R$ 0,00</b><span>o que o cliente pagou</span></div>
+      <div class="kpi liq"><small>L&iacute;quido no m&ecirc;s</small><b id="v-k-mes-l">R$ 0,00</b><span id="v-k-mes-d">depois de tarifas e patroc&iacute;nio</span></div>
       <div class="kpi"><small>Total de vendas</small><b id="v-k-tot-n">0</b><span>desde o in&iacute;cio</span></div>
       <div class="kpi"><small>Total faturado</small><b id="v-k-tot-r">R$ 0,00</b><span>vendas pagas</span></div>
+      <div class="kpi liq"><small>L&iacute;quido total</small><b id="v-k-tot-l">R$ 0,00</b><span id="v-k-tot-d">depois de tarifas e patroc&iacute;nio</span></div>
     </div>
     <div class="barra-acoes">
       <button class="btn" id="v-nova">Registrar venda</button>
@@ -174,11 +177,14 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     <div class="form" id="v-form" hidden>
       <h2 id="v-form-titulo">Registrar venda</h2>
       <div class="campos c3">
-        <div class="campo"><label>SKU do produto</label><input type="text" id="v-sku" class="destaque" list="lista-skus" placeholder="SST-EPI-01" autocomplete="off"><small>O mesmo SKU do an&uacute;ncio do Mercado Livre. Digite e tecle Enter: preenche produto e valor.</small><datalist id="lista-skus"></datalist></div>
+        <div class="campo"><label>SKU ou nome do produto</label><input type="text" id="v-sku" class="destaque" list="lista-skus" placeholder="SST-EPI-01 ou parte do nome" autocomplete="off"><small>SKU do an&uacute;ncio do Mercado Livre ou parte do nome do produto. Digite e tecle Enter: preenche produto e valor.</small><datalist id="lista-skus"></datalist></div>
         <div class="campo c2"><label>Produto</label><select id="v-produto"></select></div>
         <div class="campo"><label>Canal</label><select id="v-canal"><option>Mercado Livre</option><option>Kiwify</option><option>Site</option><option>Direta</option><option>Shopee</option><option>Outra</option></select></div>
         <div class="campo"><label>N&uacute;mero do pedido</label><input type="text" id="v-numero" placeholder="2000018755142170"><small>No ML &eacute; o n&uacute;mero da venda. Venda direta pode ficar vazio.</small></div>
-        <div class="campo"><label>Valor pago (R$)</label><input type="text" id="v-valor" placeholder="19,90"></div>
+        <div class="campo"><label>Valor pago pelo cliente (R$)</label><input type="text" id="v-valor" placeholder="19,90"></div>
+        <div class="campo"><label>Tarifa da plataforma (R$)</label><input type="text" id="v-tarifa" placeholder="0,00"><small>Comiss&atilde;o que o ML ou a Kiwify descontam nesta venda. No ML est&aacute; no detalhe da venda.</small></div>
+        <div class="campo"><label>Patroc&iacute;nio do an&uacute;ncio (R$)</label><input type="text" id="v-patrocinio" placeholder="0,00"><small>Custo de Product Ads atribu&iacute;do a esta venda, se houve.</small></div>
+        <div class="campo"><label>Voc&ecirc; recebe (R$)</label><input type="text" id="v-liquido" readonly style="background:var(--claro);font-weight:700"><small>Valor pago menos tarifa e patroc&iacute;nio.</small></div>
         <div class="campo"><label>Data da venda</label><input type="date" id="v-data"></div>
         <div class="campo"><label>Situa&ccedil;&atilde;o</label><select id="v-status"><option value="paga">Paga</option><option value="reembolsada">Reembolsada</option><option value="cancelada">Cancelada</option></select></div>
         <div class="campo"><label>Observa&ccedil;&atilde;o</label><input type="text" id="v-obs" placeholder="opcional"></div>
@@ -785,14 +791,27 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
       var o = document.createElement("option"); o.value = p.id; o.textContent = (p.sku?p.sku+" · ":"")+p.nome+(arquivosDe(p).length?"":"  (sem arquivo de entrega)"); o.setAttribute("data-preco", p.preco||""); sv.appendChild(o);
     });
     var d = $("lista-skus"); d.innerHTML = "";
-    estado.produtos.filter(function(p){ return !p.arquivado && p.sku; }).forEach(function(p){ var o = document.createElement("option"); o.value = p.sku; o.textContent = p.nome; d.appendChild(o); });
+    estado.produtos.filter(function(p){ return !p.arquivado; }).forEach(function(p){ var o = document.createElement("option"); o.value = p.sku || p.nome; o.textContent = p.sku ? p.nome : ""; d.appendChild(o); var o2 = document.createElement("option"); o2.value = p.nome; o2.textContent = p.sku || ""; d.appendChild(o2); });
   }
   function aplicarSku(){
-    var sku = $("v-sku").value.trim().toUpperCase(); if (!sku) return;
-    var p = estado.produtos.find(function(x){ return String(x.sku||"").toUpperCase()===sku; });
-    if (!p) { msg("v-msg", "SKU <b>"+esc(sku)+"</b> não está em nenhum produto do painel. Confira o SKU no cadastro do produto.", "erro"); return; }
-    $("v-produto").value = p.id; $("v-valor").value = p.preco || ""; msg("v-msg", "");
+    var txt = $("v-sku").value.trim(); if (!txt) return;
+    var sku = txt.toUpperCase(), q = norm(txt);
+    var ativos = estado.produtos.filter(function(x){ return !x.arquivado; });
+    /* 1) SKU exato; 2) SKU ou nome começando pelo texto; 3) nome contendo o texto */
+    var p = ativos.find(function(x){ return String(x.sku||"").toUpperCase()===sku; })
+         || ativos.find(function(x){ return String(x.sku||"").toUpperCase().indexOf(sku)===0; });
+    if (!p) {
+      var achados = ativos.filter(function(x){ return norm(x.nome).indexOf(q)>=0; });
+      if (achados.length===1) p = achados[0];
+      else if (achados.length>1) { msg("v-msg", achados.length+" produtos com \""+esc(txt)+"\" no nome: "+achados.slice(0,6).map(function(x){ return esc(x.sku||x.id); }).join(", ")+(achados.length>6?"…":"")+". Escolha na lista ou escreva mais.", "info"); return; }
+    }
+    if (!p) { msg("v-msg", "Nenhum produto com SKU ou nome <b>"+esc(txt)+"</b>. Confira o cadastro do produto.", "erro"); return; }
+    $("v-sku").value = p.sku || p.nome; $("v-produto").value = p.id; $("v-valor").value = p.preco || ""; msg("v-msg", "");
   }
+  function num(s){ s = String(s||"").trim().replace(/^R\$\s*/,"").replace(/\.(?=\d{3}(\D|$))/g,"").replace(",","."); var n = Number(s); return Number.isFinite(n) ? n : 0; }
+  function numBR(n){ return (Number(n)||0).toFixed(2).replace(".",","); }
+  function calcLiquido(){ $("v-liquido").value = numBR(num($("v-valor").value) - num($("v-tarifa").value) - num($("v-patrocinio").value)); }
+  ["v-valor","v-tarifa","v-patrocinio"].forEach(function(id){ $(id).addEventListener("input", calcLiquido); });
   $("v-sku").addEventListener("change", aplicarSku);
   $("v-sku").addEventListener("keydown", function(e){ if (e.key==="Enter") { e.preventDefault(); aplicarSku(); $("v-numero").focus(); } });
   $("v-produto").addEventListener("change", function(){
@@ -824,6 +843,10 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     $("v-k-mes-r").textContent = reais(doMes.reduce(function(a,v){ return a+(Number(v.valor)||0); },0));
     $("v-k-tot-n").textContent = pagas.length;
     $("v-k-tot-r").textContent = reais(pagas.reduce(function(a,v){ return a+(Number(v.valor)||0); },0));
+    function liq(v){ return (Number(v.valor)||0) - (Number(v.tarifaPlataforma)||0) - (Number(v.custoAnuncio)||0); }
+    function desc(l){ var t = l.reduce(function(a,v){ return a+(Number(v.tarifaPlataforma)||0); },0), p = l.reduce(function(a,v){ return a+(Number(v.custoAnuncio)||0); },0); return "tarifas "+reais(t)+" · patrocínio "+reais(p); }
+    $("v-k-mes-l").textContent = reais(doMes.reduce(function(a,v){ return a+liq(v); },0)); $("v-k-mes-d").textContent = desc(doMes);
+    $("v-k-tot-l").textContent = reais(pagas.reduce(function(a,v){ return a+liq(v); },0)); $("v-k-tot-d").textContent = desc(pagas);
     desenharVendas();
     if (estado.clientes.length) desenharClientes();
   }
@@ -831,13 +854,13 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     var q = norm($("v-busca").value.trim());
     var lista = estado.vendas.filter(function(v){ if(!q) return true; return norm([v.comprador,v.produto,v.numeroVenda,v.codigo,v.canal,v.sku,v.email].join(" ")).indexOf(q)>=0; });
     if (!lista.length) { $("v-lista").innerHTML = '<div class="vazio">'+(estado.vendas.length?'Nenhuma venda com esse filtro.':'Nenhuma venda registrada ainda.')+'</div>'; return; }
-    var h = '<table class="tb"><tr><th>Data</th><th>Produto</th><th>Cliente</th><th class="esc">Canal &middot; pedido</th><th>Valor</th><th>Situa&ccedil;&atilde;o</th><th>Entregue</th><th>Avaliado</th><th></th></tr>';
+    var h = '<table class="tb"><tr><th>Data</th><th>Produto</th><th>Cliente</th><th class="esc">Canal &middot; pedido</th><th>Pago</th><th>Voc&ecirc; recebe</th><th>Situa&ccedil;&atilde;o</th><th>Entregue</th><th>Avaliado</th><th></th></tr>';
     lista.forEach(function(v){
       var pill = v.status==="paga" ? '<span class="pill pago">paga</span>' : '<span class="pill reemb">'+esc(v.status)+'</span>';
       h += '<tr'+(v.status!=="paga"?' class="inativo"':'')+'><td>'+dataISO(v.dataVenda)+'</td>'+
         '<td class="nome"><b>'+esc(v.produto)+'</b><small>'+(v.sku?esc(v.sku)+' &middot; ':'')+(v.codigo?'<span class="mono">'+esc(v.codigo)+'</span>':'<span class="pill off">sem código</span>')+'</small></td>'+
         '<td class="nome"><b style="font-weight:600">'+esc(v.comprador||"—")+'</b><small>'+esc(v.email||"")+(v.telefone?(v.email?' &middot; ':'')+esc(fone(v.telefone)):'')+'</small></td>'+
-        '<td class="esc canal">'+esc(v.canal)+(v.numeroVenda?' &middot; '+esc(v.numeroVenda):'')+'</td><td>'+reais(v.valor)+'</td><td>'+pill+'</td>'+
+        '<td class="esc canal">'+esc(v.canal)+(v.numeroVenda?' &middot; '+esc(v.numeroVenda):'')+'</td><td>'+reais(v.valor)+'</td><td><b>'+reais((Number(v.valor)||0)-(Number(v.tarifaPlataforma)||0)-(Number(v.custoAnuncio)||0))+'</b>'+((Number(v.tarifaPlataforma)||Number(v.custoAnuncio))?'<br><small style="color:var(--suave)">tarifa '+reais(v.tarifaPlataforma)+(Number(v.custoAnuncio)?' · ads '+reais(v.custoAnuncio):'')+'</small>':'<br><small class="pill off">sem tarifa</small>')+'</td><td>'+pill+'</td>'+
         '<td><label class="chk-linha"><input type="checkbox" data-id="'+esc(v.id)+'" data-campo="entregue"'+(v.entregue?' checked':'')+'> sim</label></td>'+
         '<td><label class="chk-linha"><input type="checkbox" data-id="'+esc(v.id)+'" data-campo="avaliado"'+(v.avaliado?' checked':'')+'> sim</label></td>'+
         '<td class="acoes"><button class="btn peq linha" data-textos="'+esc(v.id)+'">Textos</button><button class="btn cinza peq" data-v-editar="'+esc(v.id)+'">Editar</button><button type="button" class="bt-ex" data-vid="'+esc(v.id)+'">Excluir</button></td></tr>';
@@ -870,7 +893,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     $("v-form-titulo").textContent = v ? "Editar venda: "+v.produto : "Registrar venda";
     $("v-sku").value = v ? (v.sku||"") : ""; $("v-produto").value = v ? (v.produtoId||"") : "";
     $("v-canal").value = v ? v.canal : "Mercado Livre"; $("v-numero").value = v ? (v.numeroVenda||"") : "";
-    $("v-valor").value = v ? String(v.valor).replace(".",",") : ""; $("v-data").value = v ? v.dataVenda : hojeISO();
+    $("v-valor").value = v ? numBR(v.valor) : ""; $("v-tarifa").value = v && Number(v.tarifaPlataforma) ? numBR(v.tarifaPlataforma) : ""; $("v-patrocinio").value = v && Number(v.custoAnuncio) ? numBR(v.custoAnuncio) : ""; calcLiquido(); $("v-data").value = v ? v.dataVenda : hojeISO();
     $("v-status").value = v ? v.status : "paga"; $("v-obs").value = v ? (v.obs||"") : "";
     $("v-cli-busca").value = ""; $("v-cli-info").textContent = v && v.clienteId ? "Cliente desta venda carregado abaixo." : "Se não encontrar, preencha abaixo: o cadastro é criado junto com a venda.";
     preencherCliente(v ? (clienteDe(v) || { nome: v.comprador, email: v.email, telefone: v.telefone, comoChamar: v.comoChamar }) : null);
@@ -889,7 +912,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     var p = estado.produtos.find(function(x){ return x.id===op.value; }) || {};
     var cli = lerCliente();
     if (!cli.nome.trim()) { msg("v-msg","Informe pelo menos o nome do cliente.","erro"); return; }
-    var venda = { id: estado.vendaEditando || "", canal: $("v-canal").value, produtoId: op.value, produto: p.nome||"", sku: p.sku||"", valor: $("v-valor").value, dataVenda: $("v-data").value, numeroVenda: $("v-numero").value, status: $("v-status").value, obs: $("v-obs").value };
+    var venda = { id: estado.vendaEditando || "", canal: $("v-canal").value, produtoId: op.value, produto: p.nome||"", sku: p.sku||"", valor: $("v-valor").value, tarifaPlataforma: $("v-tarifa").value, custoAnuncio: $("v-patrocinio").value, dataVenda: $("v-data").value, numeroVenda: $("v-numero").value, status: $("v-status").value, obs: $("v-obs").value };
     if (!estado.vendaEditando && (venda.canal==="Kiwify"||venda.canal==="Site")) venda.entregue = true;
     $("v-salvar").disabled = true; msg("v-msg","");
     try {

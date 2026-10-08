@@ -25,7 +25,10 @@ export const CAMPOS = {
   comoChamar: "",      // como tratar nas mensagens
   email: "",           // cópia do cadastro
   telefone: "",        // cópia do cadastro, só números com DDI (55...)
-  valor: 0,            // em reais, número (18.9)
+  valor: 0,            // em reais, número (18.9): o que o cliente pagou
+  tarifaPlataforma: 0, // tarifa/comissão cobrada pela plataforma (ML, Kiwify) nesta venda
+  custoAnuncio: 0,     // custo de patrocínio do anúncio (Product Ads) atribuído a esta venda
+  valorLiquido: 0,     // valor - tarifaPlataforma - custoAnuncio (calculado ao salvar)
   numeroVenda: "",     // nº da venda/pedido na plataforma
   dataVenda: "",       // AAAA-MM-DD
   codigo: "",          // código de acesso gerado
@@ -69,9 +72,12 @@ export function normalizarVenda(v, anterior) {
   out.status = ["paga", "reembolsada", "cancelada"].includes(out.status) ? out.status : "paga";
   out.entregue = !!out.entregue; out.avaliado = !!out.avaliado;
   out.obs = String(out.obs || "").slice(0, 1000);
-  let val = out.valor;
-  if (typeof val === "string") val = Number(val.replace(/\./g, "").replace(",", "."));
-  out.valor = Number.isFinite(Number(val)) ? Math.round(Number(val) * 100) / 100 : 0;
+  for (const k of ["valor", "tarifaPlataforma", "custoAnuncio"]) {
+    let val = out[k];
+    if (typeof val === "string") val = Number(val.trim().replace(/^R\$\s*/, "").replace(/\.(?=\d{3}(\D|$))/g, "").replace(",", "."));
+    out[k] = Number.isFinite(Number(val)) ? Math.round(Number(val) * 100) / 100 : 0;
+  }
+  out.valorLiquido = Math.round((out.valor - out.tarifaPlataforma - out.custoAnuncio) * 100) / 100;
   out.criadoEm = base.criadoEm || Date.now();
   out.atualizadoEm = Date.now();
   return out;
@@ -84,6 +90,7 @@ export function validarVenda(v) {
   if (!v.produto) erros.push("informe o produto");
   if (!v.dataVenda || !/^\d{4}-\d{2}-\d{2}$/.test(v.dataVenda)) erros.push("data da venda no formato AAAA-MM-DD");
   if (!(v.valor >= 0)) erros.push("valor inválido");
+  if (!(v.tarifaPlataforma >= 0) || !(v.custoAnuncio >= 0)) erros.push("tarifa e patrocínio não podem ser negativos");
   return erros;
 }
 
