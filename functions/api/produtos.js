@@ -2,6 +2,10 @@
 // É o que a loja usa; o painel usa /api/admin/produtos.
 export async function onRequestGet({ env }) {
   if (!env.PRODUTOS) return resposta({ produtos: [], aviso: "KV PRODUTOS não ligado" });
+  return resposta({ produtos: await listarPublicos(env) });
+}
+
+export async function listarPublicos(env) {
   const lista = [];
   let cursor;
   do {
@@ -13,13 +17,16 @@ export async function onRequestGet({ env }) {
         const p = JSON.parse(txt);
         if (!p.ativo || p.arquivado) continue;
         lista.push({ id: p.id, nome: p.nome, resumo: p.resumo, preco: p.preco, capa: p.capa, alt: p.alt,
-                     pagina: p.pagina, checkout: p.checkout, categoria: p.categoria, destaqueHome: !!p.destaqueHome, ordem: p.ordem || 100 });
+                     pagina: p.pagina, checkout: p.checkout, categoria: p.categoria, subcategoria: p.subcategoria || "",
+                     sku: p.sku || "", tags: Array.isArray(p.tags) ? p.tags : [], entrega: p.entrega || "",
+                     destaqueHome: !!p.destaqueHome, destaqueLoja: !!p.destaqueLoja, ordem: p.ordem || 100,
+                     criadoEm: p.criadoEm || 0 });
       } catch {}
     }
     cursor = pag.list_complete ? null : pag.cursor;
   } while (cursor);
   lista.sort((a, b) => (a.ordem - b.ordem) || a.nome.localeCompare(b.nome, "pt-BR"));
-  return resposta({ produtos: lista });
+  return lista;
 }
 
 function resposta(obj) {

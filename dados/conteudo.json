@@ -471,30 +471,89 @@
   "categorias": [
     {
       "id": "seguranca-do-trabalho",
-      "nome": "Treinamentos",
-      "intro": "Segurança do Trabalho e ergonomia: material técnico produzido a partir do texto oficial da norma, para capacitar a equipe.",
+      "nome": "Segurança do Trabalho",
+      "intro": "Planilhas, treinamentos e controles de SST feitos a partir do texto oficial de cada norma, por engenheiro de segurança do trabalho.",
       "cor": "#BE2828",
       "ativo": true,
       "arquivado": false,
-      "subs": []
+      "subs": [
+        {
+          "id": "riscos-pgr",
+          "nome": "Riscos, PGR e plano de ação"
+        },
+        {
+          "id": "documentos-prazos",
+          "nome": "Documentos, prazos e eSocial"
+        },
+        {
+          "id": "treinamentos",
+          "nome": "Treinamentos e capacitação"
+        },
+        {
+          "id": "epi-equipamentos",
+          "nome": "EPI, máquinas e equipamentos"
+        },
+        {
+          "id": "saude-ergonomia",
+          "nome": "Saúde ocupacional e ergonomia"
+        },
+        {
+          "id": "acidentes-indicadores",
+          "nome": "Acidentes, CAT e indicadores"
+        }
+      ]
     },
     {
       "id": "educacao",
       "nome": "Educação",
-      "intro": "Material de sala de aula, usado antes de virar produto: as aulas foram dadas, as atividades aplicadas e os planos entregues à coordenação.",
+      "intro": "Material de sala de aula usado antes de virar produto: aulas dadas, atividades aplicadas e planos entregues à coordenação.",
       "cor": "#174197",
       "ativo": true,
       "arquivado": false,
-      "subs": []
+      "subs": [
+        {
+          "id": "matematica-em",
+          "nome": "Matemática — Ensino Médio"
+        },
+        {
+          "id": "educacao-inclusiva",
+          "nome": "Educação inclusiva (apostilas adaptadas)"
+        },
+        {
+          "id": "ferramentas-professor",
+          "nome": "Ferramentas do professor"
+        }
+      ]
     },
     {
       "id": "gestao",
-      "nome": "Gestão e Finanças",
-      "intro": "Planilhas em Excel para o dia a dia de quem cuida do dinheiro e da operação: caixa, estoque, vendas, preço, ponto, contas, obra, frota e condomínio. Sem macro, sem senha, prontas para usar.",
+      "nome": "Gestão",
+      "intro": "Planilhas em Excel para quem cuida do dinheiro, da operação, das pessoas e da produção. Sem macro, sem senha, prontas para usar.",
       "cor": "#157347",
       "ativo": true,
       "arquivado": false,
-      "subs": []
+      "subs": [
+        {
+          "id": "financeira",
+          "nome": "Gestão financeira"
+        },
+        {
+          "id": "comercial",
+          "nome": "Comercial e vendas"
+        },
+        {
+          "id": "operacoes",
+          "nome": "Operações, obras e estoque"
+        },
+        {
+          "id": "pessoas",
+          "nome": "Pessoas e administrativa"
+        },
+        {
+          "id": "producao",
+          "nome": "Produção e engenharia industrial"
+        }
+      ]
     }
   ]
 }

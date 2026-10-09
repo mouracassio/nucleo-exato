@@ -1,15 +1,18 @@
 // A loja dinâmica — roda antes de qualquer página do site.
 //
-// O site continua sendo HTML estático gerado pelo painel.html, mas os PRODUTOS
-// passam a viver no KV PRODUTOS (editado em admin.html). Este arquivo junta as
-// duas coisas na hora de servir, sem ninguém precisar publicar no GitHub:
+// O site continua sendo HTML estático, mas os PRODUTOS vivem no KV PRODUTOS
+// (editado em admin.html). Este arquivo junta as duas coisas na hora de servir,
+// sem ninguém precisar publicar no GitHub:
 //
 //   1. /links.js        → o bloco "var PRODUTOS = {...}" é trocado pelos produtos
 //                          ativos do banco (preço e checkout atuais).
-//   2. páginas .html    → produto desativado some da loja (o cartão é escondido);
-//                          produto novo que ainda não está no HTML ganha um cartão
-//                          no fim da grade certa (materiais.html por categoria,
-//                          index.html só os marcados "destaque na home").
+//   2. index.html       → produto desativado some (cartão escondido); produto novo
+//                          marcado "destaque na home" ganha um cartão na grade.
+//   3. materiais.html   → a LOJA v2 (08/10/2026): a página recebe, dentro de
+//                          <script id="loja-dados">, os produtos ativos e as
+//                          categorias/subcategorias de dados/conteudo.json, e
+//                          monta vitrine, painel lateral, busca e grades no navegador.
+//   4. todas as páginas → ganham o campo de busca no topo (leva para a loja).
 //
 // Se o KV estiver vazio ou desligado, nada muda: o site sai como está no GitHub.
 
@@ -24,16 +27,14 @@ export async function onRequest(context) {
   const ehLinks = caminho === "/links.js";
   const ehHtml = caminho === "/" || caminho.endsWith(".html") || !caminho.includes(".");
   if (!ehLinks && !ehHtml) return next();
-  if (caminho === "/admin.html" || caminho.startsWith("/api/")) return next();
+  if (caminho === "/admin.html" || caminho === "/admin" || caminho === "/painel.html" || caminho.startsWith("/api/")) return next();
 
   const resposta = await next();
-  const dados = await carregar(env, url.origin);
-  if (!dados.produtos || !dados.produtos.length) return resposta;
-
-  if (ehLinks) return reescreverLinks(resposta, dados.produtos);
-
   const tipo = resposta.headers.get("content-type") || "";
-  if (!tipo.includes("text/html")) return resposta;
+  if (ehHtml && !tipo.includes("text/html")) return resposta;
+
+  const dados = await carregar(env, url.origin);
+  if (ehLinks) return dados.produtos.length ? reescreverLinks(resposta, dados.produtos) : resposta;
   return reescreverHtml(resposta, caminho, dados);
 }
 
@@ -58,11 +59,19 @@ async function carregar(env, origem) {
   let categorias = [];
   try {
     const r = await env.ASSETS.fetch(origem + "/dados/conteudo.json");
-    if (r.ok) categorias = ((await r.json()).categorias || []).filter(c => c.ativo && !c.arquivado).map(c => c.id);
+    if (r.ok) categorias = ((await r.json()).categorias || []).filter(c => c.ativo && !c.arquivado)
+      .map(c => ({ id: c.id, nome: c.nome, cor: c.cor || "", intro: c.intro || "", subs: (c.subs || []).map(s => ({ id: s.id, nome: s.nome })) }));
   } catch {}
 
   cache = { quando: Date.now(), produtos, categorias };
   return cache;
+}
+
+function publico(p) {
+  return { id: p.id, nome: p.nome, resumo: p.resumo || "", preco: p.preco || "", capa: p.capa || "", alt: p.alt || p.nome,
+           pagina: p.pagina || "", checkout: p.checkout || "", categoria: p.categoria || "", subcategoria: p.subcategoria || "",
+           sku: p.sku || "", tags: Array.isArray(p.tags) ? p.tags : [], entrega: p.entrega || "",
+           destaqueHome: !!p.destaqueHome, destaqueLoja: !!p.destaqueLoja, ordem: p.ordem || 100, criadoEm: p.criadoEm || 0 };
 }
 
 /* ---------- links.js ---------- */
@@ -83,6 +92,10 @@ async function reescreverLinks(resposta, produtos) {
 
 /* ---------- páginas ---------- */
 
+const BUSCA_TOPO = '<form class="busca-topo" action="materiais.html" method="get" role="search">' +
+  '<input type="search" name="q" placeholder="Buscar material (NR, planilha, matem&aacute;tica...)" aria-label="Buscar na loja" autocomplete="off">' +
+  '<button type="submit" aria-label="Buscar"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></form>';
+
 function reescreverHtml(resposta, caminho, dados) {
   const { produtos, categorias } = dados;
   const inativos = produtos.filter(p => !p.ativo || p.arquivado).map(p => p.id);
@@ -90,11 +103,13 @@ function reescreverHtml(resposta, caminho, dados) {
   const ehHome = caminho === "/" || caminho === "/index.html";
   const ehLoja = caminho === "/materiais.html" || caminho === "/materiais";
 
-  let grade = -1;               // índice da grade .produtos atual
-  const vistos = new Set();     // ids que já têm cartão em alguma grade da página
-  const porGrade = [];          // ids por grade
-
   const rw = new HTMLRewriter();
+
+  // campo de busca no topo de todas as páginas (a loja já tem o seu, no HTML)
+  let buscaPosta = false;
+  rw.on("div.barra nav", {
+    element(el) { if (!buscaPosta && !ehLoja) { el.before(BUSCA_TOPO, { html: true }); buscaPosta = true; } },
+  });
 
   if (inativos.length) {
     rw.on("head", {
@@ -105,21 +120,23 @@ function reescreverHtml(resposta, caminho, dados) {
     });
   }
 
-  if (ehHome || ehLoja) {
+  if (ehLoja) {
+    rw.on("script#loja-dados", {
+      element(el) {
+        const json = JSON.stringify({ produtos: ativos.map(publico), categorias, geradoEm: Date.now() })
+          .replace(/<\//g, "<\\/");
+        el.setInnerContent(json, { html: true });
+      },
+    });
+    return rw.transform(resposta);
+  }
+
+  if (ehHome && ativos.length) {
+    const vistos = new Set();
     rw.on("div.produtos", {
       element(el) {
-        grade++;
-        const minha = grade;
-        porGrade[minha] = new Set();
         el.onEndTag(fim => {
-          let faltam;
-          if (ehHome) {
-            faltam = ativos.filter(p => p.destaqueHome && !vistos.has(p.id));
-          } else {
-            const cat = categorias[minha];
-            const ultima = minha === categorias.length - 1 || categorias.length === 0;
-            faltam = ativos.filter(p => !vistos.has(p.id) && (p.categoria === cat || (ultima && !categorias.includes(p.categoria))));
-          }
+          const faltam = ativos.filter(p => p.destaqueHome && !vistos.has(p.id));
           if (faltam.length) fim.before(faltam.map(cartao).join(""), { html: true });
           faltam.forEach(p => vistos.add(p.id));
         });

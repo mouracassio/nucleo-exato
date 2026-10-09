@@ -1,0 +1,132 @@
+/* =============================================================================
+   LOJA v2 (08/10/2026): vitrine rotativa, painel lateral fixo, busca e grades
+   por categoria e subcategoria. Só a página materiais.html usa este arquivo.
+   O campo de busca do topo (.busca-topo) está em estilo.css, porque aparece
+   em todas as páginas.
+   ============================================================================= */
+
+.loja-v2{background:var(--fundo)}
+.loja-corpo{max-width:1280px;margin:0 auto;padding:26px 22px 40px;display:grid;
+  grid-template-columns:262px minmax(0,1fr);gap:34px;align-items:start}
+
+/* ---------- painel lateral (fixo ao rolar) ---------- */
+.loja-lado{position:sticky;top:76px;max-height:calc(100vh - 92px);overflow:auto;
+  scrollbar-width:thin;padding-right:4px}
+.lado-abrir{display:none}
+.lado-todos,.lado-cat-nome,.lado-sub{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  text-decoration:none;color:var(--texto);border-radius:9px;padding:9px 11px;line-height:1.3;transition:background .12s,color .12s}
+.lado-todos{font-family:Cambria,Georgia,serif;font-weight:700;font-size:17px;color:var(--grafite);
+  border:1.5px solid var(--borda);background:#fff;margin-bottom:12px}
+.lado-todos:hover,.lado-todos.ativa{border-color:var(--verde);background:#EEF8F2;color:var(--verde-esc)}
+.lado-cat{margin-bottom:6px;border-radius:11px;background:#fff;border:1.5px solid var(--borda);overflow:hidden}
+.lado-cat-nome .nm{flex:1;display:flex;align-items:center}
+.lado-cat-nome{font-family:Cambria,Georgia,serif;font-weight:700;font-size:16.5px;color:var(--grafite);padding:11px 12px}
+.lado-cat-nome i{width:10px;height:10px;border-radius:3px;flex:none;margin-right:8px;display:inline-block}
+.lado-cat-nome:hover,.lado-cat.ativa .lado-cat-nome{background:#F2F6F3;color:var(--verde-esc)}
+.lado-subs{display:none;padding:2px 8px 8px}
+.lado-cat.aberta .lado-subs{display:block}
+.lado-sub{font-size:14.5px;color:var(--suave);padding:7px 10px 7px 26px;position:relative}
+.lado-sub::before{content:"";position:absolute;left:13px;top:50%;width:6px;height:6px;border-radius:999px;
+  background:#C9D3CC;transform:translateY(-50%)}
+.lado-sub:hover{background:#F2F6F3;color:var(--texto)}
+.lado-sub.ativa{background:#EEF8F2;color:var(--verde-esc);font-weight:700}
+.lado-sub.ativa::before{background:var(--verde)}
+.n{font-size:12.5px;color:var(--suave);font-weight:400;font-family:Calibri,-apple-system,"Segoe UI",system-ui,sans-serif;
+  background:#EEF1EF;border-radius:999px;padding:1px 8px;flex:none}
+.lado-sub.ativa .n,.lado-todos.ativa .n{background:#D8F0E2;color:var(--verde-esc)}
+.lado-rodape{margin-top:16px;padding:14px 4px 4px;border-top:1px solid var(--borda)}
+.lado-selos{display:flex;flex-wrap:wrap;gap:6px}
+.lado-selos span{border:1px solid #C9D3CC;background:#fff;color:var(--suave);border-radius:999px;padding:3px 10px;font-size:12.5px}
+.lado-comprei{display:block;margin-top:12px;font-size:14px;text-decoration:none;font-weight:700}
+
+/* ---------- vitrine (destaques rotativos) ---------- */
+.loja-v2 section.vitrine{padding:0}
+.vitrine{background:#fff;border:1.5px solid var(--borda);border-radius:16px;overflow:hidden;
+  box-shadow:0 2px 8px rgba(20,40,30,.07);margin-bottom:26px}
+.vitrine-slides{position:relative;min-height:300px}
+.vitrine .slide{display:none;grid-template-columns:minmax(220px,42%) 1fr;gap:0;align-items:stretch}
+.vitrine .slide.on{display:grid;animation:vit-entra .45s ease}
+@keyframes vit-entra{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+.vitrine .slide-capa{background:#18261F}
+.vitrine .slide-capa img{width:100%;height:100%;object-fit:cover;display:block;aspect-ratio:1/1}
+.vitrine .slide-txt{padding:30px 32px 28px;display:flex;flex-direction:column;justify-content:center}
+.vitrine .rot{font-size:12.5px;letter-spacing:2.2px;text-transform:uppercase;font-weight:700;margin-bottom:10px}
+.vitrine h2{font-size:clamp(22px,2.6vw,30px);line-height:1.2;margin:0}
+.vitrine p{color:var(--suave);font-size:16px;margin-top:12px;max-width:560px;
+  display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.slide-acao{display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin-top:22px}
+.slide-acao .val{font-family:Cambria,Georgia,serif;font-size:28px;color:var(--grafite)}
+.slide-acao .bt{background:var(--verde);color:#fff;text-decoration:none;font-weight:700;font-size:16px;
+  padding:11px 22px;border-radius:9px;white-space:nowrap}
+.slide-acao .bt:hover{background:var(--verde-esc)}
+.slide-acao .bt.off{background:#8A9299;pointer-events:none}
+.slide-acao .ver{font-size:14.5px;text-decoration:none}
+.vitrine-ctrl{display:flex;align-items:center;gap:10px;padding:12px 18px;border-top:1px solid var(--borda);background:var(--claro)}
+.vitrine-ctrl>button{border:1px solid var(--borda);background:#fff;color:var(--grafite);width:34px;height:34px;
+  border-radius:999px;font-size:22px;line-height:1;cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.vitrine-ctrl>button:hover{background:var(--verde);color:#fff;border-color:var(--verde)}
+.vitrine-ctrl .pontos{display:flex;gap:7px;margin:0 4px}
+.vitrine-ctrl .pontos button{width:10px;height:10px;padding:0;border:0;border-radius:999px;background:#C9D3CC;
+  cursor:pointer;transition:width .2s,background .2s}
+.vitrine-ctrl .pontos button:hover{background:var(--verde-esc)}
+.vitrine-ctrl .pontos button[aria-current="true"]{background:var(--verde);width:24px}
+.vitrine-conta{margin-left:auto;font-size:13px;color:var(--suave);letter-spacing:1px}
+
+/* ---------- cabeçalho da listagem ---------- */
+.loja-cabeca{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap;
+  padding-bottom:16px;border-bottom:1px solid var(--borda);margin-bottom:6px}
+.trilha{font-size:13px;color:var(--suave);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
+.trilha a{color:var(--suave);text-decoration:none}
+.trilha a:hover{color:var(--verde-esc)}
+.loja-cabeca h1{font-size:clamp(24px,3vw,32px);letter-spacing:-.3px}
+.loja-sub{color:var(--suave);font-size:15.5px;margin-top:6px;max-width:680px}
+.ordenar{font-size:14px;color:var(--suave);display:flex;align-items:center;gap:8px;white-space:nowrap}
+.ordenar select{font:inherit;color:var(--texto);border:1.5px solid var(--borda);border-radius:9px;padding:8px 10px;background:#fff}
+
+/* ---------- seções e grades ---------- */
+.sec-cat{margin-top:34px}
+.sec-cat h2{font-size:24px;display:flex;align-items:center;gap:10px}
+.sec-cat h2::after{content:"";flex:1;height:1px;background:var(--borda);margin-left:8px}
+.sec-cat p{color:var(--suave);font-size:15.5px;margin-top:6px;max-width:720px}
+.sec-sub{margin-top:22px}
+.sec-sub h3{font-size:17.5px;color:var(--grafite);display:flex;align-items:center;gap:8px}
+.sec-sub h3 a{color:inherit;text-decoration:none}
+.sec-sub h3 a:hover{color:var(--verde-esc)}
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(236px,1fr));gap:18px;margin-top:14px}
+.loja-v2 .grade .prod{max-width:none;border-radius:12px}
+.loja-v2 .grade .prod .capa{background:#18261F;aspect-ratio:1/1;overflow:hidden}
+.loja-v2 .grade .prod .capa img,.loja-v2 .grade .prod .capa .semcapa{width:100%;height:100%;object-fit:cover;display:block}
+.loja-v2 .grade .prod .txt{padding:14px 15px 16px}
+.loja-v2 .grade .prod .eti{font-size:11.5px;letter-spacing:1.4px;text-transform:uppercase;font-weight:700;margin-bottom:5px;display:block}
+.loja-v2 .grade .prod h3{font-size:16.5px;line-height:1.3;margin-bottom:6px}
+.loja-v2 .grade .prod p{font-size:14px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.loja-v2 .grade .prod .rod{margin-top:12px;padding:10px 12px;border-radius:9px}
+.loja-v2 .grade .prod .val{font-size:20px}
+.loja-v2 .grade .prod .bt{font-size:14px;padding:8px 14px;border-radius:8px}
+.loja-v2 .grade .prod .ver{font-size:13.5px;margin-top:9px}
+.loja-v2 .grade:hover .prod{opacity:1}
+.loja-vazio{margin:40px 0 20px;padding:26px;border:1.5px dashed var(--borda);border-radius:14px;background:#fff;color:var(--suave)}
+.loja-vazio b{color:var(--grafite);font-size:18px;display:block;margin-bottom:6px;font-family:Cambria,Georgia,serif}
+
+/* ---------- telas menores ---------- */
+@media(max-width:1000px){.loja-corpo{grid-template-columns:230px minmax(0,1fr);gap:24px}}
+@media(max-width:860px){
+  .loja-corpo{grid-template-columns:1fr;gap:16px;padding-top:16px}
+  .loja-lado{position:static;max-height:none;overflow:visible;padding:0}
+  .lado-abrir{display:flex;align-items:center;justify-content:space-between;width:100%;font:inherit;font-weight:700;
+    font-family:Cambria,Georgia,serif;font-size:17px;color:var(--grafite);background:#fff;border:1.5px solid var(--borda);
+    border-radius:11px;padding:12px 14px;cursor:pointer}
+  .lado-abrir .seta{transition:transform .2s}
+  .lado-abrir[aria-expanded="true"] .seta{transform:rotate(180deg)}
+  .lado-conteudo{display:none;margin-top:10px}
+  .loja-lado.aberto .lado-conteudo{display:block}
+  .vitrine .slide{grid-template-columns:1fr}
+  .vitrine .slide-capa img{aspect-ratio:16/9}
+  .vitrine .slide-txt{padding:20px 20px 22px}
+  .grade{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+  .loja-v2 .grade .prod .txt{padding:11px 12px 13px}
+  .loja-v2 .grade .prod h3{font-size:15px}
+  .loja-v2 .grade .prod p{-webkit-line-clamp:2;font-size:13.5px}
+  .loja-v2 .grade .prod .rod{flex-direction:column;align-items:stretch;gap:8px;text-align:center}
+}
+@media(max-width:480px){.grade{grid-template-columns:1fr 1fr;gap:10px}.loja-v2 .grade .prod .val{font-size:18px}}

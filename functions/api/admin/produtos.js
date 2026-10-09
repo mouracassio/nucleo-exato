@@ -4,6 +4,9 @@
 //
 // Um produto nunca é apagado por aqui: para tirar da loja, desative (ativo=false).
 // Para sumir também do painel, marque arquivado=true.
+//
+// 08/10/2026 (loja v2): subcategoria, tags e destaqueLoja. As categorias e
+// subcategorias válidas estão em dados/conteudo.json (chave "categorias").
 import { json, exigirSessao } from "./sessao.js";
 
 export const CAMPOS = {
@@ -18,9 +21,12 @@ export const CAMPOS = {
   arquivo: "",         // 1º arquivo da entrega (compatibilidade com o cadastro antigo)
   arquivos: [],        // lista de chaves no R2 entregues pelo código: ["entregas/mat3-01.zip", ...]
   sku: "",             // SST-EPI-01
-  categoria: "",       // seguranca-do-trabalho | educacao (ids de dados/conteudo.json)
+  categoria: "",       // seguranca-do-trabalho | educacao | gestao (ids de dados/conteudo.json)
+  subcategoria: "",    // id da subcategoria dentro da categoria (ex.: riscos-pgr, matematica-em, financeira)
+  tags: [],            // palavras-chave extras para a busca da loja: ["NR-35", "cinturão", "trava-quedas"]
   ativo: true,         // aparece na loja e pode ser comprado
   destaqueHome: false, // aparece também na página inicial
+  destaqueLoja: false, // entra na vitrine rotativa do topo da loja
   arquivado: false,    // some do painel (nunca é apagado do banco)
   ordem: 100,          // menor aparece primeiro
   obs: "",             // anotações internas (não vai pro site)
@@ -59,6 +65,8 @@ export function validarProduto(p) {
     for (const a of p.arquivos) if (!/^entregas\/[A-Za-z0-9._-]+$/.test(String(a || ""))) erros.push("arquivos: " + a + " (use entregas/nome.zip)");
   }
   if (p.capa && !/^(img\/[A-Za-z0-9._-]+|\/api\/imagem\/[A-Za-z0-9._-]+)$/.test(p.capa)) erros.push("capa: img/nome.jpg ou /api/imagem/nome.jpg");
+  if (p.subcategoria && !/^[a-z0-9-]{1,40}$/.test(p.subcategoria)) erros.push("subcategoria: só letras minúsculas, números e hífen");
+  if (p.tags.length > 30) erros.push("tags: no máximo 30 por produto");
   return erros;
 }
 
@@ -75,24 +83,30 @@ export async function onRequestPost({ request, env }) {
   let corpo;
   try { corpo = await request.json(); } catch { return json({ erro: "corpo inválido" }, 400); }
 
-  const p = { ...CAMPOS };
+  // atualização parcial: se vier só {id, campo...}, completa com o que já está salvo
+  const idPedido = String(corpo.id || "").trim().toLowerCase();
+  const salvo = idPedido ? await env.PRODUTOS.get(PREFIXO + idPedido) : null;
+  const base = salvo && corpo.parcial ? { ...CAMPOS, ...JSON.parse(salvo) } : { ...CAMPOS };
+
+  const p = { ...base };
   for (const k of Object.keys(CAMPOS)) if (k in corpo) p[k] = corpo[k];
-  p.id = String(p.id || "").trim().toLowerCase();
-  for (const k of ["nome", "resumo", "preco", "capa", "alt", "pagina", "checkout", "arquivo", "sku", "categoria", "obs", "entrega", "comoUsar"]) p[k] = String(p[k] || "").trim();
+  p.id = idPedido;
+  for (const k of ["nome", "resumo", "preco", "capa", "alt", "pagina", "checkout", "arquivo", "sku", "categoria", "subcategoria", "obs", "entrega", "comoUsar"]) p[k] = String(p[k] || "").trim();
   p.arquivos = Array.isArray(p.arquivos) ? p.arquivos.map(a => String(a || "").trim()).filter(Boolean) : [];
+  if (typeof p.tags === "string") p.tags = p.tags.split(/[;,]/);
+  p.tags = Array.isArray(p.tags) ? [...new Set(p.tags.map(t => String(t || "").trim()).filter(Boolean))] : [];
   // compatibilidade nos dois sentidos com o cadastro antigo de arquivo único
   if (!p.arquivos.length && p.arquivo) p.arquivos = [p.arquivo];
   if (p.arquivos.length) p.arquivo = p.arquivos[0];
-  p.ativo = !!p.ativo; p.destaqueHome = !!p.destaqueHome; p.arquivado = !!p.arquivado;
+  p.ativo = !!p.ativo; p.destaqueHome = !!p.destaqueHome; p.destaqueLoja = !!p.destaqueLoja; p.arquivado = !!p.arquivado;
   p.ordem = Number(p.ordem) || 100;
   if (!p.alt) p.alt = p.nome;
 
   const erros = validarProduto(p);
   if (erros.length) return json({ erro: erros.join(" · ") }, 400);
 
-  const anterior = await env.PRODUTOS.get(PREFIXO + p.id);
-  p.criadoEm = anterior ? (JSON.parse(anterior).criadoEm || Date.now()) : Date.now();
+  p.criadoEm = salvo ? (JSON.parse(salvo).criadoEm || Date.now()) : Date.now();
   p.atualizadoEm = Date.now();
   await env.PRODUTOS.put(PREFIXO + p.id, JSON.stringify(p));
-  return json({ ok: true, produto: p, novo: !anterior });
+  return json({ ok: true, produto: p, novo: !salvo });
 }

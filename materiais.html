@@ -4,42 +4,78 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Loja &mdash; material t&eacute;cnico e did&aacute;tico | N&uacute;cleo Exato</title>
-<meta name="description" content="Material t&eacute;cnico e did&aacute;tico pronto para uso: ergonomia (NIOSH), Matem&aacute;tica do Ensino M&eacute;dio, planilha de notas e planilhas de gest&atilde;o e finan&ccedil;as. Edit&aacute;vel, com acesso imediato.">
+<meta name="description" content="Planilhas, treinamentos e apostilas prontos para uso: Seguran&ccedil;a do Trabalho (NR-01, NR-06, NR-33, NR-35...), Matem&aacute;tica do Ensino M&eacute;dio e gest&atilde;o. Edit&aacute;vel, com acesso imediato.">
 <meta property="og:title" content="Loja &mdash; material t&eacute;cnico e did&aacute;tico | N&uacute;cleo Exato">
-<meta property="og:description" content="Material t&eacute;cnico e did&aacute;tico pronto para uso: ergonomia (NIOSH), Matem&aacute;tica do Ensino M&eacute;dio, planilha de notas e planilhas de gest&atilde;o e finan&ccedil;as. Edit&aacute;vel, com acesso imediato.">
+<meta property="og:description" content="Planilhas, treinamentos e apostilas prontos para uso: Seguran&ccedil;a do Trabalho, Matem&aacute;tica e gest&atilde;o. Edit&aacute;vel, com acesso imediato.">
 <meta property="og:type" content="website">
 <link rel="stylesheet" href="css/estilo.css">
+<link rel="stylesheet" href="css/loja.css">
 </head>
-<body>
+<body class="loja-v2">
 
 <div class="barra"><div class="wrap">
   <a class="marca" href="index.html">
     <span class="mk"><i class="a"></i><i class="b"></i><i class="c"></i><i class="d"></i></span>
     <span>N&uacute;cleo Exato</span>
   </a>
+  <form class="busca-topo" id="busca-topo" action="materiais.html" method="get" role="search">
+    <input type="search" name="q" id="busca-q" placeholder="Buscar material (NR, planilha, matem&aacute;tica...)" aria-label="Buscar na loja" autocomplete="off">
+    <button type="submit" aria-label="Buscar"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+  </form>
   <nav><a href="index.html">In&iacute;cio</a><a href="materiais.html" class="aqui">Loja</a><a href="servicos.html">Servi&ccedil;os</a><a href="quem-somos.html">Quem somos</a><a href="contato.html">Contato</a></nav>
 </div></div>
 
-<header class="hero"><div class="wrap">
-  <div class="kick">Loja · material pronto</div>
-  <h1>A loja: material pronto, editável, com acesso na hora</h1>
-  <p class="lead">O que a gente produz para uso próprio e publica: apostila técnica, material didático e ferramentas de trabalho. Preço na tela, entrega automática, arquivos abertos em Word, PowerPoint e Excel.</p>
-  <div class="selos"><span class="selo">acesso imediato</span><span class="selo">arquivos editáveis</span><span class="selo">7 dias de garantia</span></div>
-</div></header>
+<div class="loja-corpo">
 
-<section><div class="wrap">
-  <h3 class="frente" style="color:#BE2828">Treinamentos</h3>
-  <p class="intro" style="margin-top:14px">Segurança do Trabalho e ergonomia: material técnico produzido a partir do texto oficial da norma, para capacitar a equipe.</p>
-  <div class="produtos"><div class="prod"><a href="treinamento-nr01.html"><img src="img/capa-sst.jpg" alt="Riscos psicossociais no trabalho — treinamento NR-01" loading="lazy"></a><div class="txt"><h3>Riscos psicossociais — treinamento NR-01</h3><p>Treinamento de 4 horas sobre o Capítulo 1.5 da NR-01. Apostila de 52 páginas nas versões do participante e do instrutor, 29 slides, planilha de inventário em Excel e certificado modelo.</p><div class="rod"><div class="val">R$ <span data-preco="sst">--</span></div><a class="bt" data-produto="sst"><span data-rotulo>Comprar agora</span></a></div><a class="ver" href="treinamento-nr01.html">Ver tudo o que vem &rarr;</a></div></div><div class="prod"><a href="niosh.html"><img src="img/capa-niosh.jpg" alt="Equação do NIOSH" loading="lazy"></a><div class="txt"><h3>Equação do NIOSH — Ergonomia</h3><p>Apostila de 91 páginas, guia rápido de 33 e calculadora em Excel. Versões do aluno e do professor.</p><div class="rod"><div class="val">R$ <span data-preco="niosh">--</span></div><a class="bt" data-produto="niosh"><span data-rotulo>Comprar agora</span></a></div><a class="ver" href="niosh.html">Ver tudo o que vem &rarr;</a></div></div><div class="prod"><span><img src="img/capa-epi.jpg" alt="Gestor de EPI e CA — planilha de controle (NR-06)" loading="lazy"></span><div class="txt"><h3>Gestor de EPI e CA — planilha de controle (NR-06)</h3><p>Ficha de entrega, controle do CA, estoque e matriz por função, com a validade do CA separada da vida útil do produto.</p><div class="rod"><div class="val">R$ <span data-preco="epi">--</span></div><a class="bt" data-produto="epi"><span data-rotulo>Comprar agora</span></a></div></div></div><div class="prod"><span><img src="img/capa-treinamentos-venc.jpg" alt="Central de Treinamentos e Vencimentos — planilha (NR-01)" loading="lazy"></span><div class="txt"><h3>Central de Treinamentos e Vencimentos — planilha (NR-01)</h3><p>Quem precisa de qual treinamento, o que já foi feito, o que venceu e o que vence agora — mais o certificado com os sete campos que a NR-01 exige.</p><div class="rod"><div class="val">R$ <span data-preco="treinamentos-venc">--</span></div><a class="bt" data-produto="treinamentos-venc"><span data-rotulo>Comprar agora</span></a></div></div></div><div class="prod"><span><img src="img/capa-matriz-sst.jpg" alt="Matriz de Documentos e Calendário de SST — planilha" loading="lazy"></span><div class="txt"><h3>Matriz de Documentos e Calendário de SST — planilha</h3><p>A resposta para o que todo técnico de SST pergunta: o que ter, de quanto em quanto revisar e por quanto tempo guardar.</p><div class="rod"><div class="val">R$ <span data-preco="matriz-sst">--</span></div><a class="bt" data-produto="matriz-sst"><span data-rotulo>Comprar agora</span></a></div></div></div><div class="prod"><span><img src="img/capa-cartoes-operador.jpg" alt="Cartões de Operador e Inspeções — planilha (NR-11 e NR-12)" loading="lazy"></span><div class="txt"><h3>Cartões de Operador e Inspeções — planilha (NR-11 e NR-12)</h3><p>Controle do cartão de identificação do operador, da aptidão médica e da inspeção dos equipamentos, com o cartão pronto para imprimir.</p><div class="rod"><div class="val">R$ <span data-preco="cartoes-operador">--</span></div><a class="bt" data-produto="cartoes-operador"><span data-rotulo>Comprar agora</span></a></div></div></div><div class="prod"><span><img src="img/capa-nr13.jpg" alt="Controle de Inspeções da NR-13 — planilha por TAG" loading="lazy"></span><div class="txt"><h3>Controle de Inspeções da NR-13 — planilha por TAG</h3><p>Caldeiras, vasos de pressão, tubulações e tanques: uma TAG por equipamento, cada exame com o Profissional Habilitado e o número da ART, e o vencimento calculado.</p><div class="rod"><div class="val">R$ <span data-preco="nr13">--</span></div><a class="bt" data-produto="nr13"><span data-rotulo>Comprar agora</span></a></div></div></div></div>
+  <aside class="loja-lado" id="loja-lado" aria-label="Categorias da loja">
+    <button class="lado-abrir" id="lado-abrir" type="button" aria-expanded="false">Categorias <span class="seta">&#9662;</span></button>
+    <div class="lado-conteudo" id="lado-conteudo">
+      <a class="lado-todos" href="#" data-ir="" id="lado-todos">Todos os materiais <span class="n" id="lado-total"></span></a>
+      <div id="lado-cats"></div>
+      <div class="lado-rodape">
+        <div class="lado-selos"><span>acesso imediato</span><span>arquivos edit&aacute;veis</span><span>7 dias de garantia</span></div>
+        <a class="lado-comprei" href="acesso.html">J&aacute; comprei: baixar meu material &rarr;</a>
+      </div>
+    </div>
+  </aside>
 
-  <h3 class="frente" style="color:#174197">Educação</h3>
-  <p class="intro" style="margin-top:14px">Material de sala de aula, usado antes de virar produto: as aulas foram dadas, as atividades aplicadas e os planos entregues à coordenação.</p>
-  <div class="produtos"><div class="prod"><a href="matematica-1ano.html"><img src="img/capa-mat1.jpg" alt="Matemática 1º ano" loading="lazy"></a><div class="txt"><h3>Matemática — 1º ano</h3><p>48 aulas em Word, 48 slides, 48 atividades e 48 planos de aula. Conjuntos, funções, progressões e lógica.</p><div class="rod"><div class="val">R$ <span data-preco="mat1">--</span></div><a class="bt" data-produto="mat1"><span data-rotulo>Comprar agora</span></a></div><a class="ver" href="matematica-1ano.html">Ver tudo o que vem &rarr;</a></div></div><div class="prod"><a href="matematica-2ano.html"><img src="img/capa-mat2.jpg" alt="Matemática 2º ano" loading="lazy"></a><div class="txt"><h3>Matemática — 2º ano</h3><p>37 aulas com slide, atividade e plano de aula. Matrizes, combinatória, probabilidade, trigonometria e geometria espacial.</p><div class="rod"><div class="val">R$ <span data-preco="mat2">--</span></div><a class="bt" data-produto="mat2"><span data-rotulo>Comprar agora</span></a></div><a class="ver" href="matematica-2ano.html">Ver tudo o que vem &rarr;</a></div></div><div class="prod"><a href="matematica-3ano.html"><img src="img/capa-mat3.jpg" alt="Matemática 3º ano" loading="lazy"></a><div class="txt"><h3>Matemática — 3º ano</h3><p>38 aulas com slide, atividade e plano de aula. Geometria analítica, complexos, polinômios e matemática financeira.</p><div class="rod"><div class="val">R$ <span data-preco="mat3">--</span></div><a class="bt" data-produto="mat3"><span data-rotulo>Comprar agora</span></a></div><a class="ver" href="matematica-3ano.html">Ver tudo o que vem &rarr;</a></div></div><div class="prod"><a href="matematica-combo.html"><img src="img/capa-combo.jpg" alt="Combo três anos" loading="lazy"></a><div class="txt"><h3>Combo — os três anos</h3><p>1º, 2º e 3º ano completos: 123 aulas, 124 apresentações e 123 planos de aula, no mesmo padrão.</p><div class="rod"><div class="val">R$ <span data-preco="combo">--</span></div><a class="bt" data-produto="combo"><span data-rotulo>Comprar agora</span></a></div><a class="ver" href="matematica-combo.html">Ver tudo o que vem &rarr;</a></div></div><div class="prod"><a href="planilha-de-notas.html"><img src="img/capa-planilha.jpg" alt="Planilha de Notas" loading="lazy"></a><div class="txt"><h3>Planilha de Notas Trimestral</h3><p>5 turmas, 3 trimestres e resultado final. Você digita a nota; médias e recuperações saem sozinhas.</p><div class="rod"><div class="val">R$ <span data-preco="planilha">--</span></div><a class="bt" data-produto="planilha"><span data-rotulo>Comprar agora</span></a></div><a class="ver" href="planilha-de-notas.html">Ver tudo o que vem &rarr;</a></div></div></div>
+  <main class="loja-main">
 
-  <h3 class="frente" style="color:#157347">Gestão e Finanças</h3>
-  <p class="intro" style="margin-top:14px">Planilhas em Excel para o dia a dia de quem cuida do dinheiro e da operação: caixa, estoque, vendas, preço, ponto, contas, obra, frota e condomínio. Sem macro, sem senha, prontas para usar.</p>
-  <div class="produtos"></div>
-</div></section>
+    <section class="vitrine" id="vitrine" aria-label="Destaques" hidden>
+      <div class="vitrine-slides" id="vitrine-slides"></div>
+      <div class="vitrine-ctrl">
+        <button type="button" id="vit-ant" aria-label="Destaque anterior">&lsaquo;</button>
+        <div class="pontos" id="vit-pontos"></div>
+        <button type="button" id="vit-prox" aria-label="Pr&oacute;ximo destaque">&rsaquo;</button>
+        <span class="vitrine-conta" id="vit-conta"></span>
+      </div>
+    </section>
+
+    <div class="loja-cabeca">
+      <div>
+        <div class="trilha" id="loja-trilha"></div>
+        <h1 id="loja-titulo">Todos os materiais</h1>
+        <p class="loja-sub" id="loja-subtitulo">Material pronto, edit&aacute;vel, com acesso na hora. Preço na tela, entrega autom&aacute;tica.</p>
+      </div>
+      <label class="ordenar">Ordenar
+        <select id="loja-ordem">
+          <option value="rec">Recomendados</option>
+          <option value="novo">Mais recentes</option>
+          <option value="az">A a Z</option>
+          <option value="za">Z a A</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="loja-grades" class="loja-grades"></div>
+
+    <div class="loja-vazio" id="loja-vazio" hidden>
+      <b>Nada encontrado com esses termos.</b>
+      <p>Tente uma palavra s&oacute; (ex.: "EPI", "PGR", "matem&aacute;tica") ou navegue pelas categorias ao lado. Se o material que voc&ecirc; precisa n&atilde;o existe ainda, <a href="servicos-educacao.html">a gente faz sob encomenda</a>.</p>
+    </div>
+
+  </main>
+</div>
 
 <section class="alt"><div class="wrap">
   <h2>Por que comprar aqui</h2>
@@ -67,6 +103,244 @@
   <div class="links"><a href="servicos.html">Servi&ccedil;os</a><a href="materiais.html">Materiais</a><a href="quem-somos.html">Quem somos</a><a href="contato.html">Contato</a><a href="acesso.html">J&aacute; comprei</a><a data-email href="#">contato</a></div>
 </div></footer>
 
+<!-- Os dados da loja entram aqui pelo middleware (functions/_middleware.js). Se vier vazio, a página busca /api/produtos e /dados/conteudo.json. -->
+<script id="loja-dados" type="application/json"></script>
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var estado = { produtos: [], categorias: [], cat: "", sub: "", q: "", ordem: "rec", slide: 0, timer: null };
+
+  /* ---------- utilidades ---------- */
+  function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function norm(s) {
+    return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
+      .replace(/nr[\s.-]*(\d+)/g, "nr$1").replace(/[^a-z0-9]+/g, " ").trim();
+  }
+  function catDe(id) { for (var i = 0; i < estado.categorias.length; i++) if (estado.categorias[i].id === id) return estado.categorias[i]; return null; }
+  function subDe(cat, id) { if (!cat) return null; for (var i = 0; i < cat.subs.length; i++) if (cat.subs[i].id === id) return cat.subs[i]; return null; }
+  function ativosDe(cat, sub) {
+    return estado.produtos.filter(function (p) { return (!cat || p.categoria === cat) && (!sub || p.subcategoria === sub); });
+  }
+  function ordenar(lista) {
+    var o = estado.ordem, l = lista.slice();
+    if (o === "az") l.sort(function (a, b) { return a.nome.localeCompare(b.nome, "pt-BR"); });
+    else if (o === "za") l.sort(function (a, b) { return b.nome.localeCompare(a.nome, "pt-BR"); });
+    else if (o === "novo") l.sort(function (a, b) { return (b.criadoEm || 0) - (a.criadoEm || 0) || (a.ordem - b.ordem); });
+    else l.sort(function (a, b) { return (a.ordem - b.ordem) || a.nome.localeCompare(b.nome, "pt-BR"); });
+    return l;
+  }
+  function botaoHtml(p) {
+    var ok = p.checkout && p.checkout.indexOf("http") === 0 && p.checkout.indexOf("COLE-AQUI") === -1;
+    return '<a class="bt' + (ok ? "" : " off") + '" data-produto="' + esc(p.id) + '"' + (ok ? ' href="' + esc(p.checkout) + '" rel="noopener"' : "") +
+      '><span data-rotulo>' + (ok ? "Comprar agora" : "Em breve") + "</span></a>";
+  }
+  function cartao(p) {
+    var cat = catDe(p.categoria), sub = subDe(cat, p.subcategoria);
+    var capa = p.capa ? '<img src="' + esc(p.capa) + '" alt="' + esc(p.alt || p.nome) + '" loading="lazy">' : '<span class="semcapa"></span>';
+    var img = p.pagina ? '<a href="' + esc(p.pagina) + '">' + capa + "</a>" : capa;
+    var eti = sub ? '<span class="eti" style="color:' + esc(cat.cor) + '">' + esc(sub.nome) + "</span>" : (cat ? '<span class="eti" style="color:' + esc(cat.cor) + '">' + esc(cat.nome) + "</span>" : "");
+    var ver = p.pagina ? '<a class="ver" href="' + esc(p.pagina) + '">Ver tudo o que vem &rarr;</a>' : "";
+    return '<div class="prod"><div class="capa">' + img + "</div><div class=\"txt\">" + eti + "<h3>" + esc(p.nome) + "</h3><p>" + esc(p.resumo) + "</p>" +
+      '<div class="rod"><div class="val">R$ <span data-preco="' + esc(p.id) + '">' + esc(p.preco) + "</span></div>" + botaoHtml(p) + "</div>" + ver + "</div></div>";
+  }
+  function grade(lista) { return '<div class="grade">' + lista.map(cartao).join("") + "</div>"; }
+
+  /* ---------- busca ---------- */
+  function pontuar(p, termos) {
+    var nome = norm(p.nome), resumo = norm(p.resumo), sku = norm(p.sku), tags = norm((p.tags || []).join(" "));
+    var cat = catDe(p.categoria), sub = subDe(cat, p.subcategoria);
+    var extra = norm((cat ? cat.nome : "") + " " + (sub ? sub.nome : "") + " " + (p.entrega || ""));
+    var tudo = nome + " " + resumo + " " + sku + " " + tags + " " + extra;
+    var pts = 0;
+    for (var i = 0; i < termos.length; i++) {
+      var t = termos[i];
+      if (tudo.indexOf(t) === -1) return 0;
+      if (nome.indexOf(t) !== -1) pts += 5;
+      if (sku.indexOf(t) !== -1 || tags.indexOf(t) !== -1) pts += 3;
+      if (extra.indexOf(t) !== -1) pts += 2;
+      if (resumo.indexOf(t) !== -1) pts += 1;
+    }
+    return pts;
+  }
+  function buscar(q) {
+    var termos = norm(q).split(" ").filter(Boolean);
+    if (!termos.length) return [];
+    return estado.produtos.map(function (p) { return { p: p, s: pontuar(p, termos) }; })
+      .filter(function (x) { return x.s > 0; })
+      .sort(function (a, b) { return b.s - a.s || a.p.ordem - b.p.ordem; })
+      .map(function (x) { return x.p; });
+  }
+
+  /* ---------- painel lateral ---------- */
+  function desenharLado() {
+    $("lado-total").textContent = estado.produtos.length;
+    var html = "";
+    estado.categorias.forEach(function (c) {
+      var n = ativosDe(c.id).length;
+      if (!n) return;
+      var aberta = !estado.cat || estado.cat === c.id;
+      html += '<div class="lado-cat' + (aberta ? " aberta" : "") + (estado.cat === c.id && !estado.sub ? " ativa" : "") + '">' +
+        '<a href="#' + esc(c.id) + '" data-ir="' + esc(c.id) + '" class="lado-cat-nome"><span class="nm"><i style="background:' + esc(c.cor) + '"></i>' + esc(c.nome) + '</span><span class="n">' + n + "</span></a>";
+      var subs = c.subs.map(function (s) { var k = ativosDe(c.id, s.id).length; return k ? '<a href="#' + esc(c.id) + "/" + esc(s.id) + '" data-ir="' + esc(c.id) + "/" + esc(s.id) + '" class="lado-sub' + (estado.cat === c.id && estado.sub === s.id ? " ativa" : "") + '">' + esc(s.nome) + ' <span class="n">' + k + "</span></a>" : ""; }).join("");
+      var semSub = ativosDe(c.id).filter(function (p) { return !subDe(c, p.subcategoria); }).length;
+      if (semSub && c.subs.length) subs += '<a href="#' + esc(c.id) + '/outros" data-ir="' + esc(c.id) + '/outros" class="lado-sub' + (estado.cat === c.id && estado.sub === "outros" ? " ativa" : "") + '">Outros <span class="n">' + semSub + "</span></a>";
+      html += '<div class="lado-subs">' + subs + "</div></div>";
+    });
+    $("lado-cats").innerHTML = html;
+    $("lado-todos").classList.toggle("ativa", !estado.cat && !estado.q);
+  }
+
+  /* ---------- vitrine ---------- */
+  function desenharVitrine() {
+    var dest = estado.produtos.filter(function (p) { return p.destaqueLoja; });
+    if (!dest.length) dest = estado.produtos.filter(function (p) { return p.destaqueHome; });
+    if (!dest.length) dest = ordenar(estado.produtos).slice(0, 5);
+    dest = ordenar(dest).slice(0, 8);
+    var v = $("vitrine");
+    if (!dest.length || estado.q) { v.hidden = true; parar(); return; }
+    v.hidden = false;
+    $("vitrine-slides").innerHTML = dest.map(function (p, i) {
+      var cat = catDe(p.categoria), sub = subDe(cat, p.subcategoria);
+      return '<div class="slide' + (i === 0 ? " on" : "") + '" data-i="' + i + '">' +
+        '<div class="slide-capa">' + (p.capa ? '<img src="' + esc(p.capa) + '" alt="' + esc(p.alt || p.nome) + '"' + (i ? ' loading="lazy"' : "") + ">" : "") + "</div>" +
+        '<div class="slide-txt"><div class="rot" style="color:' + esc(cat ? cat.cor : "") + '">' + esc(sub ? sub.nome : (cat ? cat.nome : "Destaque")) + "</div>" +
+        "<h2>" + esc(p.nome) + "</h2><p>" + esc(p.resumo) + "</p>" +
+        '<div class="slide-acao"><span class="val">R$ ' + esc(p.preco) + "</span>" + botaoHtml(p) + (p.pagina ? '<a class="ver" href="' + esc(p.pagina) + '">Ver tudo o que vem &rarr;</a>' : "") + "</div></div></div>";
+    }).join("");
+    $("vit-pontos").innerHTML = dest.map(function (_, i) { return '<button type="button" data-i="' + i + '" aria-label="Destaque ' + (i + 1) + '"' + (i === 0 ? ' aria-current="true"' : "") + "></button>"; }).join("");
+    estado.slide = 0; estado.total = dest.length;
+    $("vit-conta").textContent = "1 / " + dest.length;
+    rodar();
+  }
+  function irSlide(i) {
+    var n = estado.total || 1; i = ((i % n) + n) % n; estado.slide = i;
+    var slides = $("vitrine-slides").children, pontos = $("vit-pontos").children;
+    for (var k = 0; k < slides.length; k++) { slides[k].classList.toggle("on", k === i); if (pontos[k]) { if (k === i) pontos[k].setAttribute("aria-current", "true"); else pontos[k].removeAttribute("aria-current"); } }
+    $("vit-conta").textContent = (i + 1) + " / " + n;
+  }
+  function rodar() { parar(); if ((estado.total || 0) > 1) estado.timer = setInterval(function () { irSlide(estado.slide + 1); }, 6500); }
+  function parar() { if (estado.timer) { clearInterval(estado.timer); estado.timer = null; } }
+
+  /* ---------- grades ---------- */
+  function secaoCat(c, soSub) {
+    var html = "";
+    var lista = ativosDe(c.id);
+    if (!lista.length) return "";
+    if (!soSub) html += '<div class="sec-cat" id="cat-' + esc(c.id) + '"><h2 style="color:' + esc(c.cor) + '">' + esc(c.nome) + ' <span class="n">' + lista.length + "</span></h2>" + (c.intro ? "<p>" + esc(c.intro) + "</p>" : "") + "</div>";
+    c.subs.forEach(function (s) {
+      if (soSub && soSub !== s.id) return;
+      var l = ordenar(ativosDe(c.id, s.id));
+      if (!l.length) return;
+      html += '<div class="sec-sub" id="sub-' + esc(c.id) + "-" + esc(s.id) + '">' + (soSub ? "" : '<h3><a href="#' + esc(c.id) + "/" + esc(s.id) + '" data-ir="' + esc(c.id) + "/" + esc(s.id) + '">' + esc(s.nome) + '</a> <span class="n">' + l.length + "</span></h3>") + grade(l) + "</div>";
+    });
+    var outros = ordenar(lista.filter(function (p) { return !subDe(c, p.subcategoria); }));
+    if (outros.length && (!soSub || soSub === "outros")) html += '<div class="sec-sub">' + (soSub ? "" : "<h3>" + (c.subs.length ? "Outros" : "Materiais") + ' <span class="n">' + outros.length + "</span></h3>") + grade(outros) + "</div>";
+    return html;
+  }
+  function desenharGrades() {
+    var g = $("loja-grades"), vazio = $("loja-vazio"), titulo = $("loja-titulo"), sub = $("loja-subtitulo"), trilha = $("loja-trilha");
+    var html = "", total = 0;
+    if (estado.q) {
+      var r = buscar(estado.q);
+      total = r.length;
+      titulo.textContent = total ? ("Resultados para “" + estado.q + "”") : ("Nada para “" + estado.q + "”");
+      sub.textContent = total === 1 ? "1 material encontrado." : total + " materiais encontrados.";
+      trilha.innerHTML = '<a href="#" data-ir="">Loja</a> &rsaquo; Busca';
+      if (total) html = grade(estado.ordem === "rec" ? r : ordenar(r));
+    } else if (estado.cat) {
+      var c = catDe(estado.cat);
+      if (!c) { estado.cat = ""; return desenharGrades(); }
+      var s = subDe(c, estado.sub);
+      total = ativosDe(c.id, estado.sub === "outros" ? "" : estado.sub).length;
+      if (estado.sub === "outros") total = ativosDe(c.id).filter(function (p) { return !subDe(c, p.subcategoria); }).length;
+      titulo.textContent = s ? s.nome : (estado.sub === "outros" ? c.nome + ": outros" : c.nome);
+      sub.textContent = s ? (c.nome + " · " + total + (total === 1 ? " material" : " materiais")) : (c.intro || "");
+      trilha.innerHTML = '<a href="#" data-ir="">Loja</a> &rsaquo; ' + (s ? '<a href="#' + esc(c.id) + '" data-ir="' + esc(c.id) + '">' + esc(c.nome) + "</a> &rsaquo; " + esc(s.nome) : esc(c.nome));
+      html = secaoCat(c, estado.sub || null);
+    } else {
+      total = estado.produtos.length;
+      titulo.textContent = "Todos os materiais";
+      sub.textContent = total + " materiais prontos, editáveis, com acesso na hora. Preço na tela, entrega automática.";
+      trilha.innerHTML = "Loja";
+      estado.categorias.forEach(function (c) { html += secaoCat(c, null); });
+      var semCat = ordenar(estado.produtos.filter(function (p) { return !catDe(p.categoria); }));
+      if (semCat.length) html += '<div class="sec-cat"><h2>Outros materiais</h2></div><div class="sec-sub">' + grade(semCat) + "</div>";
+    }
+    g.innerHTML = html;
+    vazio.hidden = total > 0;
+    document.title = (estado.q ? "Busca: " + estado.q : (titulo.textContent === "Todos os materiais" ? "Loja" : titulo.textContent)) + " — Núcleo Exato";
+  }
+
+  /* ---------- estado e navegação ---------- */
+  function lerUrl() {
+    var u = new URL(location.href);
+    estado.q = (u.searchParams.get("q") || "").trim();
+    var h = location.hash.replace(/^#/, "").split("/");
+    estado.cat = h[0] || ""; estado.sub = h[1] || "";
+    if (estado.cat && !catDe(estado.cat)) { estado.cat = ""; estado.sub = ""; }
+    $("busca-q").value = estado.q;
+  }
+  function gravarUrl() {
+    var u = new URL(location.href);
+    if (estado.q) u.searchParams.set("q", estado.q); else u.searchParams.delete("q");
+    u.hash = estado.cat ? (estado.cat + (estado.sub ? "/" + estado.sub : "")) : "";
+    history.replaceState(null, "", u.toString());
+  }
+  function ir(destino, rolar) {
+    var h = (destino || "").split("/");
+    estado.cat = h[0] || ""; estado.sub = h[1] || ""; estado.q = ""; $("busca-q").value = "";
+    gravarUrl(); desenhar();
+    if (rolar !== false) { var alvo = $("loja-main"); window.scrollTo({ top: (alvo ? alvo.getBoundingClientRect().top + window.scrollY : 0) - 70, behavior: "smooth" }); }
+    fecharLado();
+  }
+  function desenhar() { desenharLado(); desenharVitrine(); desenharGrades(); }
+  function fecharLado() { var b = $("lado-abrir"); b.setAttribute("aria-expanded", "false"); $("loja-lado").classList.remove("aberto"); }
+
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest("[data-ir]");
+    if (a) { e.preventDefault(); ir(a.getAttribute("data-ir")); return; }
+    var pt = e.target.closest("#vit-pontos button");
+    if (pt) { irSlide(Number(pt.getAttribute("data-i"))); rodar(); return; }
+    if (e.target.closest("#vit-ant")) { irSlide(estado.slide - 1); rodar(); return; }
+    if (e.target.closest("#vit-prox")) { irSlide(estado.slide + 1); rodar(); return; }
+    if (e.target.closest("#lado-abrir")) { var b = $("lado-abrir"), ab = b.getAttribute("aria-expanded") === "true"; b.setAttribute("aria-expanded", ab ? "false" : "true"); $("loja-lado").classList.toggle("aberto", !ab); }
+  });
+  $("vitrine").addEventListener("mouseenter", parar);
+  $("vitrine").addEventListener("mouseleave", rodar);
+  $("busca-topo").addEventListener("submit", function (e) {
+    e.preventDefault(); estado.q = $("busca-q").value.trim(); estado.cat = ""; estado.sub = "";
+    gravarUrl(); desenhar(); fecharLado();
+    window.scrollTo({ top: $("loja-main").getBoundingClientRect().top + window.scrollY - 70, behavior: "smooth" });
+  });
+  var tempo;
+  $("busca-q").addEventListener("input", function () {
+    clearTimeout(tempo);
+    tempo = setTimeout(function () { var v = $("busca-q").value.trim(); if (v.length >= 2 || !v) { estado.q = v; if (v) { estado.cat = ""; estado.sub = ""; } gravarUrl(); desenhar(); } }, 220);
+  });
+  $("loja-ordem").addEventListener("change", function () { estado.ordem = this.value; desenharGrades(); });
+  window.addEventListener("hashchange", function () { lerUrl(); desenhar(); });
+
+  /* ---------- carga ---------- */
+  function iniciar(dados) {
+    estado.produtos = (dados.produtos || []).filter(function (p) { return p && p.id; });
+    estado.categorias = (dados.categorias || []).map(function (c) { return { id: c.id, nome: c.nome, cor: c.cor || "#157347", intro: c.intro || "", subs: c.subs || [] }; });
+    lerUrl(); desenhar();
+    document.body.classList.add("loja-pronta");
+  }
+  var bruto = $("loja-dados").textContent.trim(), dados = null;
+  if (bruto) { try { dados = JSON.parse(bruto); } catch (e) { dados = null; } }
+  if (dados && dados.produtos && dados.produtos.length) iniciar(dados);
+  else {
+    Promise.all([
+      fetch("/api/produtos", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : { produtos: [] }; }).catch(function () { return { produtos: [] }; }),
+      fetch("dados/conteudo.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; })
+    ]).then(function (r) {
+      iniciar({ produtos: r[0].produtos || [], categorias: (r[1].categorias || []).filter(function (c) { return c.ativo && !c.arquivado; }) });
+    });
+  }
+})();
+</script>
 <script src="links.js"></script>
 </body>
 </html>
