@@ -442,6 +442,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
   async function carregarTudo(){
     try { await carregarArquivos(); } catch(e){ msg("a-msg", esc(e.message), "erro"); }
     try { await carregarProdutos(); } catch(e){ msg("p-msg", esc(e.message), "erro"); }
+    try { await carregarCategorias(); } catch(e){}
     try { await carregarClientes(); } catch(e){ msg("cl-msg2", esc(e.message), "erro"); }
     try { await carregarCodigos(); } catch(e){ /* mostra na aba */ }
     try { await carregarVendas(); } catch(e){ msg("v-msg2", esc(e.message), "erro"); }
@@ -531,7 +532,6 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     catch(e){ msg("cat-msg", esc(e.message), "erro"); }
     $("cat-salvar").disabled = false;
   });
-  carregarCategorias();
   function preencherSubcategorias(cat, atual){
     var sel = $("pf-subcategoria"); var c = estado.categorias.find(function(x){ return x.id===cat; });
     var subs = c ? (c.subs||[]) : [];

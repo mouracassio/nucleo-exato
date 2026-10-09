@@ -24,7 +24,7 @@
       "arquivado": false,
       "rot": "Loja · acesso imediato",
       "titulo": "Material pronto, editável, com acesso na hora",
-      "texto": "Apostila técnica, material didático e ferramentas de trabalho. Arquivos abertos em Word, PowerPoint e Excel, com 7 dias de garantia.",
+      "texto": "Apostila técnica, material didático e ferramentas de trabalho. Arquivos abertos em Word, PowerPoint e Excel, entregues na hora.",
       "botao": "Ver a loja",
       "sub": "preço na tela, entrega automática",
       "link": "materiais.html"
@@ -64,7 +64,7 @@
     "loja": {
       "titulo": "A loja — material pronto, preço na tela",
       "tag": "compra imediata",
-      "intro": "Você compra, recebe na hora e usa. Arquivos editáveis em Word, PowerPoint e Excel, produzidos por nós e usados antes de virarem produto. 7 dias de garantia.",
+      "intro": "Você compra, recebe na hora e usa. Arquivos editáveis em Word, PowerPoint e Excel, produzidos por nós e usados antes de virarem produto.",
       "quantos": 3,
       "linkTexto": "Ver a loja completa, com tudo o que vem em cada material →"
     },
@@ -87,7 +87,7 @@
         },
         {
           "titulo": "Engenharia e sala de aula na mesma equipe",
-          "texto": "Há professor da rede estadual em exercício aqui dentro. Treinamento técnico bem dado é aula bem dada — ritmo, exemplo e avaliação são ofício de quem dá aula."
+          "texto": "Há professor em exercício aqui dentro. Treinamento técnico bem dado é aula bem dada — ritmo, exemplo e avaliação são ofício de quem dá aula."
         },
         {
           "titulo": "A loja é a nossa amostra",
@@ -101,7 +101,7 @@
       "socios": [
         {
           "nome": "Eng. Cássio Resende de Moura",
-          "texto": "Engenheiro de Produção e Engenheiro de Segurança do Trabalho (<b>CREA-MG 401683</b>), licenciado em Matemática. Professor da rede estadual de Minas Gerais.",
+          "texto": "Engenheiro de Produção e Engenheiro de Segurança do Trabalho (<b>CREA-MG 401683</b>), licenciado em Matemática. Professor de Matemática e de Ergonomia, coordenador de curso técnico e autor de todo o material publicado aqui.",
           "foto": "img/cassio.jpg"
         }
       ],
@@ -123,7 +123,7 @@
       "selos": [
         "acesso imediato",
         "arquivos editáveis",
-        "7 dias de garantia"
+        "autoria com CREA"
       ]
     },
     "servicos": {
