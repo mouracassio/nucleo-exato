@@ -103,7 +103,7 @@
   <div class="links"><a href="servicos.html">Servi&ccedil;os</a><a href="materiais.html">Materiais</a><a href="quem-somos.html">Quem somos</a><a href="contato.html">Contato</a><a href="acesso.html">J&aacute; comprei</a><a data-email href="#">contato</a></div>
 </div></footer>
 
-<!-- Os dados da loja entram aqui pelo middleware (functions/_middleware.js). Se vier vazio, a página busca /api/produtos e /dados/conteudo.json. -->
+<!-- Os dados da loja entram aqui pelo middleware (functions/_middleware.js). Se vier vazio, a página busca /api/produtos e /api/categorias. -->
 <script id="loja-dados" type="application/json"></script>
 <script>
 (function () {
@@ -334,9 +334,9 @@
   else {
     Promise.all([
       fetch("/api/produtos", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : { produtos: [] }; }).catch(function () { return { produtos: [] }; }),
-      fetch("dados/conteudo.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; })
+      fetch("/api/categorias", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; })
     ]).then(function (r) {
-      iniciar({ produtos: r[0].produtos || [], categorias: (r[1].categorias || []).filter(function (c) { return c.ativo && !c.arquivado; }) });
+      iniciar({ produtos: r[0].produtos || [], categorias: r[1].categorias || [] });
     });
   }
 })();

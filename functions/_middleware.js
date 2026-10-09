@@ -16,6 +16,9 @@
 //
 // Se o KV estiver vazio ou desligado, nada muda: o site sai como está no GitHub.
 
+import { lerCategorias } from "./api/admin/categorias.js";
+
+const VERSAO_CSS = "20261008c"; // mude quando css/estilo.css ou css/loja.css mudarem: força o navegador a baixar de novo
 let cache = { quando: 0, produtos: null, categorias: null };
 const CACHE_MS = 30 * 1000;
 
@@ -56,10 +59,11 @@ async function carregar(env, origem) {
   }
   produtos.sort((a, b) => ((a.ordem || 100) - (b.ordem || 100)) || String(a.nome).localeCompare(String(b.nome), "pt-BR"));
 
+  // categorias e subcategorias: as salvas no painel (KV, chave config:categorias);
+  // se nunca foram salvas, as de dados/conteudo.json
   let categorias = [];
   try {
-    const r = await env.ASSETS.fetch(origem + "/dados/conteudo.json");
-    if (r.ok) categorias = ((await r.json()).categorias || []).filter(c => c.ativo && !c.arquivado)
+    categorias = (await lerCategorias(env, origem)).filter(c => c.ativo)
       .map(c => ({ id: c.id, nome: c.nome, cor: c.cor || "", intro: c.intro || "", subs: (c.subs || []).map(s => ({ id: s.id, nome: s.nome })) }));
   } catch {}
 
@@ -104,6 +108,11 @@ function reescreverHtml(resposta, caminho, dados) {
   const ehLoja = caminho === "/materiais.html" || caminho === "/materiais";
 
   const rw = new HTMLRewriter();
+
+  // versão nos CSS, para o navegador não usar a cópia velha do cache
+  rw.on('link[rel="stylesheet"]', {
+    element(el) { const h = el.getAttribute("href") || ""; if (/^css\/[a-z-]+\.css$/.test(h)) el.setAttribute("href", h + "?v=" + VERSAO_CSS); },
+  });
 
   // campo de busca no topo de todas as páginas (a loja já tem o seu, no HTML)
   let buscaPosta = false;
