@@ -224,7 +224,7 @@ body.modal-aberto{overflow:hidden}
     <h1 class="adm-h">Vendas</h1>
     <p class="sub">Uma linha por venda, em todos os canais. Ao salvar a venda, o painel cadastra o cliente, gera o c&oacute;digo de acesso na hora e monta os textos de entrega para Mercado Livre, e-mail e WhatsApp. Venda da Kiwify entra sozinha pelo webhook.</p>
     <div class="kpis">
-      <div class="kpi"><small>Vendas no m&ecirc;s</small><b id="v-k-mes-n">0</b><span id="v-k-mes-lbl"></span></div>
+      <div class="kpi"><small>Vendas no m&ecirc;s</small><b id="v-k-mes-n">…</b><span id="v-k-mes-lbl"></span></div>
       <div class="kpi"><small>Faturado no m&ecirc;s</small><b id="v-k-mes-r">R$ 0,00</b><span>o que o cliente pagou</span></div>
       <div class="kpi liq"><small>L&iacute;quido no m&ecirc;s</small><b id="v-k-mes-l">R$ 0,00</b><span id="v-k-mes-d">depois de tarifas e patroc&iacute;nio</span></div>
       <div class="kpi"><small>Total de vendas</small><b id="v-k-tot-n">0</b><span>desde o in&iacute;cio</span></div>
@@ -288,7 +288,7 @@ body.modal-aberto{overflow:hidden}
 
     <div id="v-entrega"></div>
     <div id="v-msg2"></div>
-    <div id="v-lista"></div>
+    <div id="v-lista"><div class="vazio">Carregando as vendas…</div></div>
     <div class="aviso-web">
       <b style="color:var(--grafite)">Vendas da Kiwify entrando sozinhas</b><br>
       Na Kiwify: Apps &gt; Webhooks &gt; Criar webhook, URL <code>https://nucleoexato.com.br/api/webhook/kiwify</code>, eventos Compra aprovada e Reembolso, todos os produtos. A Kiwify mostra um token: cole na Cloudflare (Pages &gt; nucleo-exato &gt; Settings &gt; Variables and Secrets) como segredo <code>KIWIFY_WEBHOOK_TOKEN</code> e fa&ccedil;a Retry deployment. Sem o token, o painel recusa qualquer chamada.<br><br>
@@ -502,12 +502,15 @@ body.modal-aberto{overflow:hidden}
   function abrirAbaDoHash(){ var h=(location.hash||"").replace("#",""); var b=document.querySelector('.abas button[data-aba="'+h+'"]'); if(b) b.click(); }
 
   async function carregarTudo(){
+    /* vendas, clientes e códigos primeiro (em paralelo): a aba Vendas aparece cheia logo de cara */
+    await Promise.all([
+      carregarVendas().catch(function(e){ msg("v-msg2", esc(e.message), "erro"); }),
+      carregarClientes().catch(function(e){ msg("cl-msg2", esc(e.message), "erro"); }),
+      carregarCodigos().catch(function(){})
+    ]);
     try { await carregarArquivos(); } catch(e){ msg("a-msg", esc(e.message), "erro"); }
     try { await carregarProdutos(); } catch(e){ msg("p-msg", esc(e.message), "erro"); }
     try { await carregarCategorias(); } catch(e){}
-    try { await carregarClientes(); } catch(e){ msg("cl-msg2", esc(e.message), "erro"); }
-    try { await carregarCodigos(); } catch(e){ /* mostra na aba */ }
-    try { await carregarVendas(); } catch(e){ msg("v-msg2", esc(e.message), "erro"); }
     abrirAbaDoHash();
   }
 
@@ -815,7 +818,9 @@ body.modal-aberto{overflow:hidden}
     var p = produtoDe(v), c = clienteDe(v);
     var nome = (c && c.comoChamar) || v.comoChamar || primeiroNome(v.comprador);
     var codigo = v.codigo || "", link = SITE+"/acesso.html?codigo="+codigo;
-    var validade = v.codigoExpiraEm ? dataBR(v.codigoExpiraEm) : "";
+    var expira = v.codigoExpiraEm || ((estado.codigos||[]).find(function(c){ return c.codigo===v.codigo; })||{}).expiraEm;
+    var validade = expira ? dataBR(expira) : "";
+    var valeAte = validade ? "O código vale até "+validade+" e pode" : "O código pode";
     var entrega = (p.entrega || "").trim();
     var ehExcel = !entrega || /excel|xlsx|planilha/i.test(entrega);
     var comoUsar = (p.comoUsar || "").trim() || "Comece pela aba LEIA-ME, que explica tudo. Só as células amarelas são de preenchimento; apague a linha de exemplo em cinza antes de usar.";
@@ -827,7 +832,7 @@ body.modal-aberto{overflow:hidden}
     var ml = [];
     ml.push(saud+" Obrigado pela compra. Aqui está o seu acesso a \""+p.nome+"\":\n\nCódigo de acesso: "+codigo+"\nLink direto: "+link+"\n\nAbra o link, confira que o código está preenchido e clique em Acessar material para baixar.");
     ml.push(recebe+abrir+" "+comoUsar);
-    ml.push("O código vale até "+validade+" e pode ser usado mais de uma vez. É um controle gerencial: o que for fora do escopo, confirme com contador, RH ou SESMT.");
+    ml.push(valeAte+" ser usado mais de uma vez. É um controle gerencial: o que for fora do escopo, confirme com contador, RH ou SESMT.");
     ml.push("Pronto"+(nome?", "+nome:"")+": seu material foi entregue aqui pelo chat, com o link para download. Agora vou informar a entrega ao Mercado Livre. Se não conseguir baixar ou abrir o arquivo, é só me chamar aqui que eu resolvo.\nProf. Eng. Cássio Moura, Núcleo Exato");
     var mlPartes = []; ml.forEach(function(t){ quebrarML(t).forEach(function(x){ mlPartes.push(x); }); });
 
@@ -837,7 +842,7 @@ body.modal-aberto{overflow:hidden}
       "Código de acesso: "+codigo+"\nLink direto: "+link+"\n\n"+
       "Como baixar: abra o link (o código já vem preenchido) e clique em Acessar material. O download começa na hora. Guarde o arquivo no seu computador.\n\n"+
       (entrega ? "O que você recebe: "+entrega+".\n" : "")+abrir+" "+comoUsar+"\n\n"+
-      "O código vale até "+validade+" e pode ser usado mais de uma vez. Se o link não abrir, tente outro navegador ou uma janela anônima.\n\n"+
+      valeAte+" ser usado mais de uma vez. Se o link não abrir, tente outro navegador ou uma janela anônima.\n\n"+
       "Qualquer dúvida sobre o uso, é só responder este e-mail ou chamar no WhatsApp (34) 99913-1399.\n\n"+
       "Prof. Eng. Cássio Moura\nNúcleo Exato · nucleoexato.com.br";
 
@@ -845,7 +850,7 @@ body.modal-aberto{overflow:hidden}
     var zap = saud+" Obrigado pela compra de \""+p.nome+"\". Seu acesso:\n\n"+
       "Código: "+codigo+"\nLink: "+link+"\n\n"+
       "Abra o link e clique em Acessar material para baixar. "+(ehExcel?"Abra no Excel, no computador. ":"")+comoUsar+"\n\n"+
-      "O código vale até "+validade+". Qualquer dúvida, é só me chamar por aqui.\n\nProf. Eng. Cássio Moura, Núcleo Exato";
+      (validade?"O código vale até "+validade+". ":"")+"Qualquer dúvida, é só me chamar por aqui.\n\nProf. Eng. Cássio Moura, Núcleo Exato";
 
     /* aviso de entrega para o Mercado Livre (curto) */
     var avisoML = "Produto digital entregue em "+dataBR(Date.now())+" pelo chat da compra: link para download e código de acesso enviados ao comprador.";
@@ -858,7 +863,7 @@ body.modal-aberto{overflow:hidden}
     if (!v.codigo) { alvo.innerHTML = '<div class="entrega"><h2>Textos de entrega</h2><p class="sem">Esta venda ainda não tem código de acesso. Edite a venda com "Gerar o código de acesso agora" marcado, ou gere um código avulso na aba Códigos.</p></div>'; return; }
     var t = montarTextos(v);
     var h = '<div class="entrega"><h2>'+(cabecalho||"Textos de entrega")+'</h2>'+
-      '<div class="cab"><span class="cod">'+esc(t.codigo)+'</span><a href="'+esc(t.link)+'" target="_blank" rel="noopener">'+esc(t.link)+'</a><span style="font-size:13px;color:var(--suave)">válido até '+esc(t.validade)+'</span></div>'+
+      '<div class="cab"><span class="cod">'+esc(t.codigo)+'</span><a href="'+esc(t.link)+'" target="_blank" rel="noopener">'+esc(t.link)+'</a>'+(t.validade?'<span style="font-size:13px;color:var(--suave)">válido até '+esc(t.validade)+'</span>':'')+'</div>'+
       '<div class="canais"><button data-canal="ml" class="on">Mercado Livre ('+t.ml.length+' mensagens)</button><button data-canal="email">E-mail</button><button data-canal="zap">WhatsApp</button></div>';
     /* ML */
     h += '<div class="bloco-canal on" data-bloco="ml"><p class="sem">Cole no chat da venda, uma por vez e na ordem. Cada uma cabe nos '+LIMITE_ML+' caracteres do Mercado Livre. Sem e-mail, telefone ou WhatsApp: o ML bloqueia.</p>';
@@ -1293,7 +1298,7 @@ body.modal-aberto{overflow:hidden}
 
   async function carregarCodigos(){
     var j = await api("codigos");
-    var l = j.codigos || [];
+    var l = j.codigos || []; estado.codigos = l;
     if (!l.length) { $("c-lista").innerHTML = '<div class="vazio">Nenhum código gerado ainda.</div>'; return; }
     var h = '<table class="tb"><tr><th>C&oacute;digo</th><th>Produto</th><th class="esc">Venda</th><th class="esc">Gerado</th><th>Validade</th><th>Usos</th><th>Situa&ccedil;&atilde;o</th><th></th></tr>';
     l.forEach(function(c){
