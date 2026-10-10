@@ -117,6 +117,40 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
 .mensagem .acao{display:flex;gap:8px;margin-top:6px;align-items:center}
 .mensagem .acao span{font-size:13px;color:var(--suave)}
 .entrega .sem{font-size:14px;color:var(--suave);margin:6px 0 10px}
+/* seletor de produto (busca por SKU ou nome + categoria > subcategoria > produto) */
+.seletor .sel-busca{position:relative}
+.seletor .sel-busca input{font-size:17px!important;padding:11px 13px!important;text-transform:none!important}
+.sel-res{position:absolute;left:0;right:0;top:100%;z-index:30;background:#fff;border:1px solid var(--borda);border-radius:10px;box-shadow:0 10px 28px rgba(20,40,30,.16);margin-top:4px;max-height:360px;overflow:auto}
+.sel-res .it{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;padding:8px 12px;cursor:pointer;border-bottom:1px solid #EEF1EF}
+.sel-res .it:last-child{border-bottom:0}
+.sel-res .it.on,.sel-res .it:hover{background:#EEF8F2}
+.sel-res .it img,.sel-res .it .ph{width:44px;height:44px;border-radius:6px;object-fit:cover;background:#EEF1EF;display:block}
+.sel-res .it b{display:block;font-size:13px;letter-spacing:.5px;color:var(--verde-esc)}
+.sel-res .it span{display:block;font-size:14.5px;color:var(--grafite);line-height:1.3}
+.sel-res .it small{display:block;font-size:12.5px;color:var(--suave);margin:0}
+.sel-res .it .pr{font-weight:700;font-size:14px;color:var(--grafite);text-align:right;white-space:nowrap}
+.sel-res .it .pr em{display:block;font-style:normal;font-size:11.5px;font-weight:700;color:#9B2C2C}
+.sel-res .nada{padding:12px 14px;color:var(--suave);font-size:14px}
+.sel-res .mais{padding:8px 14px;color:var(--suave);font-size:12.5px;background:var(--claro)}
+.sel-filtros{display:grid;grid-template-columns:1fr 1fr 2fr;gap:10px;margin-top:10px}
+.sel-filtros select{width:100%;font:inherit;font-size:14.5px;padding:9px 10px;border:1px solid var(--borda);border-radius:8px;background:#fff}
+.sel-filtros select:disabled{background:var(--claro);color:var(--suave)}
+.sel-prev{margin-top:10px}
+.sel-prev .card{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:center;background:var(--claro);border:1px solid var(--borda);border-radius:10px;padding:10px 12px}
+.sel-prev .card img,.sel-prev .card .ph{width:64px;height:64px;border-radius:8px;object-fit:cover;background:#fff;display:block}
+.sel-prev .card b{font-size:16px;color:var(--grafite);display:block;line-height:1.3}
+.sel-prev .card .linha{font-size:13px;color:var(--suave);margin-top:3px}
+.sel-prev .card .linha i{font-style:normal;font-weight:700;color:var(--verde-esc)}
+.sel-prev .card .linha i.ruim{color:#9B2C2C}
+@media(max-width:720px){.sel-filtros{grid-template-columns:1fr}}
+/* aviso de entrega ao ML */
+.aviso-ml{background:#FFF8E6;border:1px solid #F0D9A0;border-radius:10px;padding:14px 16px;margin-top:6px}
+.aviso-ml h3{font-size:15px;margin:0 0 4px;color:#7A5A12;border:0;padding:0;letter-spacing:0;text-transform:none}
+.aviso-ml p{font-size:13.5px;color:#7A5A12;margin:0 0 8px}
+.aviso-ml textarea{width:100%;font:inherit;font-size:14.5px;padding:10px;border:1px solid #E7D29B;border-radius:8px;min-height:62px;resize:vertical;background:#fff}
+/* conferencia de arquivos */
+.conf-res{margin:6px 0 18px}
+.conf-res .ok-linha{color:var(--verde-esc);font-weight:700}
 /* vendas */
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 18px}
 .kpi{background:#fff;border:1px solid var(--borda);border-radius:12px;padding:14px 16px}
@@ -192,8 +226,12 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     <div class="form" id="v-form" hidden>
       <h2 id="v-form-titulo">Registrar venda</h2>
       <div class="campos c3">
-        <div class="campo"><label>SKU ou nome do produto</label><input type="text" id="v-sku" class="destaque" list="lista-skus" placeholder="SST-EPI-01 ou parte do nome" autocomplete="off"><small>SKU do an&uacute;ncio do Mercado Livre ou parte do nome do produto. Digite e tecle Enter: preenche produto e valor.</small><datalist id="lista-skus"></datalist></div>
-        <div class="campo c2"><label>Produto</label><select id="v-produto"></select></div>
+        <div class="campo c2 seletor"><label>Produto: digite o SKU ou parte do nome</label>
+          <div class="sel-busca"><input type="text" id="v-sku" class="destaque" placeholder="Ex.: SST-EPI-01, extintores, planilha de notas" autocomplete="off" spellcheck="false"><div class="sel-res" id="v-sku-res" hidden></div></div>
+          <small>Os produtos aparecem enquanto voc&ecirc; digita (setas para escolher, Enter para confirmar). Ou filtre por categoria e subcategoria logo abaixo.</small>
+          <div class="sel-filtros"><select id="v-cat" aria-label="Categoria"></select><select id="v-sub" aria-label="Subcategoria"></select><select id="v-produto" aria-label="Produto"></select></div>
+          <div class="sel-prev" id="v-prev"></div>
+        </div>
         <div class="campo"><label>Canal</label><select id="v-canal"><option>Mercado Livre</option><option>Kiwify</option><option>Site</option><option>Direta</option><option>Shopee</option><option>Outra</option></select></div>
         <div class="campo"><label>N&uacute;mero do pedido</label><input type="text" id="v-numero" placeholder="2000018755142170"><small>No ML &eacute; o n&uacute;mero da venda. Venda direta pode ficar vazio.</small></div>
         <div class="campo"><label>Valor pago pelo cliente (R$)</label><input type="text" id="v-valor" placeholder="19,90"></div>
@@ -350,6 +388,8 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
       <div class="rod"><button class="btn" id="up-btn">Enviar</button><span id="up-msg" style="font-size:14px;color:var(--suave)"></span></div>
       <div class="progresso" id="up-prog"><i></i></div>
     </div>
+    <div class="rod" style="margin:0 0 6px"><button class="btn linha" id="a-conferir">Conferir arquivos de todos os produtos</button><span style="font-size:13.5px;color:var(--suave)">Abre cada arquivo de entrega no servidor e confere se existe, se tem tamanho e se o zip est&aacute; inteiro.</span></div>
+    <div id="a-conf" class="conf-res"></div>
     <div id="a-msg"></div>
     <div id="a-lista"></div>
   </section>
@@ -361,7 +401,11 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     <div class="form">
       <h2>C&oacute;digo avulso ou reposi&ccedil;&atilde;o</h2>
       <div class="campos">
-        <div class="campo"><label>Produto</label><select id="g-produto"></select></div>
+        <div class="campo c2 seletor"><label>Produto: digite o SKU ou parte do nome</label>
+          <div class="sel-busca"><input type="text" id="g-sku" class="destaque" placeholder="Ex.: SST-EPI-01, extintores, planilha de notas" autocomplete="off" spellcheck="false"><div class="sel-res" id="g-sku-res" hidden></div></div>
+          <div class="sel-filtros"><select id="g-cat" aria-label="Categoria"></select><select id="g-sub" aria-label="Subcategoria"></select><select id="g-produto" aria-label="Produto"></select></div>
+          <div class="sel-prev" id="g-prev"></div>
+        </div>
         <div class="campo"><label>Plataforma</label><select id="g-plataforma"><option>Mercado Livre</option><option>Kiwify</option><option>Site</option><option>Direta</option><option>Shopee</option><option>Outra</option></select></div>
         <div class="campo"><label>N&uacute;mero da venda</label><input type="text" id="g-venda" placeholder="2000018403648920 ou TESTE-epi"></div>
         <div class="campo"><label>Nome do comprador</label><input type="text" id="g-nome" placeholder="Como aparece na venda"></div>
@@ -458,6 +502,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     try { var j = await api("categorias"); estado.categorias = j.categorias || []; }
     catch(e){ msg("cat-msg", esc(e.message), "erro"); }
     preencherCategoriasDoProduto($("pf-categoria").value); desenharCategorias();
+    if (selV) selV.atualizar(); if (selG) selG.atualizar();
   }
   function preencherCategoriasDoProduto(atual){
     var sel = $("pf-categoria");
@@ -668,6 +713,22 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
   /* =======================================================================
      ARQUIVOS
      ======================================================================= */
+  $("a-conferir").addEventListener("click", async function(){
+    var b = this; b.disabled = true; $("a-conf").innerHTML = '<div class="msg info">Conferindo os arquivos no servidor… pode levar alguns segundos.</div>';
+    try {
+      var j = await api("conferir"), r = j.resumo || {};
+      var ruins = (j.produtos||[]).filter(function(p){ return !p.ok; });
+      var h = '<div class="msg '+(ruins.length?'erro':'ok')+'">'+r.produtos+' produtos conferidos, '+r.arquivos+' arquivos abertos no servidor: <b>'+r.ok+' ok</b>'+(ruins.length?', <b>'+ruins.length+' com problema</b> (lista abaixo).':'. Tudo certo para entregar.')+'</div>';
+      if (ruins.length) {
+        h += '<table class="tb"><tr><th>Produto</th><th>Situação</th></tr>'+ruins.map(function(p){
+          var probs = p.semArquivo ? ["sem arquivo de entrega marcado no produto"] : p.arquivos.filter(function(a){ return !a.ok; }).map(function(a){ return a.chave+": "+a.problema; });
+          return '<tr><td class="nome"><b>'+esc(p.nome)+'</b><small>'+esc(p.sku||p.id)+(p.ativo?'':' · fora da loja')+'</small></td><td>'+probs.map(esc).join("<br>")+'</td></tr>';
+        }).join("")+'</table>';
+      }
+      $("a-conf").innerHTML = h;
+    } catch(e){ $("a-conf").innerHTML = '<div class="msg erro">'+esc(e.message)+'</div>'; }
+    b.disabled = false;
+  });
   async function carregarArquivos(){
     var j = await api("arquivos");
     estado.arquivos = j.arquivos || estado.arquivos;
@@ -748,7 +809,8 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     var ml = [];
     ml.push(saud+" Obrigado pela compra. Aqui está o seu acesso a \""+p.nome+"\":\n\nCódigo de acesso: "+codigo+"\nLink direto: "+link+"\n\nAbra o link, confira que o código está preenchido e clique em Acessar material para baixar.");
     ml.push(recebe+abrir+" "+comoUsar);
-    ml.push("O código vale até "+validade+" e pode ser usado mais de uma vez. É um controle gerencial: o que for fora do escopo, confirme com contador, RH ou SESMT. Qualquer dúvida para baixar, abrir ou usar, é só responder por aqui.\nProf. Eng. Cássio Moura, Núcleo Exato");
+    ml.push("O código vale até "+validade+" e pode ser usado mais de uma vez. É um controle gerencial: o que for fora do escopo, confirme com contador, RH ou SESMT.");
+    ml.push("Pronto"+(nome?", "+nome:"")+": seu material foi entregue aqui pelo chat, com o link para download. Agora vou informar a entrega ao Mercado Livre. Se não conseguir baixar ou abrir o arquivo, é só me chamar aqui que eu resolvo.\nProf. Eng. Cássio Moura, Núcleo Exato");
     var mlPartes = []; ml.forEach(function(t){ quebrarML(t).forEach(function(x){ mlPartes.push(x); }); });
 
     /* 2) E-mail */
@@ -767,7 +829,10 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
       "Abra o link e clique em Acessar material para baixar. "+(ehExcel?"Abra no Excel, no computador. ":"")+comoUsar+"\n\n"+
       "O código vale até "+validade+". Qualquer dúvida, é só me chamar por aqui.\n\nProf. Eng. Cássio Moura, Núcleo Exato";
 
-    return { ml: mlPartes, assunto: assunto, email: email, zap: zap, link: link, codigo: codigo, validade: validade, nome: nome, produto: p.nome, telefone: v.telefone || (c&&c.telefone) || "", emailPara: v.email || (c&&c.email) || "" };
+    /* aviso de entrega para o Mercado Livre (curto) */
+    var avisoML = "Produto digital entregue em "+dataBR(Date.now())+" pelo chat da compra: link para download e código de acesso enviados ao comprador.";
+
+    return { avisoML: avisoML, ml: mlPartes, assunto: assunto, email: email, zap: zap, link: link, codigo: codigo, validade: validade, nome: nome, produto: p.nome, telefone: v.telefone || (c&&c.telefone) || "", emailPara: v.email || (c&&c.email) || "" };
   }
 
   function desenharEntrega(alvoId, v, cabecalho){
@@ -782,6 +847,9 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     t.ml.forEach(function(m, i){
       h += '<div class="mensagem"><div class="topo"><b>Mensagem '+(i+1)+' de '+t.ml.length+'</b><span class="cont'+(m.length>LIMITE_ML?' estourou':'')+'">'+m.length+' / '+LIMITE_ML+'</span></div><textarea data-tx="ml'+i+'">'+esc(m)+'</textarea><div class="acao"><button class="btn peq" data-copiar="ml'+i+'">Copiar mensagem '+(i+1)+'</button><span data-ok="ml'+i+'"></span></div></div>';
     });
+    h += '<div class="aviso-ml"><h3>Por último: aviso de entrega ao Mercado Livre</h3><p>Depois de mandar as mensagens, na venda do Mercado Livre informe que o produto foi entregue e use este texto.</p>'+
+      '<textarea data-tx="avisoML">'+esc(t.avisoML)+'</textarea>'+
+      '<div class="acao" style="display:flex;gap:8px;margin-top:6px;align-items:center;flex-wrap:wrap"><button class="btn peq" data-copiar="avisoML">Copiar aviso de entrega</button>'+(v.id?'<button class="btn cinza peq" data-entregue="1">'+(v.entregue?'Venda já marcada como entregue':'Marcar venda como entregue no painel')+'</button>':'')+'<span data-ok="avisoML" style="font-size:13px;color:var(--suave)"></span></div></div>';
     h += '</div>';
     /* E-mail */
     h += '<div class="bloco-canal" data-bloco="email">'+
@@ -803,6 +871,8 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
       raiz.querySelectorAll(".bloco-canal").forEach(function(x){ x.classList.toggle("on", x.getAttribute("data-bloco")===b.getAttribute("data-canal")); });
     }); });
     raiz.querySelectorAll("textarea[data-tx^=ml]").forEach(function(ta){ ta.addEventListener("input", function(){ var c = ta.parentElement.querySelector(".cont"); c.textContent = ta.value.length+" / "+LIMITE_ML; c.classList.toggle("estourou", ta.value.length>LIMITE_ML); }); });
+    var bEnt = raiz.querySelector("[data-entregue]");
+    if (bEnt) { if (v.entregue) bEnt.disabled = true; bEnt.addEventListener("click", async function(){ bEnt.disabled = true; await marcarEntregue(v); bEnt.textContent = "Venda marcada como entregue"; }); }
     raiz.querySelectorAll("[data-copiar]").forEach(function(b){ b.addEventListener("click", function(){ copiar(tx(b.getAttribute("data-copiar")), raiz.querySelector('[data-ok="'+b.getAttribute("data-copiar")+'"]')); }); });
     raiz.querySelector("[data-gmail]").addEventListener("click", function(){
       var u = "https://mail.google.com/mail/?view=cm&fs=1&to="+encodeURIComponent(tx("emailPara"))+"&su="+encodeURIComponent(tx("assunto"))+"&body="+encodeURIComponent(tx("email"));
@@ -899,9 +969,126 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
   });
 
   /* =======================================================================
+     SELETOR DE PRODUTO — busca por SKU ou nome (resultados na hora) e
+     categoria > subcategoria > produto, com prévia. Usado em Vendas e Códigos.
+     ======================================================================= */
+  function nomeCategoria(id){ var c = estado.categorias.find(function(x){ return x.id===id; }); return c ? c.nome : (id ? id : "Sem categoria"); }
+  function nomeSub(cat, sub){ var c = estado.categorias.find(function(x){ return x.id===cat; }); var s = c && (c.subs||[]).find(function(x){ return x.id===sub; }); return s ? s.nome : (sub||""); }
+  function buscarProdutos(txt, lista){
+    var q = norm(txt).trim(); if (!q) return [];
+    var qs = q.replace(/[\s_-]+/g, ""), palavras = q.split(/\s+/).filter(Boolean);
+    var res = [];
+    lista.forEach(function(p){
+      var sku = norm(p.sku), skuC = sku.replace(/[\s_-]+/g, ""), nome = norm(p.nome);
+      var extra = norm([nomeCategoria(p.categoria), nomeSub(p.categoria, p.subcategoria), (p.tags||[]).join(" "), p.entrega||""].join(" "));
+      var pts = 0;
+      if (skuC && skuC===qs) pts = 1000;
+      else if (skuC && skuC.indexOf(qs)===0) pts = 500;
+      else if (skuC && qs.length>=3 && skuC.indexOf(qs)>=0) pts = 300;
+      if (nome.indexOf(q)===0) pts = Math.max(pts, 250);
+      else if (nome.indexOf(q)>=0) pts = Math.max(pts, 200);
+      if (!pts && palavras.length) {
+        var todas = palavras.every(function(w){ return nome.indexOf(w)>=0 || sku.indexOf(w)>=0 || extra.indexOf(w)>=0; });
+        if (todas) pts = 100 + palavras.filter(function(w){ return nome.indexOf(w)>=0; }).length * 10;
+      }
+      if (pts) res.push({ p: p, pts: pts + (p.ativo?5:0) });
+    });
+    res.sort(function(a,b){ return (b.pts-a.pts) || String(a.p.sku||a.p.nome).localeCompare(String(b.p.sku||b.p.nome), "pt-BR"); });
+    return res.map(function(r){ return r.p; });
+  }
+  function criarSeletor(pfx, opc){
+    opc = opc || {};
+    var inp = $(pfx+"-sku"), caixa = $(pfx+"-sku-res"), sCat = $(pfx+"-cat"), sSub = $(pfx+"-sub"), sProd = $(pfx+"-produto"), prev = $(pfx+"-prev");
+    var achados = [], marcado = -1;
+    function base(){ return estado.produtos.filter(function(p){ return !p.arquivado; }); }
+    function okEntrega(p){ return arquivosDe(p).length>0 && !faltaArquivo(p); }
+    function rotulo(p){ return (p.sku?p.sku+" · ":"")+p.nome+(okEntrega(p)?"":"  (sem arquivo de entrega)")+(p.ativo?"":"  [fora da loja]"); }
+    function encher(){
+      var l = base(), cat = sCat.value, sub = sSub.value, atual = sProd.value;
+      var cats = []; l.forEach(function(p){ if (cats.indexOf(p.categoria||"")<0) cats.push(p.categoria||""); });
+      cats.sort(function(a,b){ var ia = estado.categorias.findIndex(function(c){ return c.id===a; }), ib = estado.categorias.findIndex(function(c){ return c.id===b; }); return (ia<0?999:ia)-(ib<0?999:ib); });
+      sCat.innerHTML = '<option value="*">Todas as categorias ('+l.length+')</option>' + cats.map(function(c){ var n = l.filter(function(p){ return (p.categoria||"")===c; }).length; return '<option value="'+esc(c)+'">'+esc(nomeCategoria(c))+' ('+n+')</option>'; }).join("");
+      sCat.value = cats.indexOf(cat)>=0 ? cat : "*"; cat = sCat.value;
+      var naCat = cat==="*" ? l : l.filter(function(p){ return (p.categoria||"")===cat; });
+      var subs = []; naCat.forEach(function(p){ if (subs.indexOf(p.subcategoria||"")<0) subs.push(p.subcategoria||""); });
+      if (cat==="*") { sSub.innerHTML = '<option value="*">Escolha a categoria primeiro</option>'; sSub.disabled = true; sSub.value = "*"; }
+      else {
+        var cObj = estado.categorias.find(function(c){ return c.id===cat; }); var ordem = cObj ? (cObj.subs||[]).map(function(x){ return x.id; }) : [];
+        subs.sort(function(a,b){ var ia = ordem.indexOf(a), ib = ordem.indexOf(b); return (ia<0?999:ia)-(ib<0?999:ib); });
+        sSub.disabled = false;
+        sSub.innerHTML = '<option value="*">Todas as subcategorias ('+naCat.length+')</option>' + subs.map(function(s){ var n = naCat.filter(function(p){ return (p.subcategoria||"")===s; }).length; return '<option value="'+esc(s)+'">'+esc(s?nomeSub(cat,s):"Sem subcategoria")+' ('+n+')</option>'; }).join("");
+        sSub.value = subs.indexOf(sub)>=0 ? sub : "*";
+      }
+      sub = sSub.value;
+      var finais = (cat==="*"||sub==="*") ? naCat : naCat.filter(function(p){ return (p.subcategoria||"")===sub; });
+      finais = finais.slice().sort(function(a,b){ return String(a.sku||a.nome).localeCompare(String(b.sku||b.nome), "pt-BR"); });
+      sProd.innerHTML = '<option value="">— produto ('+finais.length+') —</option>' + finais.map(function(p){ return '<option value="'+esc(p.id)+'"'+(opc.soComEntrega && !okEntrega(p) ? " disabled" : "")+'>'+esc(rotulo(p))+'</option>'; }).join("");
+      if (finais.some(function(p){ return p.id===atual; })) sProd.value = atual; else sProd.value = "";
+      desenharPrevia();
+    }
+    function desenharPrevia(){
+      var p = estado.produtos.find(function(x){ return x.id===sProd.value; });
+      if (!p) { prev.innerHTML = ""; return; }
+      var arqs = arquivosDe(p), falta = arqs.filter(function(c){ return !temArquivo(c); });
+      var sit = !arqs.length ? '<i class="ruim">sem arquivo de entrega</i>' : falta.length ? '<i class="ruim">falta subir '+falta.length+' de '+arqs.length+' arquivo(s)</i>' : '<i>'+arqs.length+' arquivo(s) de entrega no servidor</i>';
+      prev.innerHTML = '<div class="card">'+(p.capa?'<img src="'+esc(p.capa)+'" alt="">':'<span class="ph"></span>')+
+        '<div><b>'+esc(p.nome)+'</b>'+
+        '<div class="linha">'+(p.sku?'<i>'+esc(p.sku)+'</i> · ':'')+esc(nomeCategoria(p.categoria))+(p.subcategoria?' › '+esc(nomeSub(p.categoria,p.subcategoria)):'')+' · R$ '+esc(p.preco||"—")+(p.ativo?'':' · <i class="ruim">fora da loja</i>')+'</div>'+
+        '<div class="linha">'+sit+(p.entrega?' · recebe '+esc(p.entrega):'')+'</div></div></div>';
+    }
+    function fecharRes(){ caixa.hidden = true; marcado = -1; }
+    function desenharRes(){
+      var txt = inp.value.trim(); if (!txt) { fecharRes(); return; }
+      achados = buscarProdutos(txt, base());
+      if (!achados.length) { caixa.innerHTML = '<div class="nada">Nenhum produto com <b>'+esc(txt)+'</b> no SKU, no nome, na categoria ou nas palavras-chave.</div>'; caixa.hidden = false; return; }
+      var mostra = achados.slice(0, 8);
+      if (marcado >= mostra.length) marcado = mostra.length-1;
+      caixa.innerHTML = mostra.map(function(p, i){
+        return '<div class="it'+(i===marcado?' on':'')+'" data-i="'+i+'">'+(p.capa?'<img src="'+esc(p.capa)+'" alt="">':'<span class="ph"></span>')+
+          '<div><b>'+esc(p.sku||"sem SKU")+'</b><span>'+esc(p.nome)+'</span><small>'+esc(nomeCategoria(p.categoria))+(p.subcategoria?' › '+esc(nomeSub(p.categoria,p.subcategoria)):'')+(p.ativo?'':' · fora da loja')+'</small></div>'+
+          '<div class="pr">R$ '+esc(p.preco||"—")+(okEntrega(p)?'':'<em>sem arquivo</em>')+'</div></div>';
+      }).join("") + (achados.length>8 ? '<div class="mais">Mais '+(achados.length-8)+' resultado(s): escreva mais para afinar.</div>' : '');
+      caixa.hidden = false;
+      caixa.querySelectorAll(".it").forEach(function(el){ el.addEventListener("mousedown", function(e){ e.preventDefault(); escolher(mostra[Number(el.getAttribute("data-i"))]); }); });
+    }
+    function escolher(p){
+      if (!p) return;
+      if (opc.soComEntrega && !okEntrega(p)) { inp.value = p.sku || p.nome; fecharRes(); prev.innerHTML = '<div class="msg erro">'+esc(p.nome)+' ainda não tem arquivo de entrega no servidor: suba o arquivo na aba Arquivos e marque no produto.</div>'; return; }
+      sCat.value = p.categoria||""; encher(); sSub.value = p.subcategoria||""; if (sSub.value!==(p.subcategoria||"")) sSub.value = "*"; encher();
+      sProd.value = p.id; inp.value = p.sku || p.nome; fecharRes(); desenharPrevia();
+      if (opc.aoEscolher) opc.aoEscolher(p);
+    }
+    inp.addEventListener("input", function(){ marcado = 0; desenharRes(); });
+    inp.addEventListener("focus", function(){ if (inp.value.trim()) desenharRes(); });
+    inp.addEventListener("blur", function(){ setTimeout(fecharRes, 120); });
+    inp.addEventListener("keydown", function(e){
+      var n = Math.min(achados.length, 8);
+      if (e.key==="ArrowDown") { e.preventDefault(); if (caixa.hidden) desenharRes(); marcado = Math.min(n-1, marcado+1); desenharRes(); }
+      else if (e.key==="ArrowUp") { e.preventDefault(); marcado = Math.max(0, marcado-1); desenharRes(); }
+      else if (e.key==="Escape") { fecharRes(); }
+      else if (e.key==="Enter") { e.preventDefault(); if (!inp.value.trim()) return; achados = buscarProdutos(inp.value, base()); if (achados.length) { escolher(achados[Math.max(0, Math.min(marcado, achados.length-1))]); if (opc.depoisEnter) opc.depoisEnter(); } else desenharRes(); }
+    });
+    sCat.addEventListener("change", function(){ sSub.value = "*"; encher(); });
+    sSub.addEventListener("change", encher);
+    sProd.addEventListener("change", function(){ var p = estado.produtos.find(function(x){ return x.id===sProd.value; }); desenharPrevia(); if (p) { inp.value = p.sku || p.nome; if (opc.aoEscolher) opc.aoEscolher(p); } });
+    return {
+      atualizar: encher,
+      selecionar: function(id){ var p = estado.produtos.find(function(x){ return x.id===id; }); if (p) { sCat.value = p.categoria||""; encher(); sSub.value = p.subcategoria||""; encher(); sProd.value = p.id; inp.value = p.sku || p.nome; desenharPrevia(); } else { this.limpar(); } },
+      limpar: function(){ inp.value = ""; sCat.value = "*"; encher(); sProd.value = ""; fecharRes(); desenharPrevia(); },
+      resolverTexto: function(){ var t = inp.value.trim(); if (!t || sProd.value) return !!sProd.value; var a = buscarProdutos(t, base()); if (a.length===1 || (a.length && norm(a[0].sku)===norm(t))) { escolher(a[0]); return true; } desenharRes(); return false; }
+    };
+  }
+  var selV = null, selG = null;
+
+  /* =======================================================================
      VENDAS
      ======================================================================= */
   function preencherSelectProdutos(){
+    if (!selV) selV = criarSeletor("v", { aoEscolher: function(p){ $("v-valor").value = p.preco || ""; calcLiquido(); msg("v-msg",""); }, depoisEnter: function(){ $("v-numero").focus(); } });
+    if (!selG) selG = criarSeletor("g", { soComEntrega: true });
+    selV.atualizar(); selG.atualizar();
+  }
+  function _preencherSelectProdutosAntigo(){
     var s = $("g-produto"); s.innerHTML = "";
     estado.produtos.filter(function(p){ return !p.arquivado; }).forEach(function(p){
       var temEntrega = !!arquivosDe(p).length;
@@ -915,7 +1102,8 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     var d = $("lista-skus"); d.innerHTML = "";
     estado.produtos.filter(function(p){ return !p.arquivado; }).forEach(function(p){ var o = document.createElement("option"); o.value = p.sku || p.nome; o.textContent = p.sku ? p.nome : ""; d.appendChild(o); var o2 = document.createElement("option"); o2.value = p.nome; o2.textContent = p.sku || ""; d.appendChild(o2); });
   }
-  function aplicarSku(){
+  function aplicarSku(){ if (selV) selV.resolverTexto(); }
+  function _aplicarSkuAntigo(){
     var txt = $("v-sku").value.trim(); if (!txt) return;
     var sku = txt.toUpperCase(), q = norm(txt);
     var ativos = estado.produtos.filter(function(x){ return !x.arquivado; });
@@ -934,12 +1122,6 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
   function numBR(n){ return (Number(n)||0).toFixed(2).replace(".",","); }
   function calcLiquido(){ $("v-liquido").value = numBR(num($("v-valor").value) - num($("v-tarifa").value) - num($("v-patrocinio").value)); }
   ["v-valor","v-tarifa","v-patrocinio"].forEach(function(id){ $(id).addEventListener("input", calcLiquido); });
-  $("v-sku").addEventListener("change", aplicarSku);
-  $("v-sku").addEventListener("keydown", function(e){ if (e.key==="Enter") { e.preventDefault(); aplicarSku(); $("v-numero").focus(); } });
-  $("v-produto").addEventListener("change", function(){
-    var op = $("v-produto").selectedOptions[0]; var p = estado.produtos.find(function(x){ return x.id===op.value; });
-    if (p) { $("v-sku").value = p.sku || ""; if (!$("v-valor").value) $("v-valor").value = p.preco || ""; }
-  });
   $("v-cli-busca").addEventListener("change", function(){
     var val = $("v-cli-busca").value;
     var opt = [].slice.call($("lista-clientes").options).find(function(o){ return o.value===val; });
@@ -1013,7 +1195,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     var v = id ? estado.vendas.find(function(x){ return x.id===id; }) : null;
     estado.vendaEditando = v ? v.id : null;
     $("v-form-titulo").textContent = v ? "Editar venda: "+v.produto : "Registrar venda";
-    $("v-sku").value = v ? (v.sku||"") : ""; $("v-produto").value = v ? (v.produtoId||"") : "";
+    if (v && v.produtoId) selV.selecionar(v.produtoId); else selV.limpar();
     $("v-canal").value = v ? v.canal : "Mercado Livre"; $("v-numero").value = v ? (v.numeroVenda||"") : "";
     $("v-valor").value = v ? numBR(v.valor) : ""; $("v-tarifa").value = v && Number(v.tarifaPlataforma) ? numBR(v.tarifaPlataforma) : ""; $("v-patrocinio").value = v && Number(v.custoAnuncio) ? numBR(v.custoAnuncio) : ""; calcLiquido(); $("v-data").value = v ? v.dataVenda : hojeISO();
     $("v-status").value = v ? v.status : "paga"; $("v-obs").value = v ? (v.obs||"") : "";
@@ -1030,7 +1212,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
   $("v-salvar").addEventListener("click", async function(){
     if ($("v-sku").value.trim() && !$("v-produto").value) aplicarSku();
     var op = $("v-produto").selectedOptions[0];
-    if (!op || !op.value) { msg("v-msg","Escolha o produto (ou digite o SKU e tecle Enter).","erro"); return; }
+    if (!op || !op.value) { msg("v-msg","Escolha o produto: digite o SKU ou parte do nome e escolha na lista, ou use categoria e subcategoria.","erro"); return; }
     var p = estado.produtos.find(function(x){ return x.id===op.value; }) || {};
     var cli = lerCliente();
     if (!cli.nome.trim()) { msg("v-msg","Informe pelo menos o nome do cliente.","erro"); return; }
@@ -1056,6 +1238,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
      ======================================================================= */
   $("g-btn").addEventListener("click", async function(){
     $("g-venda").value = $("g-venda").value.replace(/[#\s]/g, "");
+    if (!$("g-produto").value) { msg("g-msg","Escolha o produto: digite o SKU ou parte do nome e escolha na lista.","erro"); return; }
     if (!$("g-venda").value) { msg("g-msg","Informe o número da venda (ou um identificador, ex.: TESTE-epi).","erro"); return; }
     msg("g-msg",""); $("g-btn").disabled = true;
     try {
