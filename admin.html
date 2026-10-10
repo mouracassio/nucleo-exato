@@ -151,6 +151,20 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
 /* conferencia de arquivos */
 .conf-res{margin:6px 0 18px}
 .conf-res .ok-linha{color:var(--verde-esc);font-weight:700}
+/* janela (pop-up) dos textos de entrega */
+.modal{position:fixed;inset:0;z-index:100;background:rgba(20,30,25,.55);display:flex;align-items:flex-start;justify-content:center;padding:28px 14px;overflow:auto}
+.modal[hidden]{display:none}
+.modal-caixa{position:relative;width:100%;max-width:920px;background:#fff;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-caixa .entrega{margin:0;border:0;border-radius:14px}
+.modal-caixa .entrega h2{padding-right:52px}
+.modal-x{position:absolute;top:10px;right:12px;z-index:2;width:38px;height:38px;border-radius:999px;border:1px solid var(--borda);background:#fff;font-size:24px;line-height:1;cursor:pointer;color:var(--grafite)}
+.modal-x:hover{background:var(--claro)}
+body.modal-aberto{overflow:hidden}
+/* alertas de entrega */
+.alerta-entrega{margin-top:10px;background:#FBEAEA;border:2px solid #C53030;color:#7B1D1D;border-radius:10px;padding:12px 14px;font-size:14.5px;line-height:1.45}
+.alerta-entrega b{display:block;font-size:15.5px;color:#9B2C2C;letter-spacing:.3px;margin-bottom:2px}
+.tb tr.nao-entregue td{background:#FDF2F2}
+.pill.alerta{background:#C53030;color:#fff}
 /* vendas */
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 18px}
 .kpi{background:#fff;border:1px solid var(--borda);border-radius:12px;padding:14px 16px}
@@ -421,6 +435,10 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     <h2 style="font-size:20px;margin:26px 0 10px">C&oacute;digos j&aacute; gerados</h2>
     <div id="c-lista"></div>
   </section>
+</div>
+
+<div id="modal-textos" class="modal" hidden role="dialog" aria-modal="true" aria-label="Textos de entrega">
+  <div class="modal-caixa"><button type="button" class="modal-x" id="modal-x" aria-label="Fechar">&times;</button><div id="modal-corpo"></div></div>
 </div>
 
 <script>
@@ -893,6 +911,15 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
       window.open("https://wa.me/"+n+"?text="+encodeURIComponent(tx("zap")), "_blank", "noopener");
     });
   }
+  function abrirTextos(v, cab){
+    desenharEntrega("modal-corpo", v, cab);
+    $("modal-textos").hidden = false; document.body.classList.add("modal-aberto");
+    $("modal-textos").scrollTop = 0; $("modal-x").focus();
+  }
+  function fecharTextos(){ $("modal-textos").hidden = true; document.body.classList.remove("modal-aberto"); $("modal-corpo").innerHTML = ""; }
+  $("modal-x").addEventListener("click", fecharTextos);
+  $("modal-textos").addEventListener("mousedown", function(e){ if (e.target === this) fecharTextos(); });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape" && !$("modal-textos").hidden) fecharTextos(); });
   async function marcarEntregue(v){ if (v.entregue) return; try { await post("vendas", { id: v.id, entregue: true }); v.entregue = true; await carregarVendas(); } catch(e){} }
 
   /* =======================================================================
@@ -1031,10 +1058,11 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
       if (!p) { prev.innerHTML = ""; return; }
       var arqs = arquivosDe(p), falta = arqs.filter(function(c){ return !temArquivo(c); });
       var sit = !arqs.length ? '<i class="ruim">sem arquivo de entrega</i>' : falta.length ? '<i class="ruim">falta subir '+falta.length+' de '+arqs.length+' arquivo(s)</i>' : '<i>'+arqs.length+' arquivo(s) de entrega no servidor</i>';
+      var alerta = okEntrega(p) ? '' : '<div class="alerta-entrega"><b>ATENÇÃO: ESTE PRODUTO NÃO PODE SER ENTREGUE AGORA</b>'+(arqs.length?'Falta subir '+falta.length+' arquivo(s) de entrega no servidor.':'Não há arquivo de entrega marcado neste produto.')+' Se registrar a venda, o código de acesso não sai e o cliente não recebe nada. Suba o arquivo na aba Arquivos e marque no produto antes de entregar.</div>';
       prev.innerHTML = '<div class="card">'+(p.capa?'<img src="'+esc(p.capa)+'" alt="">':'<span class="ph"></span>')+
         '<div><b>'+esc(p.nome)+'</b>'+
         '<div class="linha">'+(p.sku?'<i>'+esc(p.sku)+'</i> · ':'')+esc(nomeCategoria(p.categoria))+(p.subcategoria?' › '+esc(nomeSub(p.categoria,p.subcategoria)):'')+' · R$ '+esc(p.preco||"—")+(p.ativo?'':' · <i class="ruim">fora da loja</i>')+'</div>'+
-        '<div class="linha">'+sit+(p.entrega?' · recebe '+esc(p.entrega):'')+'</div></div></div>';
+        '<div class="linha">'+sit+(p.entrega?' · recebe '+esc(p.entrega):'')+'</div></div></div>'+alerta;
     }
     function fecharRes(){ caixa.hidden = true; marcado = -1; }
     function desenharRes(){
@@ -1072,6 +1100,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     sSub.addEventListener("change", encher);
     sProd.addEventListener("change", function(){ var p = estado.produtos.find(function(x){ return x.id===sProd.value; }); desenharPrevia(); if (p) { inp.value = p.sku || p.nome; if (opc.aoEscolher) opc.aoEscolher(p); } });
     return {
+      entregavel: function(){ var p = estado.produtos.find(function(x){ return x.id===sProd.value; }); return p ? okEntrega(p) : true; },
       atualizar: encher,
       selecionar: function(id){ var p = estado.produtos.find(function(x){ return x.id===id; }); if (p) { sCat.value = p.categoria||""; encher(); sSub.value = p.subcategoria||""; encher(); sProd.value = p.id; inp.value = p.sku || p.nome; desenharPrevia(); } else { this.limpar(); } },
       limpar: function(){ inp.value = ""; sCat.value = "*"; encher(); sProd.value = ""; fecharRes(); desenharPrevia(); },
@@ -1158,11 +1187,14 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     var q = norm($("v-busca").value.trim());
     var lista = estado.vendas.filter(function(v){ if(!q) return true; return norm([v.comprador,v.produto,v.numeroVenda,v.codigo,v.canal,v.sku,v.email].join(" ")).indexOf(q)>=0; });
     if (!lista.length) { $("v-lista").innerHTML = '<div class="vazio">'+(estado.vendas.length?'Nenhuma venda com esse filtro.':'Nenhuma venda registrada ainda.')+'</div>'; return; }
-    var h = '<table class="tb"><tr><th>Data</th><th>Produto</th><th>Cliente</th><th class="esc">Canal &middot; pedido</th><th>Pago</th><th>Voc&ecirc; recebe</th><th>Situa&ccedil;&atilde;o</th><th>Entregue</th><th>Avaliado</th><th></th></tr>';
+    var pendentes = lista.filter(function(v){ return v.status==="paga" && !v.entregue && v.canal!=="Kiwify"; });
+    var h = pendentes.length ? '<div class="alerta-entrega" style="margin:0 0 12px"><b>'+pendentes.length+' VENDA(S) PAGA(S) AINDA NÃO ENTREGUE(S)</b>'+pendentes.map(function(v){ return esc(v.comprador||"sem nome")+' · '+esc(v.produto)+(v.codigo?'':' · <u>sem código de acesso</u>'); }).join("<br>")+'<br><small>Abra os Textos da venda, mande as mensagens, informe a entrega no Mercado Livre e marque "Entregue".</small></div>' : '';
+    h += '<table class="tb"><tr><th>Data</th><th>Produto</th><th>Cliente</th><th class="esc">Canal &middot; pedido</th><th>Pago</th><th>Voc&ecirc; recebe</th><th>Situa&ccedil;&atilde;o</th><th>Entregue</th><th>Avaliado</th><th></th></tr>';
     lista.forEach(function(v){
       var pill = v.status==="paga" ? '<span class="pill pago">paga</span>' : '<span class="pill reemb">'+esc(v.status)+'</span>';
-      h += '<tr'+(v.status!=="paga"?' class="inativo"':'')+'><td>'+dataISO(v.dataVenda)+'</td>'+
-        '<td class="nome"><b>'+esc(v.produto)+'</b><small>'+(v.sku?esc(v.sku)+' &middot; ':'')+(v.codigo?'<span class="mono">'+esc(v.codigo)+'</span>':'<span class="pill off">sem código</span>')+'</small></td>'+
+      var naoEnt = v.status==="paga" && !v.entregue && v.canal!=="Kiwify";
+      h += '<tr'+(v.status!=="paga"?' class="inativo"':(naoEnt?' class="nao-entregue"':''))+'><td>'+dataISO(v.dataVenda)+'</td>'+
+        '<td class="nome"><b>'+esc(v.produto)+'</b><small>'+(v.sku?esc(v.sku)+' &middot; ':'')+(v.codigo?'<span class="mono">'+esc(v.codigo)+'</span>':(naoEnt?'<span class="pill alerta">sem código: não entregue</span>':'<span class="pill off">sem código</span>'))+'</small></td>'+
         '<td class="nome"><b style="font-weight:600">'+esc(v.comprador||"—")+'</b><small>'+esc(v.email||"")+(v.telefone?(v.email?' &middot; ':'')+esc(fone(v.telefone)):'')+'</small></td>'+
         '<td class="esc canal">'+esc(v.canal)+(v.numeroVenda?' &middot; '+esc(v.numeroVenda):'')+'</td><td>'+reais(v.valor)+'</td><td><b>'+reais((Number(v.valor)||0)-(Number(v.tarifaPlataforma)||0)-(Number(v.custoAnuncio)||0))+'</b>'+((Number(v.tarifaPlataforma)||Number(v.custoAnuncio))?'<br><small style="color:var(--suave)">tarifa '+reais(v.tarifaPlataforma)+(Number(v.custoAnuncio)?' · ads '+reais(v.custoAnuncio):'')+'</small>':'<br><small class="pill off">sem tarifa</small>')+'</td><td>'+pill+'</td>'+
         '<td><label class="chk-linha"><input type="checkbox" data-id="'+esc(v.id)+'" data-campo="entregue"'+(v.entregue?' checked':'')+'> sim</label></td>'+
@@ -1179,7 +1211,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     });
     $("v-lista").querySelectorAll("[data-textos]").forEach(function(b){ b.addEventListener("click", function(){
       var v = estado.vendas.find(function(x){ return x.id===b.getAttribute("data-textos"); }); if(!v) return;
-      desenharEntrega("v-entrega", v, "Textos de entrega: "+v.produto+(v.comprador?" para "+v.comprador:"")); $("v-entrega").scrollIntoView({behavior:"smooth"});
+      abrirTextos(v, "Textos de entrega: "+v.produto+(v.comprador?" para "+v.comprador:""));
     }); });
     $("v-lista").querySelectorAll("[data-v-editar]").forEach(function(b){ b.addEventListener("click", function(){ abrirFormVenda(b.getAttribute("data-v-editar")); }); });
     $("v-lista").querySelectorAll(".bt-ex[data-vid]").forEach(function(b){
@@ -1214,6 +1246,12 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
     var op = $("v-produto").selectedOptions[0];
     if (!op || !op.value) { msg("v-msg","Escolha o produto: digite o SKU ou parte do nome e escolha na lista, ou use categoria e subcategoria.","erro"); return; }
     var p = estado.produtos.find(function(x){ return x.id===op.value; }) || {};
+    if ($("v-gerar").checked && selV && !selV.entregavel() && estado.confirmouSemEntrega !== op.value) {
+      estado.confirmouSemEntrega = op.value;
+      msg("v-msg", "<b>Este produto não tem arquivo de entrega.</b> A venda será registrada sem código de acesso e não haverá o que entregar ao cliente. Clique em Salvar venda de novo para registrar mesmo assim, ou cancele e suba o arquivo primeiro.", "erro");
+      return;
+    }
+    estado.confirmouSemEntrega = null;
     var cli = lerCliente();
     if (!cli.nome.trim()) { msg("v-msg","Informe pelo menos o nome do cliente.","erro"); return; }
     var venda = { id: estado.vendaEditando || "", canal: $("v-canal").value, produtoId: op.value, produto: p.nome||"", sku: p.sku||"", valor: $("v-valor").value, tarifaPlataforma: $("v-tarifa").value, custoAnuncio: $("v-patrocinio").value, dataVenda: $("v-data").value, numeroVenda: $("v-numero").value, status: $("v-status").value, obs: $("v-obs").value };
@@ -1227,8 +1265,9 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
       if (j.avisos && j.avisos.length) texto += "<br>Atenção: "+j.avisos.map(esc).join("; ");
       msg("v-msg2", texto, (j.avisos&&j.avisos.length)?"erro":"ok");
       var vSalva = estado.vendas.find(function(x){ return x.id===j.venda.id; }) || j.venda;
-      if (vSalva.codigo) { desenharEntrega("v-entrega", vSalva, "Textos de entrega: "+vSalva.produto+(vSalva.comprador?" para "+vSalva.comprador:"")); $("v-entrega").scrollIntoView({behavior:"smooth"}); }
-      else $("v-entrega").innerHTML = "";
+      $("v-entrega").innerHTML = "";
+      if (vSalva.codigo) abrirTextos(vSalva, "Textos de entrega: "+vSalva.produto+(vSalva.comprador?" para "+vSalva.comprador:""));
+      else if (vSalva.status==="paga" && vSalva.canal!=="Kiwify") $("v-entrega").innerHTML = '<div class="alerta-entrega"><b>VENDA SEM ENTREGA</b>A venda de '+esc(vSalva.produto)+' foi registrada, mas o código de acesso não foi gerado: não há o que mandar ao cliente. Suba o arquivo do produto na aba Arquivos, marque no produto e depois edite esta venda com "Gerar o código de acesso agora" marcado.</div>';
     } catch(e){ msg("v-msg", esc(e.message), "erro"); }
     $("v-salvar").disabled = false;
   });
@@ -1246,7 +1285,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
       msg("g-msg", (j.reaproveitado ? "Esta venda já tinha o código <b>"+esc(j.codigo)+"</b>; mostrando o existente. Marque \"Forçar código novo\" se for reposição." : "Código <b>"+esc(j.codigo)+"</b> gerado para "+esc(j.produto)+".")+(j.vendaId?" A venda está na aba Vendas.":""), "ok");
       await carregarCodigos(); try { await carregarClientes(); await carregarVendas(); } catch(e){}
       var v = estado.vendas.find(function(x){ return x.id===j.vendaId; }) || { produtoId: j.produtoId, produto: j.produto, codigo: j.codigo, codigoExpiraEm: j.expiraEm, comprador: $("g-nome").value.trim(), clienteId: j.cliente?j.cliente.id:"" };
-      desenharEntrega("g-entrega", v, "Textos de entrega: "+j.produto);
+      $("g-entrega").innerHTML = ""; abrirTextos(v, "Textos de entrega: "+j.produto);
       $("g-venda").value = ""; $("g-nome").value = ""; $("g-valor").value = ""; $("g-novo").checked = false;
     } catch(e){ msg("g-msg", esc(e.message), "erro"); }
     $("g-btn").disabled = false;
