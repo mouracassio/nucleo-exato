@@ -52,6 +52,8 @@ h1.adm-h{font-size:26px;margin:6px 0 6px}
 .filtros button.alerta.on{background:#BE2828;border-color:#BE2828}
 .barra-acoes{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
 .barra-acoes input[type=text]{font:inherit;font-size:14.5px;padding:8px 11px;border:1px solid var(--borda);border-radius:8px;min-width:260px}
+.barra-acoes input[type=date]{font:inherit;font-size:14px;padding:7px 9px;border:1px solid var(--borda);border-radius:8px}
+.barra-acoes .periodo{display:flex;gap:6px;align-items:center;font-size:13.5px;color:var(--suave)}
 table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--borda);border-radius:12px;overflow:hidden;font-size:14.5px}
 .tb th{background:var(--claro);text-align:left;padding:10px 12px;font-size:12.5px;letter-spacing:1px;text-transform:uppercase;color:var(--suave);border-bottom:1px solid var(--borda)}
 .tb td{padding:10px 12px;border-bottom:1px solid #E6ECE8;vertical-align:middle}
@@ -237,7 +239,8 @@ body.modal-aberto{overflow:hidden}
     <div class="barra-acoes">
       <button class="btn" id="v-nova">Registrar venda</button>
       <button class="btn cinza" id="v-atualizar">Atualizar lista</button>
-      <input type="text" id="v-busca" placeholder="Buscar por cliente, produto, pedido ou c&oacute;digo">
+      <input type="text" id="v-busca" placeholder="Buscar: nome, CPF/CNPJ, e-mail, telefone, SKU, produto, pedido ou c&oacute;digo">
+      <span class="periodo">de <input type="date" id="v-de"> at&eacute; <input type="date" id="v-ate"> <button type="button" class="btn cinza peq" id="v-limpar">Limpar</button></span>
     </div>
 
     <div class="form" id="v-form" hidden>
@@ -440,6 +443,10 @@ body.modal-aberto{overflow:hidden}
     </div>
     <div id="g-entrega"></div>
     <h2 style="font-size:20px;margin:26px 0 10px">C&oacute;digos j&aacute; gerados</h2>
+    <div class="barra-acoes">
+      <input type="text" id="c-busca" placeholder="Buscar: c&oacute;digo, nome, CPF/CNPJ, e-mail, telefone, SKU, produto ou pedido">
+      <span class="periodo">gerado de <input type="date" id="c-de"> at&eacute; <input type="date" id="c-ate"> <button type="button" class="btn cinza peq" id="c-limpar">Limpar</button></span>
+    </div>
     <div id="c-lista"></div>
   </section>
 </div>
@@ -515,6 +522,7 @@ body.modal-aberto{overflow:hidden}
       carregarClientes().catch(function(e){ msg("cl-msg2", esc(e.message), "erro"); }),
       carregarCodigos().catch(function(){})
     ]);
+    try { desenharCodigos(); } catch(e){} /* redesenha com vendas e clientes já carregados (nome do comprador) */
     try { await carregarArquivos(); } catch(e){ msg("a-msg", esc(e.message), "erro"); }
     try { await carregarProdutos(); } catch(e){ msg("p-msg", esc(e.message), "erro"); }
     try { await carregarCategorias(); } catch(e){}
@@ -806,6 +814,11 @@ body.modal-aberto{overflow:hidden}
      ======================================================================= */
   function produtoDe(v){ return estado.produtos.find(function(p){ return p.id===v.produtoId; }) || { nome: v.produto, entrega: "", comoUsar: "" }; }
   function clienteDe(v){ return estado.clientes.find(function(c){ return c.id===v.clienteId; }) || null; }
+  function textoBuscaVenda(v){ var c = clienteDe(v) || {}; return norm([v.comprador,c.nome,c.empresa,c.cpfCnpj,c.email,v.email,c.telefone,v.telefone,v.produto,v.sku,v.numeroVenda,v.codigo,v.canal,v.obs].join(" ")); }
+  function soDigitos(s){ return String(s||"").replace(/\D/g,""); }
+  function casaBusca(texto, q){ if(!q) return true; if (texto.indexOf(q)>=0) return true; var d = soDigitos(q); return d.length>=4 && soDigitos(texto).indexOf(d)>=0; }
+  function dentroPeriodo(iso, de, ate){ if(!iso) return !de && !ate; if (de && iso<de) return false; if (ate && iso>ate) return false; return true; }
+  function isoDeMs(ms){ if(!ms) return ""; var d = new Date(ms); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
 
   function quebrarML(texto){
     /* divide um texto em partes de até LIMITE_ML, cortando no fim de frase (ou de linha) */
@@ -1197,10 +1210,11 @@ body.modal-aberto{overflow:hidden}
     $("v-k-areceber-d").textContent = aReceber.length ? aReceber.length+" venda(s) paga(s) esperando o repasse" : "tudo já caiu na conta";
     desenharVendas();
     if (estado.clientes.length) desenharClientes();
+    if (estado.codigos) { try { desenharCodigos(); } catch(e){} }
   }
   function desenharVendas(){
-    var q = norm($("v-busca").value.trim());
-    var lista = estado.vendas.filter(function(v){ if(!q) return true; return norm([v.comprador,v.produto,v.numeroVenda,v.codigo,v.canal,v.sku,v.email].join(" ")).indexOf(q)>=0; });
+    var q = norm($("v-busca").value.trim()), de = $("v-de").value, ate = $("v-ate").value;
+    var lista = estado.vendas.filter(function(v){ return casaBusca(textoBuscaVenda(v), q) && dentroPeriodo((v.dataVenda||"").slice(0,10), de, ate); });
     if (!lista.length) { $("v-lista").innerHTML = '<div class="vazio">'+(estado.vendas.length?'Nenhuma venda com esse filtro.':'Nenhuma venda registrada ainda.')+'</div>'; return; }
     var aguardando = lista.filter(function(v){ return v.status==="pendente"; });
     var h = aguardando.length ? '<div class="alerta-pendente"><b>'+aguardando.length+' VENDA(S) AGUARDANDO PAGAMENTO</b>'+aguardando.map(function(v){ return esc(v.comprador||"sem nome")+' · '+esc(v.produto)+(v.numeroVenda?' · '+esc(v.numeroVenda):''); }).join("<br>")+'<br><small>No Mercado Livre o comprador tem prazo para pagar (Pix: minutos; boleto: até 3 dias úteis). Não entregue nada até a venda aparecer como "Pagamento aprovado" no ML. Quando aprovar: Editar &gt; Situação "Paga" &gt; Salvar (o código de acesso é gerado nessa hora).</small></div>' : '';
@@ -1257,7 +1271,8 @@ body.modal-aberto{overflow:hidden}
   $("v-nova").addEventListener("click", function(){ abrirFormVenda(null); });
   $("v-cancelar").addEventListener("click", function(){ $("v-form").hidden = true; });
   $("v-atualizar").addEventListener("click", async function(){ try { await carregarVendas(); msg("v-msg2","Lista atualizada.","ok"); } catch(e){ msg("v-msg2", esc(e.message), "erro"); } });
-  $("v-busca").addEventListener("input", desenharVendas);
+  $("v-busca").addEventListener("input", desenharVendas); $("v-de").addEventListener("change", desenharVendas); $("v-ate").addEventListener("change", desenharVendas);
+  $("v-limpar").addEventListener("click", function(){ $("v-busca").value=""; $("v-de").value=""; $("v-ate").value=""; desenharVendas(); });
   $("v-salvar").addEventListener("click", async function(){
     if ($("v-sku").value.trim() && !$("v-produto").value) aplicarSku();
     var op = $("v-produto").selectedOptions[0];
@@ -1311,15 +1326,51 @@ body.modal-aberto{overflow:hidden}
 
   async function carregarCodigos(){
     var j = await api("codigos");
-    var l = j.codigos || []; estado.codigos = l;
-    if (!l.length) { $("c-lista").innerHTML = '<div class="vazio">Nenhum código gerado ainda.</div>'; return; }
-    var h = '<table class="tb"><tr><th>C&oacute;digo</th><th>Produto</th><th class="esc">Venda</th><th class="esc">Gerado</th><th>Validade</th><th>Usos</th><th>Situa&ccedil;&atilde;o</th><th></th></tr>';
-    l.forEach(function(c){
-      var pill = c.status==="ativo"?'<span class="pill">ativo</span>':c.status==="usado"?'<span class="pill neutro">usado</span>':'<span class="pill off">'+esc(c.status)+'</span>';
-      var teste = /teste/i.test(c.numeroVenda||"");
-      h += '<tr'+(teste?' class="inativo"':'')+'><td class="mono">'+esc(c.codigo)+'</td><td>'+esc(c.produto)+'</td><td class="esc">'+esc(c.plataforma)+(c.numeroVenda?' &middot; '+esc(c.numeroVenda):'')+(teste?' <span class="pill off">teste</span>':'')+'</td><td class="esc">'+dataBR(c.criadoEm)+'</td><td>'+dataBR(c.expiraEm)+'</td><td>'+c.usos+'</td><td>'+pill+'</td><td><button type="button" class="bt-ex" data-cod="'+esc(c.codigo)+'">Excluir</button></td></tr>';
+    estado.codigos = j.codigos || [];
+    desenharCodigos();
+  }
+  function vendaDoCodigo(c){ return estado.vendas.find(function(v){ return v.codigo===c.codigo; }) || (c.numeroVenda ? estado.vendas.find(function(v){ return v.numeroVenda && v.numeroVenda===c.numeroVenda; }) : null) || null; }
+  function desenharCodigos(){
+    var l = estado.codigos || [];
+    var q = norm($("c-busca").value.trim()), de = $("c-de").value, ate = $("c-ate").value;
+    /* uma lista só: os códigos (com o comprador) e as vendas sem código (Kiwify e site entregam pela área de membros; vendas antigas entregues fora do painel) */
+    var itens = [];
+    l.forEach(function(c){ var v = vendaDoCodigo(c); itens.push({ tipo: "codigo", c: c, v: v, quando: c.criadoEm || 0, iso: isoDeMs(c.criadoEm) }); });
+    var comCodigo = {}; l.forEach(function(c){ comCodigo[c.codigo] = true; });
+    (estado.vendas||[]).forEach(function(v){
+      if (v.codigo && comCodigo[v.codigo]) return;
+      var ms = v.dataVenda ? Date.parse(v.dataVenda+"T12:00:00") : (v.criadoEm||0);
+      itens.push({ tipo: "semcodigo", c: null, v: v, quando: ms, iso: (v.dataVenda||"").slice(0,10) });
+    });
+    if (!itens.length) { $("c-lista").innerHTML = '<div class="vazio">Nenhum código gerado ainda.</div>'; return; }
+    var lista = itens.filter(function(it){
+      var texto = (it.c ? norm([it.c.codigo,it.c.produto,it.c.sku,it.c.plataforma,it.c.numeroVenda].join(" ")) : "") + " " + (it.v ? textoBuscaVenda(it.v) : "");
+      return casaBusca(texto, q) && dentroPeriodo(it.iso, de, ate);
+    }).sort(function(x,y){ return (y.quando||0)-(x.quando||0); });
+    if (!lista.length) { $("c-lista").innerHTML = '<div class="vazio">Nada com esse filtro.</div>'; return; }
+    var h = '<table class="tb"><tr><th>C&oacute;digo</th><th>Comprador</th><th>Produto</th><th class="esc">Venda</th><th class="esc">Gerado</th><th>Validade</th><th>Usos</th><th>Situa&ccedil;&atilde;o</th><th></th></tr>';
+    lista.forEach(function(it){
+      var c = it.c, v = it.v, cli = v ? clienteDe(v) : null;
+      var quem = v ? '<b style="font-weight:600">'+esc(v.comprador||(cli&&cli.nome)||"—")+'</b><small>'+esc((cli&&cli.cpfCnpj)?"CPF/CNPJ "+cli.cpfCnpj:"")+(v.email?((cli&&cli.cpfCnpj)?" &middot; ":"")+esc(v.email):"")+'</small>' : '';
+      if (c) {
+        var pill = c.status==="ativo"?'<span class="pill">ativo</span>':c.status==="usado"?'<span class="pill neutro">usado</span>':'<span class="pill off">'+esc(c.status)+'</span>';
+        var teste = /teste/i.test(c.numeroVenda||"");
+        if (!v) quem = teste?'<span class="pill off">teste</span>':'<span class="pill off">sem venda ligada</span>';
+        h += '<tr'+(teste?' class="inativo"':'')+'><td class="mono">'+esc(c.codigo)+'</td><td class="nome">'+quem+'</td><td>'+esc(c.produto)+(c.sku?'<small>'+esc(c.sku)+'</small>':'')+'</td><td class="esc">'+esc(c.plataforma)+(c.numeroVenda?' &middot; '+esc(c.numeroVenda):'')+(teste?' <span class="pill off">teste</span>':'')+'</td><td class="esc">'+dataBR(c.criadoEm)+'</td><td>'+dataBR(c.expiraEm)+'</td><td>'+c.usos+'</td><td>'+pill+'</td><td class="acoes">'+(v?'<button class="btn peq linha" data-textos-cod="'+esc(v.id)+'">Textos</button>':'')+'<button type="button" class="bt-ex" data-cod="'+esc(c.codigo)+'">Excluir</button></td></tr>';
+      } else {
+        var motivo = (v.canal==="Kiwify"||v.canal==="Site") ? "entrega pela &aacute;rea de membros da Kiwify" : (v.status==="reembolsada"||v.status==="cancelada") ? "venda "+esc(v.status) : v.status==="pendente" ? "aguardando pagamento" : "entregue fora do painel";
+        h += '<tr class="inativo"><td><span class="pill off">sem c&oacute;digo</span></td><td class="nome">'+quem+'</td><td>'+esc(v.produto)+(v.sku?'<small>'+esc(v.sku)+'</small>':'')+'</td><td class="esc">'+esc(v.canal)+(v.numeroVenda?' &middot; '+esc(v.numeroVenda):'')+'</td><td class="esc">'+dataISO(v.dataVenda)+'</td><td>&mdash;</td><td>&mdash;</td><td><span class="pill off">'+motivo+'</span></td><td class="acoes"><button class="btn cinza peq" data-v-editar-cod="'+esc(v.id)+'">Abrir venda</button></td></tr>';
+      }
     });
     $("c-lista").innerHTML = h + '</table>';
+    $("c-lista").querySelectorAll("[data-textos-cod]").forEach(function(b){ b.addEventListener("click", function(){
+      var v = estado.vendas.find(function(x){ return x.id===b.getAttribute("data-textos-cod"); }); if(!v) return;
+      abrirTextos(v, "Textos de entrega: "+v.produto+(v.comprador?" para "+v.comprador:""));
+    }); });
+    $("c-lista").querySelectorAll("[data-v-editar-cod]").forEach(function(b){ b.addEventListener("click", function(){
+      var ba = document.querySelector('.abas button[data-aba="vendas"]'); if (ba) ba.click();
+      abrirFormVenda(b.getAttribute("data-v-editar-cod"));
+    }); });
     $("c-lista").querySelectorAll(".bt-ex").forEach(function(b){
       b.addEventListener("click", async function(){
         if (!b.classList.contains("conf")) { b.classList.add("conf"); b.textContent = "Confirmar exclusão?"; setTimeout(function(){ b.classList.remove("conf"); b.textContent = "Excluir"; }, 5000); return; }
@@ -1329,6 +1380,8 @@ body.modal-aberto{overflow:hidden}
       });
     });
   }
+  $("c-busca").addEventListener("input", desenharCodigos); $("c-de").addEventListener("change", desenharCodigos); $("c-ate").addEventListener("change", desenharCodigos);
+  $("c-limpar").addEventListener("click", function(){ $("c-busca").value=""; $("c-de").value=""; $("c-ate").value=""; desenharCodigos(); });
 
   /* ---------- início ---------- */
   (async function(){
