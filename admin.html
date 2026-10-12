@@ -284,7 +284,7 @@ body.modal-aberto{overflow:hidden}
 
       <div class="campos" style="margin-top:14px">
         <div class="campo chk"><input type="checkbox" id="v-gerar" checked><label for="v-gerar">Gerar o c&oacute;digo de acesso agora e montar os textos de entrega</label></div>
-        <div class="campo"><label>Validade do c&oacute;digo (meses)</label><input type="number" id="v-meses" value="6" min="1" max="24"></div>
+        <div class="campo"><label>Validade do c&oacute;digo</label><input type="text" readonly value="1 m&ecirc;s e 1 dia, at&eacute; 23:59:59" style="background:var(--claro)"><small>Regra fixa: gerado em 12/10 vale at&eacute; 13/11 &agrave;s 23:59:59.</small></div>
       </div>
       <div id="v-msg"></div>
       <div class="rod"><button class="btn" id="v-salvar">Salvar venda</button><button class="btn cinza" id="v-cancelar">Cancelar</button></div>
@@ -432,7 +432,7 @@ body.modal-aberto{overflow:hidden}
         <div class="campo"><label>Nome do comprador</label><input type="text" id="g-nome" placeholder="Como aparece na venda"></div>
         <div class="campo"><label>Valor pago (R$)</label><input type="text" id="g-valor" placeholder="18,90"><small>Se deixar vazio, usa o pre&ccedil;o do produto.</small></div>
         <div class="campo"><label>Data da venda</label><input type="date" id="g-data"></div>
-        <div class="campo"><label>Validade (meses)</label><input type="number" id="g-meses" value="6" min="1" max="24"></div>
+        <div class="campo"><label>Validade</label><input type="text" readonly value="1 m&ecirc;s e 1 dia, at&eacute; 23:59:59" style="background:var(--claro)"></div>
         <div class="campo chk"><input type="checkbox" id="g-novo"><label for="g-novo">For&ccedil;ar c&oacute;digo novo (reposi&ccedil;&atilde;o: ignora o que j&aacute; existe para esta venda)</label></div>
       </div>
       <div id="g-msg"></div>
@@ -1250,7 +1250,7 @@ body.modal-aberto{overflow:hidden}
     $("v-status").value = v ? v.status : "paga"; $("v-obs").value = v ? (v.obs||"") : ""; $("v-recebido").checked = v ? !!v.recebido : false;
     $("v-cli-busca").value = ""; $("v-cli-info").textContent = v && v.clienteId ? "Cliente desta venda carregado abaixo." : "Se não encontrar, preencha abaixo: o cadastro é criado junto com a venda.";
     preencherCliente(v ? (clienteDe(v) || { nome: v.comprador, email: v.email, telefone: v.telefone, comoChamar: v.comoChamar }) : null);
-    $("v-gerar").checked = v ? !v.codigo : true; $("v-meses").value = "6";
+    $("v-gerar").checked = v ? !v.codigo : true;
     msg("v-msg",""); $("v-form").hidden = false; $("v-form").scrollIntoView({behavior:"smooth"});
     (v ? $("v-numero") : $("v-sku")).focus();
   }
@@ -1275,7 +1275,7 @@ body.modal-aberto{overflow:hidden}
     if (!estado.vendaEditando && (venda.canal==="Kiwify"||venda.canal==="Site")) venda.entregue = true;
     $("v-salvar").disabled = true; msg("v-msg","");
     try {
-      var j = await post("vendas", { venda: venda, cliente: cli, gerarAcesso: venda.status==="pendente" ? false : $("v-gerar").checked, meses: $("v-meses").value });
+      var j = await post("vendas", { venda: venda, cliente: cli, gerarAcesso: venda.status==="pendente" ? false : $("v-gerar").checked });
       $("v-form").hidden = true;
       await carregarClientes(); await carregarVendas(); try { await carregarCodigos(); } catch(e){}
       var texto = (j.novo?"Venda registrada":"Venda atualizada")+(j.cliente?" para "+esc(j.cliente.nome):"")+(j.acesso?". Código "+esc(j.acesso.codigo)+(j.acesso.reaproveitado?" (já existia para esta venda)":" gerado")+".":".");
@@ -1299,7 +1299,7 @@ body.modal-aberto{overflow:hidden}
     if (!$("g-venda").value) { msg("g-msg","Informe o número da venda (ou um identificador, ex.: TESTE-epi).","erro"); return; }
     msg("g-msg",""); $("g-btn").disabled = true;
     try {
-      var j = await post("gerar", { produtoId: $("g-produto").value, plataforma: $("g-plataforma").value, numeroVenda: $("g-venda").value, dataVenda: $("g-data").value, meses: $("g-meses").value, comprador: $("g-nome").value.trim(), valor: $("g-valor").value.trim(), forcarNovo: $("g-novo").checked });
+      var j = await post("gerar", { produtoId: $("g-produto").value, plataforma: $("g-plataforma").value, numeroVenda: $("g-venda").value, dataVenda: $("g-data").value, comprador: $("g-nome").value.trim(), valor: $("g-valor").value.trim(), forcarNovo: $("g-novo").checked });
       msg("g-msg", (j.reaproveitado ? "Esta venda já tinha o código <b>"+esc(j.codigo)+"</b>; mostrando o existente. Marque \"Forçar código novo\" se for reposição." : "Código <b>"+esc(j.codigo)+"</b> gerado para "+esc(j.produto)+".")+(j.vendaId?" A venda está na aba Vendas.":""), "ok");
       await carregarCodigos(); try { await carregarClientes(); await carregarVendas(); } catch(e){}
       var v = estado.vendas.find(function(x){ return x.id===j.vendaId; }) || { produtoId: j.produtoId, produto: j.produto, codigo: j.codigo, codigoExpiraEm: j.expiraEm, comprador: $("g-nome").value.trim(), clienteId: j.cliente?j.cliente.id:"" };

@@ -68,10 +68,9 @@ export async function gerarAcesso(env, { produtoId, plataforma, numeroVenda, dat
     if (faltando.length) throw erro("Não está(ão) no R2: " + faltando.join(", ") + ". Suba na aba Arquivos antes de gerar o código.", 400);
   }
 
-  const validadeMeses = Number(meses) > 0 ? Number(meses) : 6;
   const codigo = gerarCodigo();
   const criadoEm = Date.now();
-  const expiraEm = criadoEm + validadeMeses * 30 * 24 * 60 * 60 * 1000;
+  const expiraEm = calcularExpiraEm(criadoEm); // "meses" não é mais usado: validade fixa (1 mês e 1 dia)
   const registro = {
     produto: p.nome, produtoId: p.id, arquivo: arquivos[0], arquivos, sku: p.sku || "",
     plataforma: String(plataforma || ""), numeroVenda: venda, dataVenda: String(dataVenda || ""),
@@ -195,3 +194,15 @@ export async function encontrarOuCriarCliente(env, dados) {
 /* ---------- util ---------- */
 function erro(mensagem, status) { const e = new Error(mensagem); e.status = status || 400; return e; }
 export function respostaErro(e) { return json({ erro: e.message || String(e) }, e.status || 500); }
+
+// Validade do código (decisão do Cássio, 12/10/2026): o mesmo dia do mês seguinte,
+// mais um dia, até 23:59:59 no horário de Brasília. Ex.: gerado em 12/10 → vale até 13/11 23:59:59.
+// Se o dia não existir no mês seguinte (31/01 → fevereiro), usa o último dia daquele mês e soma um dia.
+export function calcularExpiraEm(criadoEm) {
+  const fmt = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo", year: "numeric", month: "2-digit", day: "2-digit" });
+  const [ano, mes, dia] = fmt.format(new Date(criadoEm)).split("-").map(Number); // mes 1-12
+  const ultimoDiaMesSeguinte = new Date(Date.UTC(ano, mes + 1, 0)).getUTCDate();
+  const vence = new Date(Date.UTC(ano, mes, Math.min(dia, ultimoDiaMesSeguinte))); // mesmo dia, mês seguinte
+  vence.setUTCDate(vence.getUTCDate() + 1);                                        // mais um dia
+  return Date.parse(vence.toISOString().slice(0, 10) + "T23:59:59-03:00");
+}

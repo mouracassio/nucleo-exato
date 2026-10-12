@@ -1,3 +1,4 @@
+import { calcularExpiraEm } from "./admin/acesso-lib.js";
 // POST /api/gerar — gera um código de acesso com validade, para colar manualmente
 // no chat do Mercado Livre ou da Shopee (venda de fora, sem passar e-mail).
 // Protegido por senha (variável SENHA_ADMIN, configurada no painel da Cloudflare).
@@ -19,10 +20,9 @@ export async function onRequestPost({ request, env }) {
     return json({ erro: "produto e arquivo são obrigatórios" }, 400);
   }
 
-  const validadeMeses = Number(meses) > 0 ? Number(meses) : 6;
   const codigo = gerarCodigo();
   const criadoEm = Date.now();
-  const expiraEm = criadoEm + validadeMeses * 30 * 24 * 60 * 60 * 1000;
+  const expiraEm = calcularExpiraEm(criadoEm); // validade fixa: 1 mês e 1 dia, até 23:59:59 (ver acesso-lib.js)
 
   const registro = {
     produto, arquivo, sku: sku || "",
