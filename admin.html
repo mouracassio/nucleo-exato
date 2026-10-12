@@ -174,7 +174,7 @@ body.modal-aberto{overflow:hidden}
 .kpi span{font-size:12.5px;color:var(--suave)}
 .chk-linha{display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--grafite);cursor:pointer;white-space:nowrap}
 .chk-linha input{margin:0}
-.pill.pago{background:#E9F5EE;color:var(--verde-esc)}.pill.reemb{background:#FBEAEA;color:#9B2C2C}.pill.pend{background:#FFF4D6;color:#8A5A00}
+.pill.pago{background:#E9F5EE;color:var(--verde-esc)}.pill.reemb{background:#FBEAEA;color:#9B2C2C}.pill.pend{background:#FFF4D6;color:#8A5A00}.pill.areceber{background:#FFF4D6;color:#8A5A00}.pill.caiu{background:#E9F5EE;color:var(--verde-esc)}
 .tb tr.pendente td{background:#FFFBEF}
 .alerta-pendente{background:#FFF4D6;border:1px solid #F0D28A;color:#5C3D00;border-radius:10px;padding:10px 14px;margin:0 0 12px;font-size:13px}.alerta-pendente b{display:block;margin-bottom:4px}
 .tb .canal{font-size:12.5px;color:var(--suave)}
@@ -232,6 +232,7 @@ body.modal-aberto{overflow:hidden}
       <div class="kpi"><small>Total de vendas</small><b id="v-k-tot-n">0</b><span>desde o in&iacute;cio</span></div>
       <div class="kpi"><small>Total faturado</small><b id="v-k-tot-r">R$ 0,00</b><span>vendas pagas</span></div>
       <div class="kpi liq"><small>L&iacute;quido total</small><b id="v-k-tot-l">R$ 0,00</b><span id="v-k-tot-d">depois de tarifas e patroc&iacute;nio</span></div>
+      <div class="kpi"><small>A receber da plataforma</small><b id="v-k-areceber">R$ 0,00</b><span id="v-k-areceber-d">vendas pagas cujo valor ainda n&atilde;o caiu na conta</span></div>
     </div>
     <div class="barra-acoes">
       <button class="btn" id="v-nova">Registrar venda</button>
@@ -257,6 +258,7 @@ body.modal-aberto{overflow:hidden}
         <div class="campo"><label>Data da venda</label><input type="date" id="v-data"></div>
         <div class="campo"><label>Situa&ccedil;&atilde;o</label><select id="v-status"><option value="paga">Paga</option><option value="pendente">Aguardando pagamento</option><option value="reembolsada">Reembolsada</option><option value="cancelada">Cancelada</option></select></div>
         <div class="campo"><label>Observa&ccedil;&atilde;o</label><input type="text" id="v-obs" placeholder="opcional"></div>
+        <div class="campo"><label>Valor caiu na conta?</label><label class="chk-linha" style="margin-top:6px"><input type="checkbox" id="v-recebido"> sim, o l&iacute;quido j&aacute; est&aacute; na minha conta</label><small>O ML e a Kiwify seguram o repasse por alguns dias. Isso n&atilde;o trava a entrega.</small></div>
       </div>
 
       <h3>Cliente</h3>
@@ -298,6 +300,7 @@ body.modal-aberto{overflow:hidden}
       O e-mail da empresa &eacute; s&oacute; <code>nucleoexato@gmail.com</code> (decis&atilde;o de 12/10/2026). O bot&atilde;o "Enviar pelo Gmail" abre o Gmail nessa conta com destinat&aacute;rio, assunto e texto preenchidos: um clique para enviar. O "Enviar pelo painel" (Resend) fica desligado por enquanto.<br><br>
       <b style="color:var(--grafite)">Venda aguardando pagamento (Mercado Livre)</b><br>
       Quando a venda aparece no ML mas ainda n&atilde;o foi paga, registre com Situa&ccedil;&atilde;o "Aguardando pagamento": ela n&atilde;o entra no faturamento, n&atilde;o gera c&oacute;digo e n&atilde;o aparece como "n&atilde;o entregue". Quando o ML mostrar "Pagamento aprovado", edite e mude para "Paga".
+      Venda "Paga" &eacute; a que o ML j&aacute; aprovou: entregue na hora. O dinheiro dessa venda s&oacute; cai na sua conta dias depois; quando cair, marque "caiu na conta" na coluna "Voc&ecirc; recebe" (ou no formul&aacute;rio da venda). O cart&atilde;o "A receber da plataforma" soma o que o ML e a Kiwify ainda est&atilde;o segurando.
     </div>
   </section>
 
@@ -1189,6 +1192,9 @@ body.modal-aberto{overflow:hidden}
     function desc(l){ var t = l.reduce(function(a,v){ return a+(Number(v.tarifaPlataforma)||0); },0), p = l.reduce(function(a,v){ return a+(Number(v.custoAnuncio)||0); },0); return "tarifas "+reais(t)+" · patrocínio "+reais(p); }
     $("v-k-mes-l").textContent = reais(doMes.reduce(function(a,v){ return a+liq(v); },0)); $("v-k-mes-d").textContent = desc(doMes);
     $("v-k-tot-l").textContent = reais(pagas.reduce(function(a,v){ return a+liq(v); },0)); $("v-k-tot-d").textContent = desc(pagas);
+    var aReceber = pagas.filter(function(v){ return !v.recebido; });
+    $("v-k-areceber").textContent = reais(aReceber.reduce(function(a,v){ return a+liq(v); },0));
+    $("v-k-areceber-d").textContent = aReceber.length ? aReceber.length+" venda(s) paga(s) esperando o repasse" : "tudo já caiu na conta";
     desenharVendas();
     if (estado.clientes.length) desenharClientes();
   }
@@ -1207,7 +1213,7 @@ body.modal-aberto{overflow:hidden}
       h += '<tr'+(v.status==="pendente"?' class="pendente"':v.status!=="paga"?' class="inativo"':(naoEnt?' class="nao-entregue"':''))+'><td>'+dataISO(v.dataVenda)+'</td>'+
         '<td class="nome"><b>'+esc(v.produto)+'</b><small>'+(v.sku?esc(v.sku)+' &middot; ':'')+(v.codigo?'<span class="mono">'+esc(v.codigo)+'</span>':(naoEnt?'<span class="pill alerta">sem código: não entregue</span>':v.status==="pendente"?'<span class="pill pend">código sai quando pagar</span>':'<span class="pill off">sem código</span>'))+'</small></td>'+
         '<td class="nome"><b style="font-weight:600">'+esc(v.comprador||"—")+'</b><small>'+esc(v.email||"")+(v.telefone?(v.email?' &middot; ':'')+esc(fone(v.telefone)):'')+'</small></td>'+
-        '<td class="esc canal">'+esc(v.canal)+(v.numeroVenda?' &middot; '+esc(v.numeroVenda):'')+'</td><td>'+reais(v.valor)+'</td><td><b>'+reais((Number(v.valor)||0)-(Number(v.tarifaPlataforma)||0)-(Number(v.custoAnuncio)||0))+'</b>'+((Number(v.tarifaPlataforma)||Number(v.custoAnuncio))?'<br><small style="color:var(--suave)">tarifa '+reais(v.tarifaPlataforma)+(Number(v.custoAnuncio)?' · ads '+reais(v.custoAnuncio):'')+'</small>':'<br><small class="pill off">sem tarifa</small>')+'</td><td>'+pill+'</td>'+
+        '<td class="esc canal">'+esc(v.canal)+(v.numeroVenda?' &middot; '+esc(v.numeroVenda):'')+'</td><td>'+reais(v.valor)+'</td><td><b>'+reais((Number(v.valor)||0)-(Number(v.tarifaPlataforma)||0)-(Number(v.custoAnuncio)||0))+'</b>'+((Number(v.tarifaPlataforma)||Number(v.custoAnuncio))?'<br><small style="color:var(--suave)">tarifa '+reais(v.tarifaPlataforma)+(Number(v.custoAnuncio)?' · ads '+reais(v.custoAnuncio):'')+'</small>':'<br><small class="pill off">sem tarifa</small>')+(v.status==="paga"?'<br><label class="chk-linha" style="margin-top:4px"><input type="checkbox" data-id="'+esc(v.id)+'" data-campo="recebido"'+(v.recebido?' checked':'')+'> '+(v.recebido?'<span class="pill caiu">caiu na conta</span>':'<span class="pill areceber">a receber</span>')+'</label>':'')+'</td><td>'+pill+'</td>'+
         '<td><label class="chk-linha"><input type="checkbox" data-id="'+esc(v.id)+'" data-campo="entregue"'+(v.entregue?' checked':'')+'> sim</label></td>'+
         '<td><label class="chk-linha"><input type="checkbox" data-id="'+esc(v.id)+'" data-campo="avaliado"'+(v.avaliado?' checked':'')+'> sim</label></td>'+
         '<td class="acoes"><button class="btn peq linha" data-textos="'+esc(v.id)+'">Textos</button><button class="btn cinza peq" data-v-editar="'+esc(v.id)+'">Editar</button><button type="button" class="bt-ex" data-vid="'+esc(v.id)+'">Excluir</button></td></tr>';
@@ -1241,7 +1247,7 @@ body.modal-aberto{overflow:hidden}
     if (v && v.produtoId) selV.selecionar(v.produtoId); else selV.limpar();
     $("v-canal").value = v ? v.canal : "Mercado Livre"; $("v-numero").value = v ? (v.numeroVenda||"") : "";
     $("v-valor").value = v ? numBR(v.valor) : ""; $("v-tarifa").value = v && Number(v.tarifaPlataforma) ? numBR(v.tarifaPlataforma) : ""; $("v-patrocinio").value = v && Number(v.custoAnuncio) ? numBR(v.custoAnuncio) : ""; calcLiquido(); $("v-data").value = v ? v.dataVenda : hojeISO();
-    $("v-status").value = v ? v.status : "paga"; $("v-obs").value = v ? (v.obs||"") : "";
+    $("v-status").value = v ? v.status : "paga"; $("v-obs").value = v ? (v.obs||"") : ""; $("v-recebido").checked = v ? !!v.recebido : false;
     $("v-cli-busca").value = ""; $("v-cli-info").textContent = v && v.clienteId ? "Cliente desta venda carregado abaixo." : "Se não encontrar, preencha abaixo: o cadastro é criado junto com a venda.";
     preencherCliente(v ? (clienteDe(v) || { nome: v.comprador, email: v.email, telefone: v.telefone, comoChamar: v.comoChamar }) : null);
     $("v-gerar").checked = v ? !v.codigo : true; $("v-meses").value = "6";
@@ -1265,7 +1271,7 @@ body.modal-aberto{overflow:hidden}
     estado.confirmouSemEntrega = null;
     var cli = lerCliente();
     if (!cli.nome.trim()) { msg("v-msg","Informe pelo menos o nome do cliente.","erro"); return; }
-    var venda = { id: estado.vendaEditando || "", canal: $("v-canal").value, produtoId: op.value, produto: p.nome||"", sku: p.sku||"", valor: $("v-valor").value, tarifaPlataforma: $("v-tarifa").value, custoAnuncio: $("v-patrocinio").value, dataVenda: $("v-data").value, numeroVenda: $("v-numero").value, status: $("v-status").value, obs: $("v-obs").value };
+    var venda = { id: estado.vendaEditando || "", canal: $("v-canal").value, produtoId: op.value, produto: p.nome||"", sku: p.sku||"", valor: $("v-valor").value, tarifaPlataforma: $("v-tarifa").value, custoAnuncio: $("v-patrocinio").value, dataVenda: $("v-data").value, numeroVenda: $("v-numero").value, status: $("v-status").value, obs: $("v-obs").value, recebido: $("v-recebido").checked };
     if (!estado.vendaEditando && (venda.canal==="Kiwify"||venda.canal==="Site")) venda.entregue = true;
     $("v-salvar").disabled = true; msg("v-msg","");
     try {

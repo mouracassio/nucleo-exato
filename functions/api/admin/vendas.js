@@ -36,6 +36,7 @@ export const CAMPOS = {
   status: "paga",      // pendente (aguardando pagamento) | paga | reembolsada | cancelada
   entregue: false,
   avaliado: false,
+  recebido: false,     // o valor líquido já caiu na conta (o ML segura o repasse por alguns dias)
   obs: "",
   origem: "painel",    // painel | gerar | kiwify-webhook
   criadoEm: 0,
@@ -70,7 +71,7 @@ export function normalizarVenda(v, anterior) {
   out.codigo = String(out.codigo || "").trim().toUpperCase();
   out.codigoExpiraEm = Number(out.codigoExpiraEm) || 0;
   out.status = ["pendente", "paga", "reembolsada", "cancelada"].includes(out.status) ? out.status : "paga";
-  out.entregue = !!out.entregue; out.avaliado = !!out.avaliado;
+  out.entregue = !!out.entregue; out.avaliado = !!out.avaliado; out.recebido = !!out.recebido;
   out.obs = String(out.obs || "").slice(0, 1000);
   for (const k of ["valor", "tarifaPlataforma", "custoAnuncio"]) {
     let val = out[k];
