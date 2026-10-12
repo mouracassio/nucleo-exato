@@ -156,7 +156,7 @@ Foram custosas, não desfaça sem motivo:
   em "engenheiro registrado", e não em "a Núcleo Exato".
 - **Acúmulo com o cargo público** — regra do estatuto do servidor de MG, a conferir antes de
   ampliar a divulgação.
-- **E-mail próprio da empresa** (`contato@nucleoexato.com.br`) — com o domínio dá para ter.
+- **E-mail da empresa**: decisão de 12/10/2026, usar SÓ `nucleoexato@gmail.com` em tudo (site, painel, anúncios). Não criar contato@ por enquanto.
   Enquanto não tem, o site mostra o e-mail de suporte da Kiwify.
 - **A lista de serviços de Meio Ambiente** saiu do escopo de 14/08. Confira se sai ou entra
   alguma coisa.

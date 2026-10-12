@@ -33,7 +33,7 @@ export const CAMPOS = {
   dataVenda: "",       // AAAA-MM-DD
   codigo: "",          // código de acesso gerado
   codigoExpiraEm: 0,
-  status: "paga",      // paga | reembolsada | cancelada
+  status: "paga",      // pendente (aguardando pagamento) | paga | reembolsada | cancelada
   entregue: false,
   avaliado: false,
   obs: "",
@@ -69,7 +69,7 @@ export function normalizarVenda(v, anterior) {
   out.dataVenda = String(out.dataVenda || "").slice(0, 10);
   out.codigo = String(out.codigo || "").trim().toUpperCase();
   out.codigoExpiraEm = Number(out.codigoExpiraEm) || 0;
-  out.status = ["paga", "reembolsada", "cancelada"].includes(out.status) ? out.status : "paga";
+  out.status = ["pendente", "paga", "reembolsada", "cancelada"].includes(out.status) ? out.status : "paga";
   out.entregue = !!out.entregue; out.avaliado = !!out.avaliado;
   out.obs = String(out.obs || "").slice(0, 1000);
   for (const k of ["valor", "tarifaPlataforma", "custoAnuncio"]) {
@@ -161,7 +161,9 @@ export async function onRequestPost({ request, env }) {
 
   // acesso: gera o código na hora (qualquer canal) se ainda não tem e o produto tem arquivo
   let acesso = null;
-  if (querAcesso && !v.codigo && v.produtoId) {
+  // venda aguardando pagamento: não gera código (só se entrega depois do pagamento aprovado)
+  if (v.status === "pendente" && !v.codigo) avisos.push("venda aguardando pagamento: o código de acesso só é gerado quando a situação passar para Paga");
+  if (querAcesso && v.status !== "pendente" && !v.codigo && v.produtoId) {
     try {
       const r = await gerarAcesso(env, {
         produtoId: v.produtoId, plataforma: v.canal, numeroVenda: v.numeroVenda || v.id,

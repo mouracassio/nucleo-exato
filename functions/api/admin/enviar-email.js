@@ -6,8 +6,9 @@
 // nucleoexato.com.br e colocar os registros DNS que ele mostra na Cloudflare,
 // gerar uma API key e salvar na Cloudflare (Pages > Settings > Variables and
 // Secrets) como segredo RESEND_API_KEY. Opcional: EMAIL_REMETENTE
-// (padrão "Núcleo Exato <contato@nucleoexato.com.br>") e EMAIL_RESPONDER_PARA
-// (padrão nucleoexato@gmail.com).
+// e EMAIL_RESPONDER_PARA (padrão nucleoexato@gmail.com).
+// Decisão do Cássio (12/10/2026): o e-mail da empresa é SÓ nucleoexato@gmail.com; o envio
+// direto fica desligado e o painel usa o botão "Abrir no Gmail" (conta nucleoexato@gmail.com).
 //
 // Sem a chave configurada, responde 503 e o painel abre o Gmail já preenchido.
 import { json, exigirSessao } from "./sessao.js";
@@ -30,7 +31,7 @@ export async function onRequestPost({ request, env }) {
     method: "POST",
     headers: { "authorization": "Bearer " + env.RESEND_API_KEY, "content-type": "application/json" },
     body: JSON.stringify({
-      from: env.EMAIL_REMETENTE || "Núcleo Exato <contato@nucleoexato.com.br>",
+      from: env.EMAIL_REMETENTE || "Núcleo Exato <nucleoexato@gmail.com>",
       to: [para],
       reply_to: env.EMAIL_RESPONDER_PARA || "nucleoexato@gmail.com",
       subject: assunto, text: texto, html,

@@ -174,7 +174,9 @@ body.modal-aberto{overflow:hidden}
 .kpi span{font-size:12.5px;color:var(--suave)}
 .chk-linha{display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--grafite);cursor:pointer;white-space:nowrap}
 .chk-linha input{margin:0}
-.pill.pago{background:#E9F5EE;color:var(--verde-esc)}.pill.reemb{background:#FBEAEA;color:#9B2C2C}
+.pill.pago{background:#E9F5EE;color:var(--verde-esc)}.pill.reemb{background:#FBEAEA;color:#9B2C2C}.pill.pend{background:#FFF4D6;color:#8A5A00}
+.tb tr.pendente td{background:#FFFBEF}
+.alerta-pendente{background:#FFF4D6;border:1px solid #F0D28A;color:#5C3D00;border-radius:10px;padding:10px 14px;margin:0 0 12px;font-size:13px}.alerta-pendente b{display:block;margin-bottom:4px}
 .tb .canal{font-size:12.5px;color:var(--suave)}
 .aviso-web{background:#fff;border:1px solid var(--borda);border-radius:12px;padding:16px 18px;margin-top:22px;font-size:14px;color:var(--suave)}
 .aviso-web code{background:var(--claro);padding:2px 6px;border-radius:5px;color:var(--grafite)}
@@ -253,7 +255,7 @@ body.modal-aberto{overflow:hidden}
         <div class="campo"><label>Patroc&iacute;nio do an&uacute;ncio (R$)</label><input type="text" id="v-patrocinio" placeholder="0,00"><small>Custo de Product Ads atribu&iacute;do a esta venda, se houve.</small></div>
         <div class="campo"><label>Voc&ecirc; recebe (R$)</label><input type="text" id="v-liquido" readonly style="background:var(--claro);font-weight:700"><small>Valor pago menos tarifa e patroc&iacute;nio.</small></div>
         <div class="campo"><label>Data da venda</label><input type="date" id="v-data"></div>
-        <div class="campo"><label>Situa&ccedil;&atilde;o</label><select id="v-status"><option value="paga">Paga</option><option value="reembolsada">Reembolsada</option><option value="cancelada">Cancelada</option></select></div>
+        <div class="campo"><label>Situa&ccedil;&atilde;o</label><select id="v-status"><option value="paga">Paga</option><option value="pendente">Aguardando pagamento</option><option value="reembolsada">Reembolsada</option><option value="cancelada">Cancelada</option></select></div>
         <div class="campo"><label>Observa&ccedil;&atilde;o</label><input type="text" id="v-obs" placeholder="opcional"></div>
       </div>
 
@@ -293,7 +295,9 @@ body.modal-aberto{overflow:hidden}
       <b style="color:var(--grafite)">Vendas da Kiwify entrando sozinhas</b><br>
       Na Kiwify: Apps &gt; Webhooks &gt; Criar webhook, URL <code>https://nucleoexato.com.br/api/webhook/kiwify</code>, eventos Compra aprovada e Reembolso, todos os produtos. A Kiwify mostra um token: cole na Cloudflare (Pages &gt; nucleo-exato &gt; Settings &gt; Variables and Secrets) como segredo <code>KIWIFY_WEBHOOK_TOKEN</code> e fa&ccedil;a Retry deployment. Sem o token, o painel recusa qualquer chamada.<br><br>
       <b style="color:var(--grafite)">E-mail direto do painel</b><br>
-      O bot&atilde;o "Enviar pelo painel" usa o Resend com o remetente <code>contato@nucleoexato.com.br</code>. Para ligar: conta no resend.com, dom&iacute;nio nucleoexato.com.br verificado (registros DNS na Cloudflare) e a chave salva como segredo <code>RESEND_API_KEY</code>. Enquanto n&atilde;o estiver ligado, o bot&atilde;o "Abrir no Gmail" abre o e-mail j&aacute; preenchido.
+      O e-mail da empresa &eacute; s&oacute; <code>nucleoexato@gmail.com</code> (decis&atilde;o de 12/10/2026). O bot&atilde;o "Enviar pelo Gmail" abre o Gmail nessa conta com destinat&aacute;rio, assunto e texto preenchidos: um clique para enviar. O "Enviar pelo painel" (Resend) fica desligado por enquanto.<br><br>
+      <b style="color:var(--grafite)">Venda aguardando pagamento (Mercado Livre)</b><br>
+      Quando a venda aparece no ML mas ainda n&atilde;o foi paga, registre com Situa&ccedil;&atilde;o "Aguardando pagamento": ela n&atilde;o entra no faturamento, n&atilde;o gera c&oacute;digo e n&atilde;o aparece como "n&atilde;o entregue". Quando o ML mostrar "Pagamento aprovado", edite e mude para "Paga".
     </div>
   </section>
 
@@ -878,7 +882,7 @@ body.modal-aberto{overflow:hidden}
     h += '<div class="bloco-canal" data-bloco="email">'+
       '<div class="campos" style="margin-bottom:10px"><div class="campo"><label>Para</label><input type="email" data-tx="emailPara" value="'+esc(t.emailPara)+'" placeholder="e-mail do cliente"></div><div class="campo"><label>Assunto</label><input type="text" data-tx="assunto" value="'+esc(t.assunto)+'"></div></div>'+
       '<div class="mensagem"><div class="topo"><b>Texto do e-mail</b><span class="cont">'+t.email.length+' caracteres</span></div><textarea data-tx="email" style="min-height:260px">'+esc(t.email)+'</textarea>'+
-      '<div class="acao"><button class="btn mail peq" data-enviar-email="1">Enviar pelo painel</button><button class="btn peq linha" data-gmail="1">Abrir no Gmail</button><button class="btn cinza peq" data-copiar="email">Copiar texto</button><span data-ok="email"></span></div></div></div>';
+      '<div class="acao"><button class="btn mail peq" data-gmail="1">Enviar pelo Gmail (nucleoexato@gmail.com)</button><button class="btn peq linha" data-enviar-email="1" title="Só funciona com o envio direto ligado na Cloudflare">Enviar pelo painel</button><button class="btn cinza peq" data-copiar="email">Copiar texto</button><span data-ok="email"></span></div></div></div>';
     /* WhatsApp */
     h += '<div class="bloco-canal" data-bloco="zap">'+
       '<div class="campos" style="margin-bottom:10px"><div class="campo"><label>Número do WhatsApp</label><input type="tel" data-tx="zapPara" value="'+esc(fone(t.telefone))+'" placeholder="(34) 99999-9999"></div></div>'+
@@ -898,7 +902,7 @@ body.modal-aberto{overflow:hidden}
     if (bEnt) { if (v.entregue) bEnt.disabled = true; bEnt.addEventListener("click", async function(){ bEnt.disabled = true; await marcarEntregue(v); bEnt.textContent = "Venda marcada como entregue"; }); }
     raiz.querySelectorAll("[data-copiar]").forEach(function(b){ b.addEventListener("click", function(){ copiar(tx(b.getAttribute("data-copiar")), raiz.querySelector('[data-ok="'+b.getAttribute("data-copiar")+'"]')); }); });
     raiz.querySelector("[data-gmail]").addEventListener("click", function(){
-      var u = "https://mail.google.com/mail/?view=cm&fs=1&to="+encodeURIComponent(tx("emailPara"))+"&su="+encodeURIComponent(tx("assunto"))+"&body="+encodeURIComponent(tx("email"));
+      var u = "https://mail.google.com/mail/?authuser=nucleoexato%40gmail.com&view=cm&fs=1&to="+encodeURIComponent(tx("emailPara"))+"&su="+encodeURIComponent(tx("assunto"))+"&body="+encodeURIComponent(tx("email"));
       window.open(u, "_blank", "noopener");
     });
     raiz.querySelector("[data-enviar-email]").addEventListener("click", async function(){
@@ -1192,14 +1196,16 @@ body.modal-aberto{overflow:hidden}
     var q = norm($("v-busca").value.trim());
     var lista = estado.vendas.filter(function(v){ if(!q) return true; return norm([v.comprador,v.produto,v.numeroVenda,v.codigo,v.canal,v.sku,v.email].join(" ")).indexOf(q)>=0; });
     if (!lista.length) { $("v-lista").innerHTML = '<div class="vazio">'+(estado.vendas.length?'Nenhuma venda com esse filtro.':'Nenhuma venda registrada ainda.')+'</div>'; return; }
+    var aguardando = lista.filter(function(v){ return v.status==="pendente"; });
+    var h = aguardando.length ? '<div class="alerta-pendente"><b>'+aguardando.length+' VENDA(S) AGUARDANDO PAGAMENTO</b>'+aguardando.map(function(v){ return esc(v.comprador||"sem nome")+' · '+esc(v.produto)+(v.numeroVenda?' · '+esc(v.numeroVenda):''); }).join("<br>")+'<br><small>No Mercado Livre o comprador tem prazo para pagar (Pix: minutos; boleto: até 3 dias úteis). Não entregue nada até a venda aparecer como "Pagamento aprovado" no ML. Quando aprovar: Editar &gt; Situação "Paga" &gt; Salvar (o código de acesso é gerado nessa hora).</small></div>' : '';
     var pendentes = lista.filter(function(v){ return v.status==="paga" && !v.entregue && v.canal!=="Kiwify"; });
-    var h = pendentes.length ? '<div class="alerta-entrega" style="margin:0 0 12px"><b>'+pendentes.length+' VENDA(S) PAGA(S) AINDA NÃO ENTREGUE(S)</b>'+pendentes.map(function(v){ return esc(v.comprador||"sem nome")+' · '+esc(v.produto)+(v.codigo?'':' · <u>sem código de acesso</u>'); }).join("<br>")+'<br><small>Abra os Textos da venda, mande as mensagens, informe a entrega no Mercado Livre e marque "Entregue".</small></div>' : '';
+    h += pendentes.length ? '<div class="alerta-entrega" style="margin:0 0 12px"><b>'+pendentes.length+' VENDA(S) PAGA(S) AINDA NÃO ENTREGUE(S)</b>'+pendentes.map(function(v){ return esc(v.comprador||"sem nome")+' · '+esc(v.produto)+(v.codigo?'':' · <u>sem código de acesso</u>'); }).join("<br>")+'<br><small>Abra os Textos da venda, mande as mensagens, informe a entrega no Mercado Livre e marque "Entregue".</small></div>' : '';
     h += '<table class="tb"><tr><th>Data</th><th>Produto</th><th>Cliente</th><th class="esc">Canal &middot; pedido</th><th>Pago</th><th>Voc&ecirc; recebe</th><th>Situa&ccedil;&atilde;o</th><th>Entregue</th><th>Avaliado</th><th></th></tr>';
     lista.forEach(function(v){
-      var pill = v.status==="paga" ? '<span class="pill pago">paga</span>' : '<span class="pill reemb">'+esc(v.status)+'</span>';
+      var pill = v.status==="paga" ? '<span class="pill pago">paga</span>' : v.status==="pendente" ? '<span class="pill pend">aguardando pagamento</span>' : '<span class="pill reemb">'+esc(v.status)+'</span>';
       var naoEnt = v.status==="paga" && !v.entregue && v.canal!=="Kiwify";
-      h += '<tr'+(v.status!=="paga"?' class="inativo"':(naoEnt?' class="nao-entregue"':''))+'><td>'+dataISO(v.dataVenda)+'</td>'+
-        '<td class="nome"><b>'+esc(v.produto)+'</b><small>'+(v.sku?esc(v.sku)+' &middot; ':'')+(v.codigo?'<span class="mono">'+esc(v.codigo)+'</span>':(naoEnt?'<span class="pill alerta">sem código: não entregue</span>':'<span class="pill off">sem código</span>'))+'</small></td>'+
+      h += '<tr'+(v.status==="pendente"?' class="pendente"':v.status!=="paga"?' class="inativo"':(naoEnt?' class="nao-entregue"':''))+'><td>'+dataISO(v.dataVenda)+'</td>'+
+        '<td class="nome"><b>'+esc(v.produto)+'</b><small>'+(v.sku?esc(v.sku)+' &middot; ':'')+(v.codigo?'<span class="mono">'+esc(v.codigo)+'</span>':(naoEnt?'<span class="pill alerta">sem código: não entregue</span>':v.status==="pendente"?'<span class="pill pend">código sai quando pagar</span>':'<span class="pill off">sem código</span>'))+'</small></td>'+
         '<td class="nome"><b style="font-weight:600">'+esc(v.comprador||"—")+'</b><small>'+esc(v.email||"")+(v.telefone?(v.email?' &middot; ':'')+esc(fone(v.telefone)):'')+'</small></td>'+
         '<td class="esc canal">'+esc(v.canal)+(v.numeroVenda?' &middot; '+esc(v.numeroVenda):'')+'</td><td>'+reais(v.valor)+'</td><td><b>'+reais((Number(v.valor)||0)-(Number(v.tarifaPlataforma)||0)-(Number(v.custoAnuncio)||0))+'</b>'+((Number(v.tarifaPlataforma)||Number(v.custoAnuncio))?'<br><small style="color:var(--suave)">tarifa '+reais(v.tarifaPlataforma)+(Number(v.custoAnuncio)?' · ads '+reais(v.custoAnuncio):'')+'</small>':'<br><small class="pill off">sem tarifa</small>')+'</td><td>'+pill+'</td>'+
         '<td><label class="chk-linha"><input type="checkbox" data-id="'+esc(v.id)+'" data-campo="entregue"'+(v.entregue?' checked':'')+'> sim</label></td>'+
@@ -1263,7 +1269,7 @@ body.modal-aberto{overflow:hidden}
     if (!estado.vendaEditando && (venda.canal==="Kiwify"||venda.canal==="Site")) venda.entregue = true;
     $("v-salvar").disabled = true; msg("v-msg","");
     try {
-      var j = await post("vendas", { venda: venda, cliente: cli, gerarAcesso: $("v-gerar").checked, meses: $("v-meses").value });
+      var j = await post("vendas", { venda: venda, cliente: cli, gerarAcesso: venda.status==="pendente" ? false : $("v-gerar").checked, meses: $("v-meses").value });
       $("v-form").hidden = true;
       await carregarClientes(); await carregarVendas(); try { await carregarCodigos(); } catch(e){}
       var texto = (j.novo?"Venda registrada":"Venda atualizada")+(j.cliente?" para "+esc(j.cliente.nome):"")+(j.acesso?". Código "+esc(j.acesso.codigo)+(j.acesso.reaproveitado?" (já existia para esta venda)":" gerado")+".":".");
@@ -1272,6 +1278,7 @@ body.modal-aberto{overflow:hidden}
       var vSalva = estado.vendas.find(function(x){ return x.id===j.venda.id; }) || j.venda;
       $("v-entrega").innerHTML = "";
       if (vSalva.codigo) abrirTextos(vSalva, "Textos de entrega: "+vSalva.produto+(vSalva.comprador?" para "+vSalva.comprador:""));
+      else if (vSalva.status==="pendente") $("v-entrega").innerHTML = '<div class="alerta-pendente"><b>VENDA AGUARDANDO PAGAMENTO</b>Registrada sem código de acesso. Quando o Mercado Livre mostrar "Pagamento aprovado", clique em Editar, mude a Situação para "Paga" e salve: o código é gerado na hora e os textos de entrega aparecem.</div>';
       else if (vSalva.status==="paga" && vSalva.canal!=="Kiwify") $("v-entrega").innerHTML = '<div class="alerta-entrega"><b>VENDA SEM ENTREGA</b>A venda de '+esc(vSalva.produto)+' foi registrada, mas o código de acesso não foi gerado: não há o que mandar ao cliente. Suba o arquivo do produto na aba Arquivos, marque no produto e depois edite esta venda com "Gerar o código de acesso agora" marcado.</div>';
     } catch(e){ msg("v-msg", esc(e.message), "erro"); }
     $("v-salvar").disabled = false;
