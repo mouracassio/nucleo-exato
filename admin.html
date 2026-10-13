@@ -63,6 +63,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
 .tb .nome b{display:block;color:var(--grafite)}
 .tb .nome small{color:var(--suave)}
 .tb .acoes{white-space:nowrap}.tb .acoes button{margin-left:4px}
+.tb td.acoes{white-space:normal;min-width:104px}.tb td.acoes button{display:block;width:100%;margin:0 0 6px;box-sizing:border-box}.tb td.acoes button:last-child{margin-bottom:0}
 .pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:#E9F5EE;color:var(--verde-esc)}
 .pill.off{background:#F2E9E4;color:#9C4A1E}
 .bt-ex{font-size:12.5px;padding:3px 9px;border-radius:6px;border:1px solid #D9C2B5;background:#fff;color:#9C4A1E;cursor:pointer}.bt-ex.conf{background:#9C4A1E;color:#fff;border-color:#9C4A1E}
@@ -814,6 +815,7 @@ body.modal-aberto{overflow:hidden}
      ======================================================================= */
   function produtoDe(v){ return estado.produtos.find(function(p){ return p.id===v.produtoId; }) || { nome: v.produto, entrega: "", comoUsar: "" }; }
   function clienteDe(v){ return estado.clientes.find(function(c){ return c.id===v.clienteId; }) || null; }
+  function vendaTeste(v){ return /^teste/i.test(String(v.numeroVenda||"")) || /^teste$/i.test(String(v.comprador||"")); }
   function textoBuscaVenda(v){ var c = clienteDe(v) || {}; return norm([v.comprador,c.nome,c.empresa,c.cpfCnpj,c.email,v.email,c.telefone,v.telefone,v.produto,v.sku,v.numeroVenda,v.codigo,v.canal,v.obs].join(" ")); }
   function soDigitos(s){ return String(s||"").replace(/\D/g,""); }
   function casaBusca(texto, q){ if(!q) return true; if (texto.indexOf(q)>=0) return true; var d = soDigitos(q); return d.length>=4 && soDigitos(texto).indexOf(d)>=0; }
@@ -1195,7 +1197,7 @@ body.modal-aberto{overflow:hidden}
     var j = await api("vendas");
     estado.vendas = j.vendas || [];
     var hoje = new Date(); var mes = hoje.getFullYear()+"-"+String(hoje.getMonth()+1).padStart(2,"0");
-    var pagas = estado.vendas.filter(function(v){ return v.status==="paga"; });
+    var pagas = estado.vendas.filter(function(v){ return v.status==="paga" && !vendaTeste(v); });
     var doMes = pagas.filter(function(v){ return (v.dataVenda||"").slice(0,7)===mes; });
     $("v-k-mes-n").textContent = doMes.length; $("v-k-mes-lbl").textContent = hoje.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
     $("v-k-mes-r").textContent = reais(doMes.reduce(function(a,v){ return a+(Number(v.valor)||0); },0));
@@ -1216,18 +1218,20 @@ body.modal-aberto{overflow:hidden}
     var q = norm($("v-busca").value.trim()), de = $("v-de").value, ate = $("v-ate").value;
     var lista = estado.vendas.filter(function(v){ return casaBusca(textoBuscaVenda(v), q) && dentroPeriodo((v.dataVenda||"").slice(0,10), de, ate); });
     if (!lista.length) { $("v-lista").innerHTML = '<div class="vazio">'+(estado.vendas.length?'Nenhuma venda com esse filtro.':'Nenhuma venda registrada ainda.')+'</div>'; return; }
-    var aguardando = lista.filter(function(v){ return v.status==="pendente"; });
+    var aguardando = lista.filter(function(v){ return v.status==="pendente" && !vendaTeste(v); });
     var h = aguardando.length ? '<div class="alerta-pendente"><b>'+aguardando.length+' VENDA(S) AGUARDANDO PAGAMENTO</b>'+aguardando.map(function(v){ return esc(v.comprador||"sem nome")+' · '+esc(v.produto)+(v.numeroVenda?' · '+esc(v.numeroVenda):''); }).join("<br>")+'<br><small>No Mercado Livre o comprador tem prazo para pagar (Pix: minutos; boleto: até 3 dias úteis). Não entregue nada até a venda aparecer como "Pagamento aprovado" no ML. Quando aprovar: Editar &gt; Situação "Paga" &gt; Salvar (o código de acesso é gerado nessa hora).</small></div>' : '';
-    var pendentes = lista.filter(function(v){ return v.status==="paga" && !v.entregue && v.canal!=="Kiwify"; });
+    var pendentes = lista.filter(function(v){ return v.status==="paga" && !v.entregue && v.canal!=="Kiwify" && !vendaTeste(v); });
     h += pendentes.length ? '<div class="alerta-entrega" style="margin:0 0 12px"><b>'+pendentes.length+' VENDA(S) PAGA(S) AINDA NÃO ENTREGUE(S)</b>'+pendentes.map(function(v){ return esc(v.comprador||"sem nome")+' · '+esc(v.produto)+(v.codigo?'':' · <u>sem código de acesso</u>'); }).join("<br>")+'<br><small>Abra os Textos da venda, mande as mensagens, informe a entrega no Mercado Livre e marque "Entregue".</small></div>' : '';
     h += '<table class="tb"><tr><th>Data</th><th>Produto</th><th>Cliente</th><th class="esc">Canal &middot; pedido</th><th>Pago</th><th>Voc&ecirc; recebe</th><th>Situa&ccedil;&atilde;o</th><th>Entregue</th><th>Avaliado</th><th></th></tr>';
     lista.forEach(function(v){
       var pill = v.status==="paga" ? '<span class="pill pago">paga</span>' : v.status==="pendente" ? '<span class="pill pend">aguardando pagamento</span>' : '<span class="pill reemb">'+esc(v.status)+'</span>';
-      var naoEnt = v.status==="paga" && !v.entregue && v.canal!=="Kiwify";
-      h += '<tr'+(v.status==="pendente"?' class="pendente"':v.status!=="paga"?' class="inativo"':(naoEnt?' class="nao-entregue"':''))+'><td>'+dataISO(v.dataVenda)+'</td>'+
+      var teste = vendaTeste(v);
+      var naoEnt = v.status==="paga" && !v.entregue && v.canal!=="Kiwify" && !teste;
+      if (teste) pill = '<span class="pill off">teste do portão</span>';
+      h += '<tr'+(teste?' class="inativo"':v.status==="pendente"?' class="pendente"':v.status!=="paga"?' class="inativo"':(naoEnt?' class="nao-entregue"':''))+'><td>'+dataISO(v.dataVenda)+'</td>'+
         '<td class="nome"><b>'+esc(v.produto)+'</b><small>'+(v.sku?esc(v.sku)+' &middot; ':'')+(v.codigo?'<span class="mono">'+esc(v.codigo)+'</span>':(naoEnt?'<span class="pill alerta">sem código: não entregue</span>':v.status==="pendente"?'<span class="pill pend">código sai quando pagar</span>':'<span class="pill off">sem código</span>'))+'</small></td>'+
         '<td class="nome"><b style="font-weight:600">'+esc(v.comprador||"—")+'</b><small>'+esc(v.email||"")+(v.telefone?(v.email?' &middot; ':'')+esc(fone(v.telefone)):'')+'</small></td>'+
-        '<td class="esc canal">'+esc(v.canal)+(v.numeroVenda?' &middot; '+esc(v.numeroVenda):'')+'</td><td>'+reais(v.valor)+'</td><td><b>'+reais((Number(v.valor)||0)-(Number(v.tarifaPlataforma)||0)-(Number(v.custoAnuncio)||0))+'</b>'+((Number(v.tarifaPlataforma)||Number(v.custoAnuncio))?'<br><small style="color:var(--suave)">tarifa '+reais(v.tarifaPlataforma)+(Number(v.custoAnuncio)?' · ads '+reais(v.custoAnuncio):'')+'</small>':'<br><small class="pill off">sem tarifa</small>')+(v.status==="paga"?'<br><label class="chk-linha" style="margin-top:4px"><input type="checkbox" data-id="'+esc(v.id)+'" data-campo="recebido"'+(v.recebido?' checked':'')+'> '+(v.recebido?'<span class="pill caiu">caiu na conta</span>':'<span class="pill areceber">a receber</span>')+'</label>':'')+'</td><td>'+pill+'</td>'+
+        '<td class="esc canal">'+esc(v.canal)+(v.numeroVenda?' &middot; '+esc(v.numeroVenda):'')+'</td><td>'+reais(v.valor)+'</td><td><b>'+reais((Number(v.valor)||0)-(Number(v.tarifaPlataforma)||0)-(Number(v.custoAnuncio)||0))+'</b>'+((Number(v.tarifaPlataforma)||Number(v.custoAnuncio))?'<br><small style="color:var(--suave)">tarifa '+reais(v.tarifaPlataforma)+(Number(v.custoAnuncio)?' · ads '+reais(v.custoAnuncio):'')+'</small>':'<br><small class="pill off">sem tarifa</small>')+(v.status==="paga" && !teste?'<br><label class="chk-linha" style="margin-top:4px"><input type="checkbox" data-id="'+esc(v.id)+'" data-campo="recebido"'+(v.recebido?' checked':'')+'> '+(v.recebido?'<span class="pill caiu">caiu na conta</span>':'<span class="pill areceber">a receber</span>')+'</label>':'')+'</td><td>'+pill+'</td>'+
         '<td><label class="chk-linha"><input type="checkbox" data-id="'+esc(v.id)+'" data-campo="entregue"'+(v.entregue?' checked':'')+'> sim</label></td>'+
         '<td><label class="chk-linha"><input type="checkbox" data-id="'+esc(v.id)+'" data-campo="avaliado"'+(v.avaliado?' checked':'')+'> sim</label></td>'+
         '<td class="acoes"><button class="btn peq linha" data-textos="'+esc(v.id)+'">Textos</button><button class="btn cinza peq" data-v-editar="'+esc(v.id)+'">Editar</button><button type="button" class="bt-ex" data-vid="'+esc(v.id)+'">Excluir</button></td></tr>';

@@ -23,9 +23,12 @@ export async function onRequestPost({ request, env }) {
   } catch (e) { return respostaErro(e); }
   const p = r.produtoObj;
 
-  // registra/atualiza a venda na aba Vendas (uma linha por venda + produto)
+  // registra/atualiza a venda na aba Vendas (uma linha por venda + produto).
+  // EXCEÇÃO: código de TESTE do portão do download (venda "TESTE-..."): só o código é
+  // criado; não vira venda nem cliente, para não inflar faturamento e alertas (13/10/2026).
+  const ehTeste = /^teste/i.test(venda);
   let vendaId = "", cliente = null;
-  try {
+  if (!ehTeste) try {
     const canal = String(plataforma || "Outra");
     vendaId = prefixoCanal(canal) + venda + (p.id ? "-" + p.id : "");
     const txtV = await env.PRODUTOS.get(PREFIXO_VENDA + vendaId);
@@ -45,7 +48,7 @@ export async function onRequestPost({ request, env }) {
     await salvarVenda(env, v);
   } catch (e) { vendaId = ""; }
 
-  return json({ codigo: r.codigo, expiraEm: r.expiraEm, link: r.link, produto: p.nome, produtoId: p.id, entrega: p.entrega || "", comoUsar: p.comoUsar || "", vendaId, cliente, reaproveitado: r.reaproveitado, comprador: String(comprador || "") });
+  return json({ codigo: r.codigo, expiraEm: r.expiraEm, link: r.link, produto: p.nome, produtoId: p.id, entrega: p.entrega || "", comoUsar: p.comoUsar || "", vendaId, cliente, reaproveitado: r.reaproveitado, comprador: String(comprador || ""), teste: ehTeste });
 }
 
 function precoNumero(preco) {
