@@ -63,7 +63,7 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
 .tb .nome b{display:block;color:var(--grafite)}
 .tb .nome small{color:var(--suave)}
 .tb .acoes{white-space:nowrap}.tb .acoes button{margin-left:4px}
-.tb td.acoes{white-space:normal;min-width:104px}.tb td.acoes button{display:block;width:100%;margin:0 0 6px;box-sizing:border-box}.tb td.acoes button:last-child{margin-bottom:0}
+.tb td.acoes{display:table-cell;margin-top:0;gap:0;white-space:normal;min-width:104px}.tb td.acoes button{display:block;width:100%;margin:0 0 6px;box-sizing:border-box}.tb td.acoes button:last-child{margin-bottom:0}
 .pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:#E9F5EE;color:var(--verde-esc)}
 .pill.off{background:#F2E9E4;color:#9C4A1E}
 .bt-ex{font-size:12.5px;padding:3px 9px;border-radius:6px;border:1px solid #D9C2B5;background:#fff;color:#9C4A1E;cursor:pointer}.bt-ex.conf{background:#9C4A1E;color:#fff;border-color:#9C4A1E}
@@ -126,6 +126,15 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
 .sel-res{position:absolute;left:0;right:0;top:100%;z-index:30;background:#fff;border:1px solid var(--borda);border-radius:10px;box-shadow:0 10px 28px rgba(20,40,30,.16);margin-top:4px;max-height:360px;overflow:auto}
 .sel-res .it{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;padding:8px 12px;cursor:pointer;border-bottom:1px solid #EEF1EF}
 .sel-res .it:last-child{border-bottom:0}
+.campo.loc{position:relative}.sel-res .it.loc{display:flex;justify-content:space-between;gap:10px;grid-template-columns:none}.sel-res .it.loc small{color:var(--suave)}
+.loc-erro{display:block;color:#9B2C2C;font-size:13px;margin-top:4px}.loc-erro:empty{display:none}.loc-erro button{font:inherit;font-size:13px;margin-left:6px;padding:2px 8px;border-radius:6px;border:1px solid #D9B0B0;background:#fff;color:#9B2C2C;cursor:pointer}
+.arq{border:1px solid var(--borda);border-radius:10px;padding:12px 14px;margin:12px 0;background:#F7FAF8}
+.arq h3{margin:0 0 6px;font-size:15px}.arq .lin{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:5px 0;font-size:13.5px}
+.arq .lin code{background:#fff;border:1px solid var(--borda);border-radius:6px;padding:3px 7px;word-break:break-all;font-size:12.5px}
+.arq .rot{color:var(--suave);min-width:120px}.arq .aviso{color:#9C4A1E;font-size:13px}
+.loc-info{display:block;color:var(--suave);font-size:12.5px;margin-top:4px}
+input.loc-invalido{border-color:#BE2828!important}
+#cl-conf table td small{color:var(--suave)}
 .sel-res .it.on,.sel-res .it:hover{background:#EEF8F2}
 .sel-res .it img,.sel-res .it .ph{width:44px;height:44px;border-radius:6px;object-fit:cover;background:#EEF1EF;display:block}
 .sel-res .it b{display:block;font-size:13px;letter-spacing:.5px;color:var(--verde-esc)}
@@ -240,6 +249,7 @@ body.modal-aberto{overflow:hidden}
     <div class="barra-acoes">
       <button class="btn" id="v-nova">Registrar venda</button>
       <button class="btn cinza" id="v-atualizar">Atualizar lista</button>
+      <button class="btn cinza" id="v-numerar" hidden title="Dá o número NE-AAMMDD-NN às vendas antigas que ainda não têm">Numerar vendas antigas</button>
       <input type="text" id="v-busca" placeholder="Buscar: nome, CPF/CNPJ, e-mail, telefone, SKU, produto, pedido ou c&oacute;digo">
       <span class="periodo">de <input type="date" id="v-de"> at&eacute; <input type="date" id="v-ate"> <button type="button" class="btn cinza peq" id="v-limpar">Limpar</button></span>
     </div>
@@ -256,7 +266,7 @@ body.modal-aberto{overflow:hidden}
         <div class="campo"><label>Canal</label><select id="v-canal"><option>Mercado Livre</option><option>Kiwify</option><option>Site</option><option>Direta</option><option>Shopee</option><option>Outra</option></select></div>
         <div class="campo"><label>N&uacute;mero do pedido</label><input type="text" id="v-numero" placeholder="2000018755142170"><small>No ML &eacute; o n&uacute;mero da venda. Venda direta pode ficar vazio.</small></div>
         <div class="campo"><label>Valor pago pelo cliente (R$)</label><input type="text" id="v-valor" placeholder="19,90"></div>
-        <div class="campo"><label>Tarifa da plataforma (R$)</label><input type="text" id="v-tarifa" placeholder="0,00"><small>Comiss&atilde;o que o ML ou a Kiwify descontam nesta venda. No ML est&aacute; no detalhe da venda.</small></div>
+        <div class="campo"><label>Tarifa da plataforma (R$)</label><input type="text" id="v-tarifa" placeholder="0,00"><small id="v-tarifa-dica">Comiss&atilde;o que o ML ou a Kiwify descontam nesta venda. No ML est&aacute; no detalhe da venda.</small></div>
         <div class="campo"><label>Patroc&iacute;nio do an&uacute;ncio (R$)</label><input type="text" id="v-patrocinio" placeholder="0,00"><small>Custo de Product Ads atribu&iacute;do a esta venda, se houve.</small></div>
         <div class="campo"><label>Voc&ecirc; recebe (R$)</label><input type="text" id="v-liquido" readonly style="background:var(--claro);font-weight:700"><small>Valor pago menos tarifa e patroc&iacute;nio.</small></div>
         <div class="campo"><label>Data da venda</label><input type="date" id="v-data"></div>
@@ -276,13 +286,13 @@ body.modal-aberto{overflow:hidden}
         <div class="campo"><label>CPF ou CNPJ</label><input type="text" id="c-cpfCnpj" placeholder="s&oacute; n&uacute;meros"></div>
         <div class="campo"><label>Empresa</label><input type="text" id="c-empresa"></div>
         <div class="campo"><label>Cargo / fun&ccedil;&atilde;o</label><input type="text" id="c-cargo" placeholder="T&eacute;cnico de SST, RH, gestor"></div>
-        <div class="campo"><label>CEP</label><input type="text" id="c-cep" placeholder="38190-000"></div>
+        <div class="campo"><label>CEP</label><input type="text" id="c-cep" placeholder="38190-000" inputmode="numeric"><small class="loc-info" id="c-cep-info">Opcional: preenche endere&ccedil;o, cidade e UF.</small></div>
         <div class="campo c2"><label>Endere&ccedil;o</label><input type="text" id="c-endereco" placeholder="Rua, avenida"></div>
         <div class="campo"><label>N&uacute;mero</label><input type="text" id="c-numero"></div>
         <div class="campo"><label>Complemento</label><input type="text" id="c-complemento"></div>
         <div class="campo"><label>Bairro</label><input type="text" id="c-bairro"></div>
-        <div class="campo"><label>Cidade</label><input type="text" id="c-cidade"></div>
-        <div class="campo"><label>UF</label><input type="text" id="c-uf" maxlength="2" placeholder="MG"></div>
+        <div class="campo"><label>Cidade</label><input type="text" id="c-cidade" autocomplete="off" placeholder="Digite e escolha na lista"><small class="loc-erro" id="c-cidade-erro"></small></div>
+        <div class="campo"><label>UF</label><select id="c-uf"></select></div>
         <div class="campo"><label>Anota&ccedil;&otilde;es sobre o cliente</label><input type="text" id="c-obs" placeholder="opcional"></div>
       </div>
 
@@ -313,9 +323,11 @@ body.modal-aberto{overflow:hidden}
     <h1 class="adm-h">Clientes</h1>
     <p class="sub">Cadastro completo de quem comprou, em qualquer canal. O cadastro nasce junto com a venda e pode ser completado aqui. Data de nascimento preenchida entra na lista de aniversariantes.</p>
     <div id="cl-aniv"></div>
+    <div id="cl-conf"></div>
     <div class="barra-acoes">
       <button class="btn" id="cl-novo">Novo cliente</button>
       <button class="btn cinza" id="cl-atualizar">Atualizar lista</button>
+      <button class="btn cinza" id="cl-conferir" title="Mostra os clientes cuja cidade ou UF n&atilde;o batem com a lista oficial de munic&iacute;pios">Conferir cidades</button>
       <input type="text" id="cl-busca" placeholder="Buscar por nome, e-mail, telefone, empresa ou cidade">
     </div>
     <div class="form" id="cl-form" hidden>
@@ -329,13 +341,13 @@ body.modal-aberto{overflow:hidden}
         <div class="campo"><label>CPF ou CNPJ</label><input type="text" id="k-cpfCnpj"></div>
         <div class="campo"><label>Empresa</label><input type="text" id="k-empresa"></div>
         <div class="campo"><label>Cargo / fun&ccedil;&atilde;o</label><input type="text" id="k-cargo"></div>
-        <div class="campo"><label>CEP</label><input type="text" id="k-cep"></div>
+        <div class="campo"><label>CEP</label><input type="text" id="k-cep" inputmode="numeric"><small class="loc-info" id="k-cep-info">Opcional: preenche endere&ccedil;o, cidade e UF.</small></div>
         <div class="campo c2"><label>Endere&ccedil;o</label><input type="text" id="k-endereco"></div>
         <div class="campo"><label>N&uacute;mero</label><input type="text" id="k-numero"></div>
         <div class="campo"><label>Complemento</label><input type="text" id="k-complemento"></div>
         <div class="campo"><label>Bairro</label><input type="text" id="k-bairro"></div>
-        <div class="campo"><label>Cidade</label><input type="text" id="k-cidade"></div>
-        <div class="campo"><label>UF</label><input type="text" id="k-uf" maxlength="2"></div>
+        <div class="campo"><label>Cidade</label><input type="text" id="k-cidade" autocomplete="off" placeholder="Digite e escolha na lista"><small class="loc-erro" id="k-cidade-erro"></small></div>
+        <div class="campo"><label>UF</label><select id="k-uf"></select></div>
         <div class="campo"><label>Origem (primeiro canal)</label><select id="k-origem"><option value="">&mdash;</option><option>Mercado Livre</option><option>Kiwify</option><option>Site</option><option>Direta</option><option>Shopee</option><option>Outra</option></select></div>
         <div class="campo c2"><label>Anota&ccedil;&otilde;es</label><input type="text" id="k-obs"></div>
       </div>
@@ -486,7 +498,7 @@ body.modal-aberto{overflow:hidden}
     var j = {};
     try { j = await r.json(); } catch(e) {}
     if (r.status === 401 && caminho !== "entrar") { mostrarLogin(); throw new Error(j.erro || "sessão expirada"); }
-    if (!r.ok) { var e = new Error(j.erro || ("erro "+r.status)); e.status = r.status; e.pendente = !!j.pendente; throw e; }
+    if (!r.ok) { var e = new Error(j.erro || ("erro "+r.status)); e.status = r.status; e.pendente = !!j.pendente; e.dados = j; throw e; }
     return j;
   }
   function post(caminho, corpo){ return api(caminho, { method:"POST", headers:{"content-type":"application/json"}, body: JSON.stringify(corpo||{}) }); }
@@ -524,6 +536,7 @@ body.modal-aberto{overflow:hidden}
       carregarCodigos().catch(function(){})
     ]);
     try { desenharCodigos(); } catch(e){} /* redesenha com vendas e clientes já carregados (nome do comprador) */
+    api("indice").then(function(j){ estado.indice = j; }).catch(function(){});
     try { await carregarArquivos(); } catch(e){ msg("a-msg", esc(e.message), "erro"); }
     try { await carregarProdutos(); } catch(e){ msg("p-msg", esc(e.message), "erro"); }
     try { await carregarCategorias(); } catch(e){}
@@ -816,7 +829,7 @@ body.modal-aberto{overflow:hidden}
   function produtoDe(v){ return estado.produtos.find(function(p){ return p.id===v.produtoId; }) || { nome: v.produto, entrega: "", comoUsar: "" }; }
   function clienteDe(v){ return estado.clientes.find(function(c){ return c.id===v.clienteId; }) || null; }
   function vendaTeste(v){ return /^teste/i.test(String(v.numeroVenda||"")) || /^teste$/i.test(String(v.comprador||"")); }
-  function textoBuscaVenda(v){ var c = clienteDe(v) || {}; return norm([v.comprador,c.nome,c.empresa,c.cpfCnpj,c.email,v.email,c.telefone,v.telefone,v.produto,v.sku,v.numeroVenda,v.codigo,v.canal,v.obs].join(" ")); }
+  function textoBuscaVenda(v){ var c = clienteDe(v) || {}; return norm([v.comprador,c.nome,c.empresa,c.cpfCnpj,c.email,v.email,c.telefone,v.telefone,v.produto,v.sku,v.numeroVenda,v.codigo,v.codigoVenda,v.canal,v.obs].join(" ")); }
   function soDigitos(s){ return String(s||"").replace(/\D/g,""); }
   function casaBusca(texto, q){ if(!q) return true; if (texto.indexOf(q)>=0) return true; var d = soDigitos(q); return d.length>=4 && soDigitos(texto).indexOf(d)>=0; }
   function dentroPeriodo(iso, de, ate){ if(!iso) return !de && !ate; if (de && iso<de) return false; if (ate && iso>ate) return false; return true; }
@@ -865,14 +878,14 @@ body.modal-aberto{overflow:hidden}
       "Como baixar: abra o link (o código já vem preenchido) e clique em Acessar material. O download começa na hora. Guarde o arquivo no seu computador.\n\n"+
       (entrega ? "O que você recebe: "+entrega+".\n" : "")+abrir+" "+comoUsar+"\n\n"+
       valeAte+" ser usado mais de uma vez. Se o link não abrir, tente outro navegador ou uma janela anônima.\n\n"+
-      "Qualquer dúvida sobre o uso, é só responder este e-mail ou chamar no WhatsApp (34) 99913-1399.\n\n"+
+      (v.codigoVenda?"Número da sua compra, para citar se precisar de suporte: "+v.codigoVenda+"\n\n":"")+"Qualquer dúvida sobre o uso, é só responder este e-mail ou chamar no WhatsApp (34) 99913-1399.\n\n"+
       "Prof. Eng. Cássio Moura\nNúcleo Exato · nucleoexato.com.br";
 
     /* 3) WhatsApp */
     var zap = saud+" Obrigado pela compra de \""+p.nome+"\". Seu acesso:\n\n"+
       "Código: "+codigo+"\nLink: "+link+"\n\n"+
       "Abra o link e clique em Acessar material para baixar. "+(ehExcel?"Abra no Excel, no computador. ":"")+comoUsar+"\n\n"+
-      (validade?"O código vale até "+validade+". ":"")+"Qualquer dúvida, é só me chamar por aqui.\n\nProf. Eng. Cássio Moura, Núcleo Exato";
+      (validade?"O código vale até "+validade+". ":"")+(v.codigoVenda?"Número da compra: "+v.codigoVenda+". ":"")+"Qualquer dúvida, é só me chamar por aqui.\n\nProf. Eng. Cássio Moura, Núcleo Exato";
 
     /* aviso de entrega para o Mercado Livre (curto) */
     var avisoML = "Produto digital entregue em "+dataBR(Date.now())+" pelo chat da compra: link para download e código de acesso enviados ao comprador.";
@@ -885,8 +898,8 @@ body.modal-aberto{overflow:hidden}
     if (!v.codigo) { alvo.innerHTML = '<div class="entrega"><h2>Textos de entrega</h2><p class="sem">Esta venda ainda não tem código de acesso. Edite a venda com "Gerar o código de acesso agora" marcado, ou gere um código avulso na aba Códigos.</p></div>'; return; }
     var t = montarTextos(v);
     var h = '<div class="entrega"><h2>'+(cabecalho||"Textos de entrega")+'</h2>'+
-      '<div class="cab"><span class="cod">'+esc(t.codigo)+'</span><a href="'+esc(t.link)+'" target="_blank" rel="noopener">'+esc(t.link)+'</a>'+(t.validade?'<span style="font-size:13px;color:var(--suave)">válido até '+esc(t.validade)+'</span>':'')+'</div>'+
-      '<div class="canais"><button data-canal="ml" class="on">Mercado Livre ('+t.ml.length+' mensagens)</button><button data-canal="email">E-mail</button><button data-canal="zap">WhatsApp</button></div>';
+      '<div class="cab"><span class="cod">'+esc(t.codigo)+'</span><a href="'+esc(t.link)+'" target="_blank" rel="noopener">'+esc(t.link)+'</a>'+(t.validade?'<span style="font-size:13px;color:var(--suave)">válido até '+esc(t.validade)+'</span>':'')+(v.codigoVenda?'<span style="font-size:13px;color:var(--suave)">venda '+esc(v.codigoVenda)+'</span>':'')+'</div>'+
+      htmlArquivo(v)+'<div class="canais"><button data-canal="ml" class="on">Mercado Livre ('+t.ml.length+' mensagens)</button><button data-canal="email">E-mail</button><button data-canal="zap">WhatsApp</button></div>';
     /* ML */
     h += '<div class="bloco-canal on" data-bloco="ml"><p class="sem">Cole no chat da venda, uma por vez e na ordem. Cada uma cabe nos '+LIMITE_ML+' caracteres do Mercado Livre. Sem e-mail, telefone ou WhatsApp: o ML bloqueia.</p>';
     t.ml.forEach(function(m, i){
@@ -908,6 +921,7 @@ body.modal-aberto{overflow:hidden}
       '<div class="acao"><button class="btn zap peq" data-enviar-zap="1">Enviar pelo WhatsApp</button><button class="btn cinza peq" data-copiar="zap">Copiar texto</button><span data-ok="zap"></span></div></div></div>';
     h += '</div>';
     alvo.innerHTML = h;
+    ligarArquivo(alvo);
 
     var raiz = alvo.firstElementChild;
     function tx(k){ var e = raiz.querySelector('[data-tx="'+k+'"]'); return e ? e.value : ""; }
@@ -937,6 +951,41 @@ body.modal-aberto{overflow:hidden}
       if (n.length < 12) { raiz.querySelector('[data-ok="zap"]').textContent = "Informe o número com DDD."; return; }
       window.open("https://wa.me/"+n+"?text="+encodeURIComponent(tx("zap")), "_blank", "noopener");
     });
+  }
+
+  /* =======================================================================
+     ARQUIVO DA VENDA: onde está no Mac (índice gerado pelo comando 5) + baixar do servidor
+     ======================================================================= */
+  function arquivosDaVenda(v){ var p = produtoDe(v); return (typeof arquivosDe === "function" ? arquivosDe(p) : (p.arquivo ? [p.arquivo] : [])); }
+  function htmlArquivo(v){
+    var ch = arquivosDaVenda(v), ind = estado.indice, h = '<div class="arq"><h3>Arquivo desta venda</h3>';
+    if (!ch.length) return h + '<div class="lin aviso">Este produto n&atilde;o tem arquivo de entrega cadastrado.</div></div>';
+    ch.forEach(function(chave){
+      var base = String(chave).split("/").pop(), e = ind && ind.zips ? ind.zips[base] : null, raiz = ind ? ind.raizMac : "";
+      function cam(rel){ return rel ? raiz + "/" + rel : ""; }
+      function linha(rot, caminho){ return caminho ? '<div class="lin"><span class="rot">'+rot+'</span><code>'+esc(caminho)+'</code><button type="button" class="btn cinza peq" data-copiar-cam="'+esc(caminho)+'">Copiar caminho</button></div>' : ""; }
+      h += '<div class="lin"><span class="rot"><b>No servidor</b></span><code>'+esc(chave)+'</code><a class="btn peq linha" href="/api/admin/baixar?chave='+encodeURIComponent(chave)+'" download>Baixar do servidor</a></div>';
+      if (!ind) h += '<div class="lin aviso">O &iacute;ndice de pastas ainda n&atilde;o carregou. Atualize a p&aacute;gina.</div>';
+      else if (!e) h += '<div class="lin aviso">N&atilde;o achei <b>'+esc(base)+'</b> no &iacute;ndice de pastas do Mac. Rode o comando &quot;5 - atualizar o indice de arquivos&quot; e suba o site de novo.</div>';
+      else {
+        h += linha("Pasta do produto", cam(e.pasta));
+        (e.arquivos||[]).forEach(function(a){ h += linha("Arquivo do cliente", cam(a.original)); });
+        h += linha("Zip de entrega", cam(e.zip));
+        if (e.montadoNaHora) h += '<div class="lin" style="color:var(--suave)">Este zip &eacute; montado na hora pelo comando &quot;4 - subir entregas para o R2&quot; a partir da pasta acima.</div>';
+        if ((e.copiasAntigas||[]).length) h += '<div class="lin aviso">H&aacute; '+e.copiasAntigas.length+' c&oacute;pia(s) mais antiga(s) deste zip em outras pastas; o caminho acima &eacute; a mais nova ('+esc(e.zipEm)+').</div>';
+      }
+    });
+    return h + '<div class="lin" style="color:var(--suave);font-size:12.5px">'+(ind ? '&Iacute;ndice gerado em '+esc(ind.geradoEm)+'.' : '')+'</div></div>';
+  }
+  function ligarArquivo(raiz){
+    raiz.querySelectorAll("[data-copiar-cam]").forEach(function(b){ b.addEventListener("click", function(){
+      var t = b.getAttribute("data-copiar-cam");
+      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function(){ b.textContent = "Copiado"; setTimeout(function(){ b.textContent = "Copiar caminho"; }, 1500); }).catch(function(){ window.prompt("Copie o caminho:", t); });
+    }); });
+  }
+  function abrirArquivo(v){
+    $("modal-corpo").innerHTML = '<div class="entrega"><h2>Arquivo: '+esc(v.produto)+'</h2>'+htmlArquivo(v)+'</div>';
+    ligarArquivo($("modal-corpo")); $("modal-textos").hidden = false; document.body.classList.add("modal-aberto"); $("modal-textos").scrollTop = 0;
   }
   function abrirTextos(v, cab){
     desenharEntrega("modal-corpo", v, cab);
@@ -1013,6 +1062,7 @@ body.modal-aberto{overflow:hidden}
   $("cl-atualizar").addEventListener("click", async function(){ try { await carregarClientes(); msg("cl-msg2","Lista atualizada.","ok"); } catch(e){ msg("cl-msg2", esc(e.message), "erro"); } });
   $("cl-busca").addEventListener("input", desenharClientes);
   $("cl-salvar").addEventListener("click", async function(){
+    if (!localOk(LOC_K, "cl-msg")) return;
     var c = { id: estado.clienteEditando || "" };
     CAMPOS_CLI.forEach(function(k){ var e = $("k-"+k); if (e) c[k] = e.value; });
     c.origem = $("k-origem").value;
@@ -1021,6 +1071,163 @@ body.modal-aberto{overflow:hidden}
     catch(e){ msg("cl-msg", esc(e.message), "erro"); }
     $("cl-salvar").disabled = false;
   });
+
+
+  /* =======================================================================
+     UF E CIDADE EM LISTA (municípios do IBGE, arquivo do próprio site: /dados/municipios.json)
+     UF: lista das 27 siglas. Cidade: só aceita município válido da UF; busca por parte do nome,
+     sem exigir acento; aceita "Sacramento MG" / "Sacramento/MG" digitado de uma vez.
+     ======================================================================= */
+  var UFS = [["AC","Acre"],["AL","Alagoas"],["AP","Amapá"],["AM","Amazonas"],["BA","Bahia"],["CE","Ceará"],["DF","Distrito Federal"],["ES","Espírito Santo"],["GO","Goiás"],["MA","Maranhão"],["MT","Mato Grosso"],["MS","Mato Grosso do Sul"],["MG","Minas Gerais"],["PA","Pará"],["PB","Paraíba"],["PR","Paraná"],["PE","Pernambuco"],["PI","Piauí"],["RJ","Rio de Janeiro"],["RN","Rio Grande do Norte"],["RS","Rio Grande do Sul"],["RO","Rondônia"],["RR","Roraima"],["SC","Santa Catarina"],["SP","São Paulo"],["SE","Sergipe"],["TO","Tocantins"]];
+  var LOC = null, LOC_P = null;
+  function nl(s){ return String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim(); }
+  function carregarMunicipios(){
+    if (!LOC_P) LOC_P = fetch("/dados/municipios.json", { credentials: "same-origin" }).then(function(r){ if(!r.ok) throw new Error("sem lista"); return r.json(); }).then(function(j){
+      j.nl = {}; Object.keys(j.mun).forEach(function(uf){ j.nl[uf] = j.mun[uf].map(nl); }); LOC = j; return j;
+    }).catch(function(){ LOC_P = null; return null; });
+    return LOC_P;
+  }
+  function distancia(a, b){
+    if (a === b) return 0; var m = a.length, n = b.length; if (!m) return n; if (!n) return m;
+    var d = []; for (var j = 0; j <= n; j++) d[j] = j;
+    for (var i = 1; i <= m; i++){ var ant = d[0]; d[0] = i; for (var k = 1; k <= n; k++){ var t = d[k]; d[k] = Math.min(d[k]+1, d[k-1]+1, ant + (a[i-1]===b[k-1]?0:1)); ant = t; } }
+    return d[n];
+  }
+  /* todos os municípios com esse nome exato (sem acento); uf opcional */
+  function achaMunicipios(nome, uf){
+    var alvo = nl(nome), r = []; if (!LOC || !alvo) return r;
+    (uf ? [uf] : Object.keys(LOC.mun)).forEach(function(u){ var i = LOC.nl[u] ? LOC.nl[u].indexOf(alvo) : -1; if (i >= 0) r.push({ nome: LOC.mun[u][i], uf: u }); });
+    return r;
+  }
+  /* "Sacramento MG", "Sacramento/MG", "Sacramento - MG" -> {cidade, uf} quando o final é uma sigla válida e o texto inteiro não é município */
+  function separaCidadeUF(txt){
+    var m = String(txt||"").trim().match(/^(.*?)[\s\/,\-]+([A-Za-z]{2})$/);
+    if (!m) return null; var uf = m[2].toUpperCase();
+    if (!UFS.some(function(x){ return x[0]===uf; })) return null;
+    if (achaMunicipios(txt).length) return null;
+    return { cidade: m[1].trim(), uf: uf };
+  }
+  function sugestoes(nome, uf, max){
+    if (!LOC || !nl(nome)) return [];
+    var alvo = nl(nome), lista = [];
+    (uf ? [uf] : Object.keys(LOC.mun)).forEach(function(u){ LOC.nl[u].forEach(function(n, i){
+      var d = distancia(alvo, n), lim = Math.max(2, Math.round(alvo.length*0.3));
+      if (d <= lim) lista.push({ nome: LOC.mun[u][i], uf: u, d: d });
+    }); });
+    lista.sort(function(a,b){ return a.d-b.d; }); return lista.slice(0, max||3);
+  }
+  function montarUF(sel){ sel.innerHTML = '<option value="">UF</option>' + UFS.map(function(u){ return '<option value="'+u[0]+'">'+u[0]+' · '+u[1]+'</option>'; }).join(""); }
+
+  /* liga o seletor de UF + cidade + CEP de um formulário (prefixo "c" = venda, "k" = cliente) */
+  function ligarLocal(p){
+    var uf = $(p+"-uf"), cid = $(p+"-cidade"), erro = $(p+"-cidade-erro"), cep = $(p+"-cep");
+    montarUF(uf);
+    var cx = cid.parentElement; cx.classList.add("loc");
+    var lista = document.createElement("div"); lista.className = "sel-res"; lista.hidden = true; cx.appendChild(lista);
+    var itens = [], ativo = -1;
+    function fechar(){ lista.hidden = true; ativo = -1; }
+    function desenhar(){
+      var q = nl(cid.value), u = uf.value, r = [];
+      if (!LOC) { fechar(); return; }
+      var ufs = u ? [u] : Object.keys(LOC.mun);
+      ufs.forEach(function(x){ LOC.nl[x].forEach(function(n, i){
+        if (!q) { if (u) r.push({ nome: LOC.mun[x][i], uf: x, pt: 1 }); return; }
+        var pos = n.indexOf(q); if (pos >= 0) r.push({ nome: LOC.mun[x][i], uf: x, pt: pos === 0 ? 0 : 1 });
+      }); });
+      r.sort(function(a,b){ return a.pt-b.pt || a.nome.localeCompare(b.nome, "pt-BR"); });
+      itens = r.slice(0, 40);
+      if (!itens.length) { lista.innerHTML = '<div class="it loc"><span style="color:var(--suave)">Nenhum munic&iacute;pio com esse nome'+(u?' em '+u:'')+'.</span></div>'; lista.hidden = false; return; }
+      lista.innerHTML = itens.map(function(m, i){ return '<div class="it loc'+(i===ativo?' on':'')+'" data-i="'+i+'"><span>'+esc(m.nome)+'</span><small>'+m.uf+'</small></div>'; }).join("");
+      lista.hidden = false;
+    }
+    function escolher(m){ cid.value = m.nome; uf.value = m.uf; fechar(); marcar(true, ""); }
+    function marcar(ok, html){ cid.classList.toggle("loc-invalido", !ok); erro.innerHTML = html || ""; }
+    /* valida o que está digitado; devolve true se pode salvar */
+    function validar(){
+      var t = cid.value.trim(); if (!t) { marcar(true, ""); return true; }
+      if (!LOC) return true; /* sem a lista (falha de rede) não trava o cadastro */
+      var sp = separaCidadeUF(t); if (sp) { t = sp.cidade; if (!uf.value) uf.value = sp.uf; else if (uf.value !== sp.uf) uf.value = sp.uf; }
+      var achados = achaMunicipios(t, uf.value);
+      if (achados.length === 1) { cid.value = achados[0].nome; uf.value = achados[0].uf; marcar(true, ""); return true; }
+      if (achados.length > 1) { marcar(false, "Há "+achados.length+" cidades com esse nome ("+achados.map(function(a){ return a.uf; }).join(", ")+"). Escolha a UF."); return false; }
+      var s = sugestoes(t, uf.value, 3);
+      marcar(false, (uf.value ? "Não encontrei esse município em "+uf.value+"." : "Não encontrei esse município.") + (s.length ? " Quis dizer: "+s.map(function(m,i){ return '<button type="button" data-sug="'+i+'">'+esc(m.nome)+' / '+m.uf+'</button>'; }).join(" ")+"?" : " Escolha na lista."));
+      erro._sug = s; return false;
+    }
+    erro.addEventListener("click", function(e){ var b = e.target.closest("[data-sug]"); if (!b) return; var m = erro._sug[Number(b.getAttribute("data-sug"))]; if (m) escolher(m); });
+    cid.addEventListener("focus", function(){ carregarMunicipios().then(function(){ if (document.activeElement === cid) desenhar(); }); });
+    cid.addEventListener("input", function(){ ativo = -1; marcar(true, ""); carregarMunicipios().then(desenhar); });
+    cid.addEventListener("keydown", function(e){
+      if (lista.hidden && e.key !== "ArrowDown") return;
+      if (e.key === "ArrowDown") { e.preventDefault(); if (lista.hidden) desenhar(); ativo = Math.min(ativo+1, itens.length-1); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); ativo = Math.max(ativo-1, 0); }
+      else if (e.key === "Enter") { if (ativo >= 0 && itens[ativo]) { e.preventDefault(); escolher(itens[ativo]); } else if (itens.length === 1 && !lista.hidden && itens[0]) { e.preventDefault(); escolher(itens[0]); } return; }
+      else if (e.key === "Escape") { fechar(); return; }
+      else return;
+      lista.querySelectorAll(".it").forEach(function(x, i){ x.classList.toggle("on", i===ativo); if (i===ativo) x.scrollIntoView({block:"nearest"}); });
+    });
+    lista.addEventListener("mousedown", function(e){ var it = e.target.closest("[data-i]"); if (!it) return; e.preventDefault(); escolher(itens[Number(it.getAttribute("data-i"))]); });
+    cid.addEventListener("blur", function(){ setTimeout(function(){ fechar(); carregarMunicipios().then(validar); }, 160); });
+    uf.addEventListener("change", function(){ carregarMunicipios().then(function(){ if (cid.value.trim()) validar(); }); });
+    /* CEP (opcional): preenche endereço, bairro, cidade e UF pelo ViaCEP; se falhar, segue manual */
+    if (cep) {
+      cep.addEventListener("input", function(){
+        var d = cep.value.replace(/\D/g, "").slice(0, 8); cep.value = d.length > 5 ? d.slice(0,5)+"-"+d.slice(5) : d;
+        if (d.length !== 8) return; var info = $(p+"-cep-info"); info.textContent = "Buscando o CEP…";
+        Promise.all([carregarMunicipios(), fetch("https://viacep.com.br/ws/"+d+"/json/").then(function(r){ return r.json(); })]).then(function(res){
+          var j = res[1]; if (!j || j.erro) { info.textContent = "CEP não encontrado: preencha à mão."; return; }
+          if (j.logradouro && !$(p+"-endereco").value.trim()) $(p+"-endereco").value = j.logradouro;
+          if (j.bairro && !$(p+"-bairro").value.trim()) $(p+"-bairro").value = j.bairro;
+          if (j.complemento && !$(p+"-complemento").value.trim()) $(p+"-complemento").value = j.complemento;
+          if (j.uf) uf.value = j.uf;
+          var m = achaMunicipios(j.localidade, j.uf)[0]; cid.value = m ? m.nome : (j.localidade || ""); validar();
+          info.textContent = "Endereço preenchido pelo CEP. Confira e complete o número.";
+        }).catch(function(){ info.textContent = "Não consegui consultar o CEP agora: preencha à mão."; });
+      });
+    }
+    return { validar: validar };
+  }
+  var LOC_C = ligarLocal("c"), LOC_K = ligarLocal("k");
+  carregarMunicipios();
+  function localOk(lig, onde){ if (lig.validar()) return true; msg(onde, "Confira a <b>cidade</b>: escolha um município da lista (e a UF correta).", "erro"); return false; }
+
+  /* conferência única dos clientes antigos: mostra quem não bate com a lista e propõe a correção */
+  function problemaLocal(c){
+    var cid = (c.cidade||"").trim(), uf = (c.uf||"").trim();
+    if (!cid && !uf) return null;
+    if (uf && !UFS.some(function(x){ return x[0]===uf; })) {
+      var s0 = separaCidadeUF(cid); if (s0 && !uf) return null;
+    }
+    var ufOk = !uf || UFS.some(function(x){ return x[0]===uf; });
+    if (cid) {
+      var sp = separaCidadeUF(cid), cidade = sp ? sp.cidade : cid, ufx = sp ? sp.uf : (ufOk ? uf : "");
+      var ach = achaMunicipios(cidade, ufx);
+      if (ach.length === 1 && !sp && ufOk && ach[0].nome === cid && ach[0].uf === uf) return null; /* já está certo */
+      if (ach.length === 1) return { sug: ach[0], tipo: "ajuste" };
+      if (ach.length > 1) return { sug: null, tipo: "ambigua", lista: ach };
+      var s = sugestoes(cidade, ufx, 3); return { sug: s[0] || null, outras: s.slice(1), tipo: "nao-achou" };
+    }
+    return ufOk ? null : { sug: null, tipo: "uf" };
+  }
+  async function conferirCidades(){
+    await carregarMunicipios();
+    if (!LOC) { $("cl-conf").innerHTML = '<div class="msg erro">Não consegui carregar a lista de municípios.</div>'; return; }
+    var probs = estado.clientes.map(function(c){ return { c: c, p: problemaLocal(c) }; }).filter(function(x){ return x.p; });
+    if (!probs.length) { $("cl-conf").innerHTML = '<div class="msg ok">Todos os clientes com cidade batem com a lista oficial de municípios.</div>'; return; }
+    var h = '<div class="msg info"><b>'+probs.length+' cliente(s) com cidade ou UF fora da lista.</b> Aceite a sugestão ou abra o cadastro para corrigir à mão.</div><table class="tb"><tr><th>Cliente</th><th>Cadastro hoje</th><th>Sugestão</th><th></th></tr>';
+    probs.forEach(function(x){
+      var s = x.p.sug;
+      h += '<tr><td class="nome"><b>'+esc(x.c.nome)+'</b></td><td>'+esc(x.c.cidade||"—")+' / '+esc(x.c.uf||"—")+'</td><td>'+(s ? '<b>'+esc(s.nome)+' / '+s.uf+'</b>'+(x.p.outras&&x.p.outras.length?'<br><small>outras: '+x.p.outras.map(function(o){ return esc(o.nome)+' / '+o.uf; }).join("; ")+'</small>':'') : (x.p.tipo==="ambigua" ? '<small>há várias com esse nome: '+x.p.lista.map(function(a){ return a.uf; }).join(", ")+' (informe a UF)</small>' : '<small>sem sugestão</small>'))+'</td><td class="acoes">'+(s?'<button class="btn peq linha" data-cf-ok="'+esc(x.c.id)+'">Aceitar</button>':'')+'<button class="btn cinza peq" data-cf-ed="'+esc(x.c.id)+'">Editar</button></td></tr>';
+    });
+    $("cl-conf").innerHTML = h + '</table>';
+    $("cl-conf").querySelectorAll("[data-cf-ok]").forEach(function(b){ b.addEventListener("click", async function(){
+      var item = probs.find(function(x){ return x.c.id===b.getAttribute("data-cf-ok"); }); b.disabled = true;
+      try { await post("clientes", { id: item.c.id, cidade: item.p.sug.nome, uf: item.p.sug.uf }); await carregarClientes(); conferirCidades(); }
+      catch(e){ b.disabled = false; msg("cl-msg2", esc(e.message), "erro"); }
+    }); });
+    $("cl-conf").querySelectorAll("[data-cf-ed]").forEach(function(b){ b.addEventListener("click", function(){ abrirFormCliente(b.getAttribute("data-cf-ed")); }); });
+  }
+  $("cl-conferir").addEventListener("click", conferirCidades);
 
   /* =======================================================================
      SELETOR DE PRODUTO — busca por SKU ou nome (resultados na hora) e
@@ -1176,8 +1383,27 @@ body.modal-aberto{overflow:hidden}
   }
   function num(s){ s = String(s||"").trim().replace(/^R\$\s*/,"").replace(/\.(?=\d{3}(\D|$))/g,"").replace(",","."); var n = Number(s); return Number.isFinite(n) ? n : 0; }
   function numBR(n){ return (Number(n)||0).toFixed(2).replace(".",","); }
+  /* Tarifa sugerida do Mercado Livre: 18% do preço + custo fixo por faixa. É SUGESTÃO (confira no detalhe da venda no ML);
+     os valores abaixo vêm das vendas reais já conferidas (R$ 18,90 -> fixo 6,25; R$ 23,65 a 26,90 -> fixo 6,65). */
+  var ML_PERCENTUAL = 0.18;
+  function mlCustoFixo(valor){ if (valor >= 79) return 0; return valor <= 22 ? 6.25 : 6.65; }
+  function tarifaSugerida(canal, valor){
+    if (canal !== "Mercado Livre" || !(valor > 0)) return 0;
+    return Math.round((valor * ML_PERCENTUAL + mlCustoFixo(valor)) * 100) / 100;
+  }
+  function sugerirTarifa(){
+    var campo = $("v-tarifa"), dica = $("v-tarifa-dica"), canal = $("v-canal").value, valor = num($("v-valor").value);
+    var s = tarifaSugerida(canal, valor);
+    if (estado.tarifaAuto || !campo.value) {
+      if (s) { campo.value = numBR(s); estado.tarifaAuto = true; dica.innerHTML = "Sugerida: 18% de "+reais(valor)+" + custo fixo "+reais(mlCustoFixo(valor))+". <b>Confira com o detalhe da venda no ML.</b> Se digitar outro valor, o painel respeita."; }
+      else { if (estado.tarifaAuto) campo.value = ""; estado.tarifaAuto = false; dica.innerHTML = "Comiss&atilde;o que o ML ou a Kiwify descontam nesta venda. No ML est&aacute; no detalhe da venda."; }
+    }
+    calcLiquido();
+  }
   function calcLiquido(){ $("v-liquido").value = numBR(num($("v-valor").value) - num($("v-tarifa").value) - num($("v-patrocinio").value)); }
   ["v-valor","v-tarifa","v-patrocinio"].forEach(function(id){ $(id).addEventListener("input", calcLiquido); });
+  $("v-valor").addEventListener("input", sugerirTarifa); $("v-canal").addEventListener("change", sugerirTarifa);
+  $("v-tarifa").addEventListener("input", function(){ estado.tarifaAuto = false; });
   $("v-cli-busca").addEventListener("change", function(){
     var val = $("v-cli-busca").value;
     var opt = [].slice.call($("lista-clientes").options).find(function(o){ return o.value===val; });
@@ -1210,6 +1436,8 @@ body.modal-aberto{overflow:hidden}
     var aReceber = pagas.filter(function(v){ return !v.recebido; });
     $("v-k-areceber").textContent = reais(aReceber.reduce(function(a,v){ return a+liq(v); },0));
     $("v-k-areceber-d").textContent = aReceber.length ? aReceber.length+" venda(s) paga(s) esperando o repasse" : "tudo já caiu na conta";
+    var semNum = estado.vendas.filter(function(v){ return !v.codigoVenda; }).length;
+    $("v-numerar").hidden = !semNum; $("v-numerar").textContent = "Numerar "+semNum+" venda(s) antiga(s)";
     desenharVendas();
     if (estado.clientes.length) desenharClientes();
     if (estado.codigos) { try { desenharCodigos(); } catch(e){} }
@@ -1228,13 +1456,13 @@ body.modal-aberto{overflow:hidden}
       var teste = vendaTeste(v);
       var naoEnt = v.status==="paga" && !v.entregue && v.canal!=="Kiwify" && !teste;
       if (teste) pill = '<span class="pill off">teste do portão</span>';
-      h += '<tr'+(teste?' class="inativo"':v.status==="pendente"?' class="pendente"':v.status!=="paga"?' class="inativo"':(naoEnt?' class="nao-entregue"':''))+'><td>'+dataISO(v.dataVenda)+'</td>'+
+      h += '<tr'+(teste?' class="inativo"':v.status==="pendente"?' class="pendente"':v.status!=="paga"?' class="inativo"':(naoEnt?' class="nao-entregue"':''))+'><td>'+dataISO(v.dataVenda)+(v.codigoVenda?'<br><small class="mono" style="color:var(--suave)">'+esc(v.codigoVenda)+'</small>':'')+'</td>'+
         '<td class="nome"><b>'+esc(v.produto)+'</b><small>'+(v.sku?esc(v.sku)+' &middot; ':'')+(v.codigo?'<span class="mono">'+esc(v.codigo)+'</span>':(naoEnt?'<span class="pill alerta">sem código: não entregue</span>':v.status==="pendente"?'<span class="pill pend">código sai quando pagar</span>':'<span class="pill off">sem código</span>'))+'</small></td>'+
         '<td class="nome"><b style="font-weight:600">'+esc(v.comprador||"—")+'</b><small>'+esc(v.email||"")+(v.telefone?(v.email?' &middot; ':'')+esc(fone(v.telefone)):'')+'</small></td>'+
         '<td class="esc canal">'+esc(v.canal)+(v.numeroVenda?' &middot; '+esc(v.numeroVenda):'')+'</td><td>'+reais(v.valor)+'</td><td><b>'+reais((Number(v.valor)||0)-(Number(v.tarifaPlataforma)||0)-(Number(v.custoAnuncio)||0))+'</b>'+((Number(v.tarifaPlataforma)||Number(v.custoAnuncio))?'<br><small style="color:var(--suave)">tarifa '+reais(v.tarifaPlataforma)+(Number(v.custoAnuncio)?' · ads '+reais(v.custoAnuncio):'')+'</small>':'<br><small class="pill off">sem tarifa</small>')+(v.status==="paga" && !teste?'<br><label class="chk-linha" style="margin-top:4px"><input type="checkbox" data-id="'+esc(v.id)+'" data-campo="recebido"'+(v.recebido?' checked':'')+'> '+(v.recebido?'<span class="pill caiu">caiu na conta</span>':'<span class="pill areceber">a receber</span>')+'</label>':'')+'</td><td>'+pill+'</td>'+
         '<td><label class="chk-linha"><input type="checkbox" data-id="'+esc(v.id)+'" data-campo="entregue"'+(v.entregue?' checked':'')+'> sim</label></td>'+
         '<td><label class="chk-linha"><input type="checkbox" data-id="'+esc(v.id)+'" data-campo="avaliado"'+(v.avaliado?' checked':'')+'> sim</label></td>'+
-        '<td class="acoes"><button class="btn peq linha" data-textos="'+esc(v.id)+'">Textos</button><button class="btn cinza peq" data-v-editar="'+esc(v.id)+'">Editar</button><button type="button" class="bt-ex" data-vid="'+esc(v.id)+'">Excluir</button></td></tr>';
+        '<td class="acoes"><button class="btn peq linha" data-textos="'+esc(v.id)+'">Textos</button><button class="btn cinza peq" data-arquivo="'+esc(v.id)+'">Arquivo</button><button class="btn cinza peq" data-v-editar="'+esc(v.id)+'">Editar</button><button type="button" class="bt-ex" data-vid="'+esc(v.id)+'">Excluir</button></td></tr>';
     });
     $("v-lista").innerHTML = h + '</table>';
     $("v-lista").querySelectorAll("input[type=checkbox]").forEach(function(c){
@@ -1247,6 +1475,9 @@ body.modal-aberto{overflow:hidden}
     $("v-lista").querySelectorAll("[data-textos]").forEach(function(b){ b.addEventListener("click", function(){
       var v = estado.vendas.find(function(x){ return x.id===b.getAttribute("data-textos"); }); if(!v) return;
       abrirTextos(v, "Textos de entrega: "+v.produto+(v.comprador?" para "+v.comprador:""));
+    }); });
+    $("v-lista").querySelectorAll("[data-arquivo]").forEach(function(b){ b.addEventListener("click", function(){
+      var v = estado.vendas.find(function(x){ return x.id===b.getAttribute("data-arquivo"); }); if(v) abrirArquivo(v);
     }); });
     $("v-lista").querySelectorAll("[data-v-editar]").forEach(function(b){ b.addEventListener("click", function(){ abrirFormVenda(b.getAttribute("data-v-editar")); }); });
     $("v-lista").querySelectorAll(".bt-ex[data-vid]").forEach(function(b){
@@ -1264,7 +1495,7 @@ body.modal-aberto{overflow:hidden}
     $("v-form-titulo").textContent = v ? "Editar venda: "+v.produto : "Registrar venda";
     if (v && v.produtoId) selV.selecionar(v.produtoId); else selV.limpar();
     $("v-canal").value = v ? v.canal : "Mercado Livre"; $("v-numero").value = v ? (v.numeroVenda||"") : "";
-    $("v-valor").value = v ? numBR(v.valor) : ""; $("v-tarifa").value = v && Number(v.tarifaPlataforma) ? numBR(v.tarifaPlataforma) : ""; $("v-patrocinio").value = v && Number(v.custoAnuncio) ? numBR(v.custoAnuncio) : ""; calcLiquido(); $("v-data").value = v ? v.dataVenda : hojeISO();
+    $("v-valor").value = v ? numBR(v.valor) : ""; $("v-tarifa").value = v && Number(v.tarifaPlataforma) ? numBR(v.tarifaPlataforma) : ""; $("v-patrocinio").value = v && Number(v.custoAnuncio) ? numBR(v.custoAnuncio) : ""; estado.tarifaAuto = false; estado.confirmouSemTarifa = null; $("v-tarifa-dica").innerHTML = "Comiss&atilde;o que o ML ou a Kiwify descontam nesta venda. No ML est&aacute; no detalhe da venda."; if (!v) sugerirTarifa(); else calcLiquido(); $("v-data").value = v ? v.dataVenda : hojeISO();
     $("v-status").value = v ? v.status : "paga"; $("v-obs").value = v ? (v.obs||"") : ""; $("v-recebido").checked = v ? !!v.recebido : false;
     $("v-cli-busca").value = ""; $("v-cli-info").textContent = v && v.clienteId ? "Cliente desta venda carregado abaixo." : "Se não encontrar, preencha abaixo: o cadastro é criado junto com a venda.";
     preencherCliente(v ? (clienteDe(v) || { nome: v.comprador, email: v.email, telefone: v.telefone, comoChamar: v.comoChamar }) : null);
@@ -1273,6 +1504,12 @@ body.modal-aberto{overflow:hidden}
     (v ? $("v-numero") : $("v-sku")).focus();
   }
   $("v-nova").addEventListener("click", function(){ abrirFormVenda(null); });
+  $("v-numerar").addEventListener("click", async function(){
+    this.disabled = true;
+    try { var j = await post("vendas", { numerarAntigas: true }); await carregarVendas(); msg("v-msg2", j.numeradas+" venda(s) numerada(s), da mais antiga para a mais nova.", "ok"); }
+    catch(e){ msg("v-msg2", esc(e.message), "erro"); }
+    this.disabled = false;
+  });
   $("v-cancelar").addEventListener("click", function(){ $("v-form").hidden = true; });
   $("v-atualizar").addEventListener("click", async function(){ try { await carregarVendas(); msg("v-msg2","Lista atualizada.","ok"); } catch(e){ msg("v-msg2", esc(e.message), "erro"); } });
   $("v-busca").addEventListener("input", desenharVendas); $("v-de").addEventListener("change", desenharVendas); $("v-ate").addEventListener("change", desenharVendas);
@@ -1288,6 +1525,13 @@ body.modal-aberto{overflow:hidden}
       return;
     }
     estado.confirmouSemEntrega = null;
+    if ($("v-canal").value === "Mercado Livre" && $("v-status").value === "paga" && !(num($("v-tarifa").value) > 0) && estado.confirmouSemTarifa !== (estado.vendaEditando || "nova")) {
+      estado.confirmouSemTarifa = estado.vendaEditando || "nova";
+      msg("v-msg", "<b>A tarifa do Mercado Livre está vazia.</b> Sem ela, o &quot;Você recebe&quot; e os totais ficam errados (o líquido apareceria igual ao valor pago). Preencha a tarifa ou clique em Salvar venda de novo para registrar mesmo assim.", "erro");
+      return;
+    }
+    estado.confirmouSemTarifa = null;
+    if (!localOk(LOC_C, "v-msg")) return;
     var cli = lerCliente();
     if (!cli.nome.trim()) { msg("v-msg","Informe pelo menos o nome do cliente.","erro"); return; }
     var venda = { id: estado.vendaEditando || "", canal: $("v-canal").value, produtoId: op.value, produto: p.nome||"", sku: p.sku||"", valor: $("v-valor").value, tarifaPlataforma: $("v-tarifa").value, custoAnuncio: $("v-patrocinio").value, dataVenda: $("v-data").value, numeroVenda: $("v-numero").value, status: $("v-status").value, obs: $("v-obs").value, recebido: $("v-recebido").checked };
@@ -1302,10 +1546,17 @@ body.modal-aberto{overflow:hidden}
       msg("v-msg2", texto, (j.avisos&&j.avisos.length)?"erro":"ok");
       var vSalva = estado.vendas.find(function(x){ return x.id===j.venda.id; }) || j.venda;
       $("v-entrega").innerHTML = "";
-      if (vSalva.codigo) abrirTextos(vSalva, "Textos de entrega: "+vSalva.produto+(vSalva.comprador?" para "+vSalva.comprador:""));
+      if (vSalva.codigo && j.acesso && !j.acesso.reaproveitado) abrirTextos(vSalva, "Textos de entrega: "+vSalva.produto+(vSalva.comprador?" para "+vSalva.comprador:""));
+      else if (vSalva.codigo) $("v-entrega").innerHTML = '<div class="alerta-entrega" style="background:#EEF5F0;border-color:#BFD9C8;color:var(--grafite)"><b>VENDA SALVA</b>O código desta venda já existia. Para ver ou copiar as mensagens de entrega, clique em Textos na linha da venda.</div>';
       else if (vSalva.status==="pendente") $("v-entrega").innerHTML = '<div class="alerta-pendente"><b>VENDA AGUARDANDO PAGAMENTO</b>Registrada sem código de acesso. Quando o Mercado Livre mostrar "Pagamento aprovado", clique em Editar, mude a Situação para "Paga" e salve: o código é gerado na hora e os textos de entrega aparecem.</div>';
       else if (vSalva.status==="paga" && vSalva.canal!=="Kiwify") $("v-entrega").innerHTML = '<div class="alerta-entrega"><b>VENDA SEM ENTREGA</b>A venda de '+esc(vSalva.produto)+' foi registrada, mas o código de acesso não foi gerado: não há o que mandar ao cliente. Suba o arquivo do produto na aba Arquivos, marque no produto e depois edite esta venda com "Gerar o código de acesso agora" marcado.</div>';
-    } catch(e){ msg("v-msg", esc(e.message), "erro"); }
+    } catch(e){
+      if (e.dados && e.dados.duplicada && e.dados.venda) {
+        msg("v-msg", esc(e.message)+' <button type="button" class="btn peq" id="v-abrir-dup">Abrir a venda existente</button>', "erro");
+        var idDup = e.dados.venda.id;
+        var bd = $("v-abrir-dup"); if (bd) bd.addEventListener("click", function(){ abrirFormVenda(idDup); });
+      } else msg("v-msg", esc(e.message), "erro");
+    }
     $("v-salvar").disabled = false;
   });
 

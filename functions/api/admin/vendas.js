@@ -16,6 +16,7 @@ export const PREFIXO = "venda:";
 
 export const CAMPOS = {
   id: "",              // ex.: ml-2000018718174656-<produtoId>, kiwify-<order_id>, manual-<timestamp>
+  codigoVenda: "",     // número da venda no Núcleo Exato: NE-AAMMDD-NN (AAMMDD = data da venda; NN = ordem no dia)
   canal: "",           // Mercado Livre | Kiwify | Site | Direta | Shopee | Outra
   produtoId: "",       // id do produto no painel (pode ficar vazio se não casou)
   produto: "",         // nome do produto como vendido
@@ -69,6 +70,7 @@ export function normalizarVenda(v, anterior) {
   out.numeroVenda = String(out.numeroVenda || "").replace(/[#\s]/g, "");
   out.dataVenda = String(out.dataVenda || "").slice(0, 10);
   out.codigo = String(out.codigo || "").trim().toUpperCase();
+  out.codigoVenda = String(out.codigoVenda || "").trim().toUpperCase();
   out.codigoExpiraEm = Number(out.codigoExpiraEm) || 0;
   out.status = ["pendente", "paga", "reembolsada", "cancelada"].includes(out.status) ? out.status : "paga";
   out.entregue = !!out.entregue; out.avaliado = !!out.avaliado; out.recebido = !!out.recebido;
@@ -95,9 +97,30 @@ export function validarVenda(v) {
   return erros;
 }
 
+// Número da venda no Núcleo Exato: NE-AAMMDD-NN. O contador de cada dia fica no KV
+// (chave "contador-venda:AAMMDD"), então não precisa varrer as vendas para numerar.
+export async function proximoCodigoVenda(env, dataVenda) {
+  const d = /^\d{4}-\d{2}-\d{2}$/.test(String(dataVenda || "")) ? String(dataVenda) : new Date(Date.now() - 3 * 3600 * 1000).toISOString().slice(0, 10);
+  const aammdd = d.slice(2, 4) + d.slice(5, 7) + d.slice(8, 10);
+  const chave = "contador-venda:" + aammdd;
+  const atual = Number(await env.PRODUTOS.get(chave)) || 0;
+  const n = atual + 1;
+  await env.PRODUTOS.put(chave, String(n));
+  return "NE-" + aammdd + "-" + String(n).padStart(2, "0");
+}
+
 export async function salvarVenda(env, v) {
+  if (!v.codigoVenda) v.codigoVenda = await proximoCodigoVenda(env, v.dataVenda);
   await env.PRODUTOS.put(PREFIXO + v.id, JSON.stringify(v));
   return v;
+}
+
+// Dá número às vendas antigas que ainda não têm, na ordem da data da venda (a mais antiga primeiro).
+export async function numerarVendasAntigas(env) {
+  const todas = await listarVendas(env);
+  const sem = todas.filter(v => !v.codigoVenda).sort((a, b) => (a.dataVenda || "").localeCompare(b.dataVenda || "") || (a.criadoEm || 0) - (b.criadoEm || 0));
+  for (const v of sem) { v.codigoVenda = await proximoCodigoVenda(env, v.dataVenda); await env.PRODUTOS.put(PREFIXO + v.id, JSON.stringify(v)); }
+  return sem.length;
 }
 
 export function prefixoCanal(canal) {
@@ -119,9 +142,11 @@ export async function onRequestPost({ request, env }) {
   try { corpo = await request.json(); } catch { return json({ erro: "corpo inválido" }, 400); }
   const v0 = corpo && corpo.venda ? corpo.venda : corpo;
   if (!v0 || typeof v0 !== "object") return json({ erro: "venda inválida" }, 400);
+  if (corpo && corpo.numerarAntigas) return json({ ok: true, numeradas: await numerarVendasAntigas(env) });
   const dadosCliente = corpo && corpo.cliente && typeof corpo.cliente === "object" ? corpo.cliente : null;
   const querAcesso = !(corpo && corpo.gerarAcesso === false);
 
+  const eraNova = !v0.id; // sem id = cadastro novo (usado na conferência de duplicidade)
   // id: o da venda existente, ou um novo pelo canal + nº do pedido (+ produto), ou manual-<timestamp>
   if (!v0.id) {
     const num = String(v0.numeroVenda || "").replace(/[#\s]/g, "");
@@ -130,6 +155,10 @@ export async function onRequestPost({ request, env }) {
   const idLimpo = String(v0.id).trim().toLowerCase().replace(/[^a-z0-9-]/g, "-").slice(0, 80);
   const txt = await env.PRODUTOS.get(PREFIXO + idLimpo);
   const anterior = txt ? JSON.parse(txt) : null;
+  // registro NOVO (sem id) cujo pedido já existe: não cria outra venda; avisa e devolve a existente
+  if (eraNova && anterior) {
+    return json({ erro: "Esta venda já está cadastrada (" + (anterior.codigoVenda || anterior.id) + "). Abra a venda existente em vez de criar outra.", duplicada: true, venda: anterior }, 409);
+  }
 
   // produto: completa nome/SKU pelo cadastro quando veio só o id
   let produto = null;
