@@ -128,6 +128,8 @@ table.tb{width:100%;border-collapse:collapse;background:#fff;border:1px solid va
 .sel-res .it:last-child{border-bottom:0}
 .campo.loc{position:relative}.sel-res .it.loc{display:flex;justify-content:space-between;gap:10px;grid-template-columns:none}.sel-res .it.loc small{color:var(--suave)}
 .loc-erro{display:block;color:#9B2C2C;font-size:13px;margin-top:4px}.loc-erro:empty{display:none}.loc-erro button{font:inherit;font-size:13px;margin-left:6px;padding:2px 8px;border-radius:6px;border:1px solid #D9B0B0;background:#fff;color:#9B2C2C;cursor:pointer}
+.imp td,.imp th{font-size:13px;vertical-align:top}.imp select,.imp input[type=text]{max-width:210px;font-size:13px;padding:4px 6px}
+.imp .nova{background:#F1F8F3}.imp .mudou{background:#FFF8E6}.imp .ja{color:var(--suave)}.imp .prob{color:#9C4A1E;font-size:12px}
 .arq{border:1px solid var(--borda);border-radius:10px;padding:12px 14px;margin:12px 0;background:#F7FAF8}
 .arq h3{margin:0 0 6px;font-size:15px}.arq .lin{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:5px 0;font-size:13.5px}
 .arq .lin code{background:#fff;border:1px solid var(--borda);border-radius:6px;padding:3px 7px;word-break:break-all;font-size:12.5px}
@@ -248,6 +250,7 @@ body.modal-aberto{overflow:hidden}
     </div>
     <div class="barra-acoes">
       <button class="btn" id="v-nova">Registrar venda</button>
+      <button class="btn cinza" id="v-importar" title="Importa o Excel de vendas baixado do Mercado Livre">Importar do Excel do ML</button><input type="file" id="v-arq-ml" accept=".xlsx" hidden>
       <button class="btn cinza" id="v-atualizar">Atualizar lista</button>
       <button class="btn cinza" id="v-numerar" hidden title="Dá o número NE-AAMMDD-NN às vendas antigas que ainda não têm">Numerar vendas antigas</button>
       <input type="text" id="v-busca" placeholder="Buscar: nome, CPF/CNPJ, e-mail, telefone, SKU, produto, pedido ou c&oacute;digo">
@@ -310,8 +313,15 @@ body.modal-aberto{overflow:hidden}
     <div class="aviso-web">
       <b style="color:var(--grafite)">Vendas da Kiwify entrando sozinhas</b><br>
       Na Kiwify: Apps &gt; Webhooks &gt; Criar webhook, URL <code>https://nucleoexato.com.br/api/webhook/kiwify</code>, eventos Compra aprovada e Reembolso, todos os produtos. A Kiwify mostra um token: cole na Cloudflare (Pages &gt; nucleo-exato &gt; Settings &gt; Variables and Secrets) como segredo <code>KIWIFY_WEBHOOK_TOKEN</code> e fa&ccedil;a Retry deployment. Sem o token, o painel recusa qualquer chamada.<br><br>
-      <b style="color:var(--grafite)">E-mail direto do painel</b><br>
-      O e-mail da empresa &eacute; s&oacute; <code>nucleoexato@gmail.com</code> (decis&atilde;o de 12/10/2026). O bot&atilde;o "Enviar pelo Gmail" abre o Gmail nessa conta com destinat&aacute;rio, assunto e texto preenchidos: um clique para enviar. O "Enviar pelo painel" (Resend) fica desligado por enquanto.<br><br>
+      <b style="color:var(--grafite)">E-mail direto do painel, com anexo (conta nucleoexato@gmail.com)</b><br>
+      <span id="em-estado">Verificando…</span>
+      <div id="em-form" hidden style="margin-top:10px">
+        <div class="campos"><div class="campo"><label>Endere&ccedil;o do script do Google (termina em /exec)</label><input type="text" id="em-url" autocomplete="off" placeholder="https://script.google.com/macros/s/.../exec"></div>
+        <div class="campo"><label>Segredo do script</label><input type="password" id="em-seg" autocomplete="off"></div></div>
+        <button type="button" class="btn peq linha" id="em-ligar">Ligar o envio</button> <span id="em-msg"></span>
+      </div>
+      <button type="button" class="btn cinza peq" id="em-desligar" hidden style="margin-top:8px">Desligar o envio direto</button>
+      <p style="margin:8px 0 0">O bot&atilde;o "Enviar pelo Gmail" continua dispon&iacute;vel e abre o Gmail da nucleoexato com tudo preenchido. O "Enviar pelo painel" envia sozinho, com a planilha anexada.</p>
       <b style="color:var(--grafite)">Venda aguardando pagamento (Mercado Livre)</b><br>
       Quando a venda aparece no ML mas ainda n&atilde;o foi paga, registre com Situa&ccedil;&atilde;o "Aguardando pagamento": ela n&atilde;o entra no faturamento, n&atilde;o gera c&oacute;digo e n&atilde;o aparece como "n&atilde;o entregue". Quando o ML mostrar "Pagamento aprovado", edite e mude para "Paga".
       Venda "Paga" &eacute; a que o ML j&aacute; aprovou: entregue na hora. O dinheiro dessa venda s&oacute; cai na sua conta dias depois; quando cair, marque "caiu na conta" na coluna "Voc&ecirc; recebe" (ou no formul&aacute;rio da venda). O cart&atilde;o "A receber da plataforma" soma o que o ML e a Kiwify ainda est&atilde;o segurando.
@@ -537,6 +547,7 @@ body.modal-aberto{overflow:hidden}
     ]);
     try { desenharCodigos(); } catch(e){} /* redesenha com vendas e clientes já carregados (nome do comprador) */
     api("indice").then(function(j){ estado.indice = j; }).catch(function(){});
+    carregarEmailCfg();
     try { await carregarArquivos(); } catch(e){ msg("a-msg", esc(e.message), "erro"); }
     try { await carregarProdutos(); } catch(e){ msg("p-msg", esc(e.message), "erro"); }
     try { await carregarCategorias(); } catch(e){}
@@ -913,7 +924,7 @@ body.modal-aberto{overflow:hidden}
     h += '<div class="bloco-canal" data-bloco="email">'+
       '<div class="campos" style="margin-bottom:10px"><div class="campo"><label>Para</label><input type="email" data-tx="emailPara" value="'+esc(t.emailPara)+'" placeholder="e-mail do cliente"></div><div class="campo"><label>Assunto</label><input type="text" data-tx="assunto" value="'+esc(t.assunto)+'"></div></div>'+
       '<div class="mensagem"><div class="topo"><b>Texto do e-mail</b><span class="cont">'+t.email.length+' caracteres</span></div><textarea data-tx="email" style="min-height:260px">'+esc(t.email)+'</textarea>'+
-      '<div class="acao"><button class="btn mail peq" data-gmail="1">Enviar pelo Gmail (nucleoexato@gmail.com)</button><button class="btn peq linha" data-enviar-email="1" title="Só funciona com o envio direto ligado na Cloudflare">Enviar pelo painel</button><button class="btn cinza peq" data-copiar="email">Copiar texto</button><span data-ok="email"></span></div></div></div>';
+      htmlAnexar(v)+'<div class="acao"><button class="btn mail peq" data-gmail="1">Enviar pelo Gmail (nucleoexato@gmail.com)</button><button class="btn peq linha" data-enviar-email="1" title="Envia pela conta nucleoexato, com o arquivo anexado">Enviar pelo painel</button><button class="btn cinza peq" data-copiar="email">Copiar texto</button><span data-ok="email"></span></div></div></div>';
     /* WhatsApp */
     h += '<div class="bloco-canal" data-bloco="zap">'+
       '<div class="campos" style="margin-bottom:10px"><div class="campo"><label>Número do WhatsApp</label><input type="tel" data-tx="zapPara" value="'+esc(fone(t.telefone))+'" placeholder="(34) 99999-9999"></div></div>'+
@@ -940,10 +951,13 @@ body.modal-aberto{overflow:hidden}
     raiz.querySelector("[data-enviar-email]").addEventListener("click", async function(){
       var b = this, ok = raiz.querySelector('[data-ok="email"]');
       var para = tx("emailPara").trim(); if (!para) { ok.textContent = "Informe o e-mail do cliente."; return; }
-      if (!confirm("Enviar agora o e-mail para "+para+"?")) return;
+      var cx = raiz.querySelector("[data-anexar]"), anexar = !!(cx && cx.checked && !cx.disabled);
+      var chaves = arquivosDaVenda(v), chave = anexar ? chaves[0] : "";
+      if (!confirm("Enviar agora o e-mail para "+para+(anexar ? ", com o arquivo anexado" : ", s\u00f3 com o link")+"?")) return;
+      var texto = tx("email"); if (anexar) texto += "\n\nO arquivo segue em anexo neste e-mail.";
       b.disabled = true; ok.textContent = "Enviando…";
-      try { await post("enviar-email", { para: para, assunto: tx("assunto"), texto: tx("email") }); ok.textContent = "E-mail enviado para "+para+"."; marcarEntregue(v); }
-      catch(e){ ok.textContent = e.pendente ? "Envio direto ainda não ligado: use Abrir no Gmail." : ("Erro: "+e.message); }
+      try { var r = await post("enviar-email", { para: para, assunto: tx("assunto"), texto: texto, anexarChave: chave }); ok.textContent = "E-mail enviado para "+para+(r && r.anexo ? " com o anexo "+r.anexo : "")+"."; marcarEntregue(v); }
+      catch(e){ ok.textContent = e.pendente ? "Envio direto ainda n\u00e3o ligado: use o bot\u00e3o Enviar pelo Gmail." : (e.dados && e.dados.grande ? "Arquivo grande demais para anexar. Desmarque o anexo e envie s\u00f3 com o link." : ("Erro: "+e.message)); }
       b.disabled = false;
     });
     raiz.querySelector("[data-enviar-zap]").addEventListener("click", function(){
@@ -987,6 +1001,241 @@ body.modal-aberto{overflow:hidden}
     $("modal-corpo").innerHTML = '<div class="entrega"><h2>Arquivo: '+esc(v.produto)+'</h2>'+htmlArquivo(v)+'</div>';
     ligarArquivo($("modal-corpo")); $("modal-textos").hidden = false; document.body.classList.add("modal-aberto"); $("modal-textos").scrollTop = 0;
   }
+
+  /* =======================================================================
+     E-MAIL COM ANEXO: ligação com o script do Google (conta nucleoexato) e opção de anexar
+     ======================================================================= */
+  function htmlAnexar(v){
+    var ch = arquivosDaVenda(v);
+    if (!ch.length) return '<div class="lin aviso" style="margin:6px 0">Este produto n&atilde;o tem arquivo cadastrado: o e-mail vai s&oacute; com o link.</div>';
+    if (ch.length > 1) return '<div class="lin aviso" style="margin:6px 0">Este produto tem '+ch.length+' arquivos: o e-mail vai com o link (o anexo autom&aacute;tico &eacute; para produto de um arquivo s&oacute;).</div>';
+    var base = String(ch[0]).split("/").pop();
+    return '<label style="display:flex;gap:8px;align-items:center;margin:8px 0;font-size:14px"><input type="checkbox" data-anexar checked'+(estado.emailLigado===false?' disabled':'')+'> Anexar o arquivo da venda ao e-mail ('+esc(base)+'; se o zip tiver um arquivo s&oacute;, vai ele, sem precisar abrir o zip)</label>';
+  }
+  function pintarEmailCfg(){
+    var el = $("em-estado"); if (!el) return;
+    if (estado.emailLigado) { el.innerHTML = '<span class="pill on">ligado</span> Envio direto pela conta '+esc(estado.emailConta||"nucleoexato@gmail.com")+'.'; $("em-form").hidden = true; $("em-desligar").hidden = false; }
+    else { el.innerHTML = '<span class="pill off">desligado</span> Para ligar, cole abaixo o endere&ccedil;o e o segredo do script (est&atilde;o no arquivo "CONFIG e-mail do painel.txt", na pasta Claude outputs).'; $("em-form").hidden = false; $("em-desligar").hidden = true; }
+  }
+  async function carregarEmailCfg(){
+    try { var j = await api("config-email"); estado.emailLigado = !!j.ligado; estado.emailConta = j.conta || ""; }
+    catch(e){ estado.emailLigado = false; }
+    pintarEmailCfg();
+  }
+  if ($("em-ligar")) {
+    $("em-ligar").addEventListener("click", async function(){
+      var m = $("em-msg"); m.textContent = "Conferindo…";
+      try { var j = await post("config-email", { url: $("em-url").value.trim(), segredo: $("em-seg").value.trim() }); estado.emailLigado = !!j.ligado; estado.emailConta = j.conta || ""; $("em-url").value = ""; $("em-seg").value = ""; m.textContent = ""; pintarEmailCfg(); }
+      catch(e){ m.textContent = "Erro: " + e.message; }
+    });
+    $("em-desligar").addEventListener("click", async function(){
+      if (!confirm("Desligar o envio direto de e-mail pelo painel? O Gmail continua funcionando.")) return;
+      try { await post("config-email", { desligar: true }); estado.emailLigado = false; pintarEmailCfg(); } catch(e){ alert(e.message); }
+    });
+  }
+
+  /* =======================================================================
+     IMPORTAR DO EXCEL DO MERCADO LIVRE (Vendas > Baixar arquivo Excel de vendas)
+     Lê o .xlsx aqui no navegador (nada sai da sua máquina), mostra a prévia e só grava depois do seu OK.
+     Usa a MESMA porta de entrada do cadastro manual: validação, cliente, tarifa, número NE- e duplicidade.
+     ======================================================================= */
+  function xZipEntradas(u8){
+    var dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength), eo = -1, i;
+    for (i = u8.length - 22; i >= Math.max(0, u8.length - 65557); i--) { if (dv.getUint32(i, true) === 0x06054b50) { eo = i; break; } }
+    if (eo < 0) throw new Error("Este arquivo não é um Excel (.xlsx) válido.");
+    var total = dv.getUint16(eo + 10, true), p = dv.getUint32(eo + 16, true), dec = new TextDecoder("utf-8"), out = {};
+    for (var n = 0; n < total; n++) {
+      if (dv.getUint32(p, true) !== 0x02014b50) throw new Error("Arquivo Excel corrompido.");
+      var met = dv.getUint16(p + 10, true), cs = dv.getUint32(p + 20, true), ln = dv.getUint16(p + 28, true), le = dv.getUint16(p + 30, true), lc = dv.getUint16(p + 32, true), off = dv.getUint32(p + 42, true);
+      out[dec.decode(u8.subarray(p + 46, p + 46 + ln))] = { met: met, cs: cs, off: off };
+      p += 46 + ln + le + lc;
+    }
+    return out;
+  }
+  async function xZipTexto(u8, ents, nome){
+    var e = ents[nome]; if (!e) return null;
+    var dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
+    var ini = e.off + 30 + dv.getUint16(e.off + 26, true) + dv.getUint16(e.off + 28, true), dados = u8.subarray(ini, ini + e.cs);
+    if (e.met === 8) { var ds = new DecompressionStream("deflate-raw"), w = ds.writable.getWriter(); w.write(dados); w.close(); dados = new Uint8Array(await new Response(ds.readable).arrayBuffer()); }
+    else if (e.met !== 0) throw new Error("Compressão do Excel não suportada.");
+    return new TextDecoder("utf-8").decode(dados);
+  }
+  function xColIdx(ref){ var m = /^([A-Z]+)/.exec(ref||""), n = 0; if (!m) return 0; for (var i = 0; i < m[1].length; i++) n = n*26 + (m[1].charCodeAt(i) - 64); return n - 1; }
+  /* devolve as linhas da aba de vendas como arrays (índice = coluna) */
+  async function lerXlsxLinhas(buf){
+    var u8 = new Uint8Array(buf), ents = xZipEntradas(u8), dp = new DOMParser();
+    function xml(s){ return dp.parseFromString(s, "application/xml"); }
+    var ss = [], sx = await xZipTexto(u8, ents, "xl/sharedStrings.xml");
+    if (sx) { var sd = xml(sx).getElementsByTagName("si"); for (var i = 0; i < sd.length; i++) { var ts = sd[i].getElementsByTagName("t"), s = ""; for (var j = 0; j < ts.length; j++) s += ts[j].textContent; ss.push(s); } }
+    var alvo = "xl/worksheets/sheet1.xml", wb = await xZipTexto(u8, ents, "xl/workbook.xml"), rl = await xZipTexto(u8, ents, "xl/_rels/workbook.xml.rels");
+    if (wb && rl) {
+      var shs = xml(wb).getElementsByTagName("sheet"), pick = null;
+      for (var k = 0; k < shs.length; k++) { if (/vendas/i.test(shs[k].getAttribute("name")||"")) { pick = shs[k]; break; } }
+      if (!pick && shs.length) pick = shs[0];
+      if (pick) { var rid = pick.getAttribute("r:id"), rs = xml(rl).getElementsByTagName("Relationship"); for (var q = 0; q < rs.length; q++) { if (rs[q].getAttribute("Id") === rid) { var tg = rs[q].getAttribute("Target"); alvo = tg.charAt(0) === "/" ? tg.slice(1) : "xl/" + tg; } } }
+    }
+    var st = await xZipTexto(u8, ents, alvo); if (!st) throw new Error("Não achei a aba de vendas no Excel.");
+    var rows = xml(st).getElementsByTagName("row"), out = [];
+    for (var r = 0; r < rows.length; r++) {
+      var cs = rows[r].getElementsByTagName("c"), arr = [];
+      for (var c = 0; c < cs.length; c++) {
+        var cel = cs[c], tp = cel.getAttribute("t"), v = cel.getElementsByTagName("v")[0], val = "";
+        if (tp === "s") val = v ? (ss[parseInt(v.textContent, 10)] || "") : "";
+        else if (tp === "inlineStr") { var tt = cel.getElementsByTagName("t")[0]; val = tt ? tt.textContent : ""; }
+        else if (v) val = tp === "str" || tp === "b" || tp === "e" ? v.textContent : (isNaN(Number(v.textContent)) ? v.textContent : Number(v.textContent));
+        arr[xColIdx(cel.getAttribute("r"))] = val;
+      }
+      out.push(arr);
+    }
+    return out;
+  }
+  var MESES_PT = { janeiro:1, fevereiro:2, marco:3, abril:4, maio:5, junho:6, julho:7, agosto:8, setembro:9, outubro:10, novembro:11, dezembro:12 };
+  function mlData(s){ var m = /(\d{1,2})\s+de\s+([a-zçã]+)\s+de\s+(\d{4})/i.exec(String(s||"")); if (!m) return ""; var mes = MESES_PT[nl(m[2])]; if (!mes) return ""; return m[3] + "-" + ("0"+mes).slice(-2) + "-" + ("0"+m[1]).slice(-2); }
+  function mlNum(v){ if (typeof v === "number") return v; var s = String(v||"").trim().replace(/\./g, "").replace(",", "."); var n = Number(s); return isNaN(n) ? 0 : n; }
+  function mlLimpa(v){ var s = String(v == null ? "" : v).trim(); return s; }
+  function ufDeNome(txt){ var n = nl(txt); for (var i = 0; i < UFS.length; i++) { if (nl(UFS[i][1]) === n || UFS[i][0].toLowerCase() === n) return UFS[i][0]; } return ""; }
+  /* "Rua X, 396, Compl, Bairro, Cidade, Estado por extenso, CEP" -> partes (o ML manda tudo numa célula só) */
+  function mlEndereco(txt){
+    var p = mlLimpa(txt).split(",").map(function(x){ return x.trim(); }).filter(Boolean), r = { endereco:"", numero:"", complemento:"", bairro:"", cidade:"", uf:"", cep:"", bruto: mlLimpa(txt) };
+    if (p.length && /^\d{8}$/.test(p[p.length-1].replace(/\D/g, "")) && /^[\d.\-\s]+$/.test(p[p.length-1])) r.cep = p.pop().replace(/\D/g, "");
+    if (p.length && ufDeNome(p[p.length-1])) r.uf = ufDeNome(p.pop());
+    if (p.length) r.cidade = p.pop();
+    if (p.length > 1) r.bairro = p.pop();
+    if (p.length) r.endereco = p[0];
+    if (p.length > 1) r.numero = p[1];
+    if (p.length > 2) r.complemento = p.slice(2).join(", ");
+    return r;
+  }
+  function mlStatus(est, canc, total){
+    var e = nl(est);
+    if (e.indexOf("reembols") >= 0 || (canc < 0 && Math.abs(total) < 0.005)) return "reembolsada";
+    if (e.indexOf("cancelad") >= 0) return "cancelada";
+    if (e.indexOf("pendente") >= 0 || e.indexOf("aguardando") >= 0) return "pendente";
+    return "paga";
+  }
+  function mlLinhas(rows){
+    var h = -1, i;
+    for (i = 0; i < Math.min(rows.length, 30); i++) { if (rows[i] && /^n de venda$/.test(nl(rows[i][0]||""))) { h = i; break; } }
+    if (h < 0) throw new Error("Não achei o cabeçalho do Excel de vendas do ML (coluna \"N.º de venda\"). Confira se é o arquivo \"Vendas BR\" do Mercado Livre.");
+    var col = {}, cab = rows[h];
+    for (i = 0; i < cab.length; i++) { var k = nl(cab[i]||""); if (k && col[k] === undefined) col[k] = i; }
+    function C(nome){ var ix = col[nome]; return ix === undefined ? -1 : ix; }
+    var need = ["data de venda", "receita por produtos brl", "sku"]; need.forEach(function(n){ if (C(n) < 0) throw new Error("Faltou a coluna \"" + n + "\" no Excel. O formato do ML pode ter mudado."); });
+    var out = [];
+    for (i = h + 1; i < rows.length; i++) {
+      var r = rows[i] || [], num = mlLimpa(r[0]).replace(/\D/g, ""); if (!num) continue;
+      function g(n){ var ix = C(n); return ix < 0 ? "" : r[ix]; }
+      var canc = mlNum(g("cancelamentos e reembolsos brl")), total = mlNum(g("total brl"));
+      var end = mlEndereco(g("endereco")), nome = mlLimpa(g("comprador")) || mlLimpa(g("dados pessoais ou da empresa"));
+      var doc = String(g("tipo e numero do documento") || "").replace(/\D/g, "") || String(g("cpf") || "").replace(/\D/g, "");
+      out.push({ linha: i + 1, numeroVenda: num, dataVenda: mlData(g("data de venda")), estadoML: mlLimpa(g("estado")), status: mlStatus(g("estado"), canc, total),
+        unidades: mlNum(g("unidades")) || 1, valor: Math.round(mlNum(g("receita por produtos brl")) * 100) / 100, tarifa: Math.round(Math.abs(mlNum(g("tarifa de venda e impostos brl"))) * 100) / 100,
+        sku: mlLimpa(g("sku")), titulo: mlLimpa(g("titulo do anuncio")), nome: nome, doc: doc, end: end });
+    }
+    return out;
+  }
+  function classificarML(linhas){
+    var vs = estado.vendas || [];
+    linhas.forEach(function(L){
+      var sku = L.sku.toLowerCase(), p = (estado.produtos || []).find(function(x){ return x.sku && String(x.sku).trim().toLowerCase() === sku; });
+      L.produtoId = p ? p.id : ""; L.produtoNome = p ? p.nome : "";
+      var ex = vs.find(function(x){ return x.canal === "Mercado Livre" && String(x.numeroVenda||"").replace(/\D/g, "") === L.numeroVenda && (!x.produtoId || !L.produtoId || x.produtoId === L.produtoId); });
+      L.existente = ex || null; L.mudancas = [];
+      if (ex) {
+        if (Math.abs((Number(ex.valor)||0) - L.valor) > 0.009) L.mudancas.push({ campo: "valor", de: Number(ex.valor)||0, para: L.valor });
+        if (Math.abs((Number(ex.tarifaPlataforma)||0) - L.tarifa) > 0.009) L.mudancas.push({ campo: "tarifaPlataforma", de: Number(ex.tarifaPlataforma)||0, para: L.tarifa });
+        if (ex.status !== L.status && (L.status === "reembolsada" || L.status === "cancelada")) L.mudancas.push({ campo: "status", de: ex.status, para: L.status });
+        L.tipo = L.mudancas.length ? "mudou" : "ja";
+      } else L.tipo = "nova";
+      var e = L.end; L.cidadeOk = false; L.cidadeFinal = ""; L.ufFinal = e.uf; L.opcoes = [];
+      if (e.cidade) {
+        var ach = achaMunicipios(e.cidade, e.uf);
+        if (ach.length === 1) { L.cidadeOk = true; L.cidadeFinal = ach[0].nome; L.ufFinal = ach[0].uf; }
+        else { L.opcoes = (ach.length ? ach : sugestoes(e.cidade, e.uf, 5)).map(function(a){ return { nome: a.nome, uf: a.uf }; }); }
+      }
+      L.aceitar = L.tipo === "nova"; L.entregue = false;
+    });
+    return linhas;
+  }
+  function brl(n){ return "R$ " + (Number(n)||0).toFixed(2).replace(".", ","); }
+  function htmlPreviaML(linhas){
+    var nN = 0, nM = 0, nJ = 0; linhas.forEach(function(L){ if (L.tipo === "nova") nN++; else if (L.tipo === "mudou") nM++; else nJ++; });
+    var h = '<div class="entrega"><h2>Importar do Excel do Mercado Livre</h2>' +
+      '<p>Arquivo lido: <b>'+linhas.length+'</b> venda(s). <b>'+nN+'</b> nova(s), <b>'+nM+'</b> j&aacute; cadastrada(s) com diferen&ccedil;a, <b>'+nJ+'</b> j&aacute; cadastrada(s) iguais (puladas). Nada &eacute; gravado antes do seu OK.</p>' +
+      '<p style="font-size:13px;color:var(--suave)">O Excel do ML n&atilde;o traz e-mail nem telefone do comprador: esses dois campos continuam manuais. N&atilde;o apaga nem duplica nada: o que j&aacute; existe s&oacute; &eacute; alterado se voc&ecirc; marcar "Atualizar".</p>' +
+      '<div style="overflow:auto"><table class="tb imp"><thead><tr><th></th><th>Pedido / data</th><th>Comprador</th><th>Produto</th><th>Valor / tarifa</th><th>Situa&ccedil;&atilde;o</th><th>Cidade</th><th>J&aacute; entregue?</th></tr></thead><tbody>';
+    linhas.forEach(function(L, ix){
+      var cls = L.tipo === "nova" ? "nova" : (L.tipo === "mudou" ? "mudou" : "ja");
+      var rot = L.tipo === "nova" ? "Importar" : (L.tipo === "mudou" ? "Atualizar" : "");
+      var chk = L.tipo === "ja" ? '<span class="ja">j&aacute; cadastrada</span>' : '<label><input type="checkbox" data-ml-aceitar="'+ix+'"'+(L.aceitar?' checked':'')+'> '+rot+'</label>';
+      var prod;
+      if (L.produtoId) prod = esc(L.produtoNome) + '<br><small>'+esc(L.sku)+'</small>';
+      else prod = '<span class="prob">SKU '+esc(L.sku)+' n&atilde;o encontrado nos produtos.</span><br>' + (L.tipo === "nova" ? '<select data-ml-prod="'+ix+'"><option value="">escolher o produto…</option>'+(estado.produtos||[]).map(function(p){ return '<option value="'+esc(p.id)+'">'+esc(p.nome)+'</option>'; }).join("")+'</select>' : '') + '<br><small>'+esc(L.titulo)+'</small>';
+      var vt = brl(L.valor) + ' / ' + brl(L.tarifa);
+      if (L.tipo === "mudou") vt += '<br><span class="prob">' + L.mudancas.map(function(m){ return m.campo === "status" ? ("situa&ccedil;&atilde;o: "+esc(m.de)+" &rarr; "+esc(m.para)) : (m.campo === "valor" ? "valor" : "tarifa")+": "+brl(m.de)+" &rarr; "+brl(m.para); }).join("<br>") + '</span>';
+      var cid;
+      if (L.tipo === "ja") cid = '<span class="ja">&mdash;</span>';
+      else if (!L.end.cidade) cid = '<span class="prob">sem cidade no Excel</span>';
+      else if (L.cidadeOk) cid = esc(L.cidadeFinal) + '/' + esc(L.ufFinal);
+      else cid = '<span class="prob">cidade a conferir: &quot;'+esc(L.end.cidade)+'&quot;'+(L.end.uf?'/'+esc(L.end.uf):'')+'</span><br><select data-ml-cid="'+ix+'"><option value="">deixar em branco</option>'+L.opcoes.map(function(o, k){ return '<option value="'+k+'">'+esc(o.nome)+'/'+esc(o.uf)+'</option>'; }).join("")+'</select>';
+      h += '<tr class="'+cls+'"><td>'+chk+'</td><td class="mono">'+esc(L.numeroVenda)+'<br><small>'+dataISO(L.dataVenda)+'</small></td><td>'+esc(L.nome)+'<br><small>'+esc(L.doc)+'</small></td><td>'+prod+'</td><td>'+vt+'</td><td>'+esc(L.estadoML)+'<br><small>'+esc(L.status)+'</small></td><td>'+cid+'</td><td>'+(L.tipo === "nova" ? '<input type="checkbox" data-ml-ent="'+ix+'">' : '') +'</td></tr>';
+    });
+    h += '</tbody></table></div>' +
+      '<div class="campos" style="margin-top:12px"><label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="ml-acesso"> Gerar o c&oacute;digo de acesso das vendas novas pagas que ainda n&atilde;o foram entregues (vendas antigas j&aacute; entregues n&atilde;o precisam)</label></div>' +
+      '<div class="acao" style="margin-top:12px"><button class="btn" id="ml-confirmar">Confirmar importa&ccedil;&atilde;o</button> <button class="btn cinza" id="ml-cancelar">Cancelar</button> <span id="ml-msg"></span></div></div>';
+    return h;
+  }
+  function fecharModal(){ $("modal-textos").hidden = true; document.body.classList.remove("modal-aberto"); }
+  async function importarML(arquivo){
+    var out = $("v-msg2");
+    try {
+      msg("v-msg2", "Lendo o Excel…", "ok");
+      await carregarMunicipios(); await carregarVendas();
+      var linhas = classificarML(mlLinhas(await lerXlsxLinhas(await arquivo.arrayBuffer())));
+      if (!linhas.length) { msg("v-msg2", "O Excel não tem nenhuma venda abaixo do cabeçalho.", "erro"); return; }
+      msg("v-msg2", "", "ok");
+      $("modal-corpo").innerHTML = htmlPreviaML(linhas); $("modal-textos").hidden = false; document.body.classList.add("modal-aberto"); $("modal-textos").scrollTop = 0;
+      var corpo = $("modal-corpo");
+      corpo.querySelectorAll("[data-ml-aceitar]").forEach(function(c){ c.addEventListener("change", function(){ linhas[+c.getAttribute("data-ml-aceitar")].aceitar = c.checked; }); });
+      corpo.querySelectorAll("[data-ml-ent]").forEach(function(c){ c.addEventListener("change", function(){ linhas[+c.getAttribute("data-ml-ent")].entregue = c.checked; }); });
+      corpo.querySelectorAll("[data-ml-prod]").forEach(function(s){ s.addEventListener("change", function(){ var L = linhas[+s.getAttribute("data-ml-prod")], p = (estado.produtos||[]).find(function(x){ return x.id === s.value; }); L.produtoId = p ? p.id : ""; L.produtoNome = p ? p.nome : ""; }); });
+      corpo.querySelectorAll("[data-ml-cid]").forEach(function(s){ s.addEventListener("change", function(){ var L = linhas[+s.getAttribute("data-ml-cid")], o = s.value === "" ? null : L.opcoes[+s.value]; L.cidadeFinal = o ? o.nome : ""; L.ufFinal = o ? o.uf : L.end.uf; L.cidadeOk = !!o; }); });
+      $("ml-cancelar").addEventListener("click", fecharModal);
+      $("ml-confirmar").addEventListener("click", function(){ gravarML(linhas); });
+    } catch(e) { msg("v-msg2", esc(e.message || e), "erro"); }
+  }
+  async function gravarML(linhas){
+    var btn = $("ml-confirmar"), m = $("ml-msg"), gerar = $("ml-acesso").checked, ok = { n:0, a:0 }, falhas = [], pulos = 0;
+    var fila = linhas.filter(function(L){ return L.aceitar && L.tipo !== "ja"; });
+    if (!fila.length) { m.textContent = "Nada marcado para importar."; return; }
+    var semProd = fila.filter(function(L){ return L.tipo === "nova" && !L.produtoId; });
+    if (semProd.length && !confirm(semProd.length + " venda(s) ficarão sem produto ligado (SKU não encontrado). Elas entram sem código de acesso e você liga o produto depois. Continuar?")) return;
+    btn.disabled = true;
+    for (var i = 0; i < fila.length; i++) {
+      var L = fila[i]; m.textContent = "Gravando " + (i+1) + " de " + fila.length + "…";
+      try {
+        if (L.tipo === "mudou") {
+          var upd = { id: L.existente.id }; L.mudancas.forEach(function(x){ upd[x.campo] = x.para; });
+          await post("vendas", { venda: upd, gerarAcesso: false }); ok.a++;
+        } else {
+          var e = L.end, cid = L.cidadeOk ? L.cidadeFinal : "", uf = L.cidadeOk ? L.ufFinal : (e.uf || "");
+          var venda = { canal: "Mercado Livre", produtoId: L.produtoId, produto: L.produtoNome || L.titulo, sku: L.sku, valor: L.valor, tarifaPlataforma: L.tarifa, custoAnuncio: 0,
+            numeroVenda: L.numeroVenda, dataVenda: L.dataVenda, status: L.status, entregue: !!L.entregue, comprador: L.nome, obs: "Importado do Excel do ML" };
+          var cli = { nome: L.nome, cpfCnpj: L.doc, cep: e.cep, endereco: e.endereco, numero: e.numero, complemento: e.complemento, bairro: e.bairro, cidade: cid, uf: uf, origem: "Mercado Livre" };
+          await post("vendas", { venda: venda, cliente: cli, gerarAcesso: !!(gerar && L.status === "paga" && !L.entregue && L.produtoId) }); ok.n++;
+        }
+      } catch(err) {
+        if (err.dados && err.dados.duplicada) pulos++; else falhas.push(L.numeroVenda + ": " + (err.message || err));
+      }
+    }
+    try { await carregarVendas(); await carregarClientes(); } catch(e){}
+    $("modal-corpo").innerHTML = '<div class="entrega"><h2>Importa&ccedil;&atilde;o conclu&iacute;da</h2><p><b>'+ok.n+'</b> venda(s) nova(s) gravada(s), <b>'+ok.a+'</b> atualizada(s), <b>'+pulos+'</b> pulada(s) por j&aacute; existirem.</p>' +
+      (falhas.length ? '<p class="prob">N&atilde;o gravou:<br>'+falhas.map(esc).join("<br>")+'</p>' : '') +
+      '<p style="font-size:13px;color:var(--suave)">As vendas novas pagas e n&atilde;o entregues aparecem na lista como &quot;n&atilde;o entregue&quot;. Complete e-mail e telefone abrindo a venda (o Excel do ML n&atilde;o traz esses dois campos).</p><div class="acao"><button class="btn" id="ml-fechar">Fechar</button></div></div>';
+    $("ml-fechar").addEventListener("click", fecharModal);
+  }
+  $("v-importar").addEventListener("click", function(){ $("v-arq-ml").value = ""; $("v-arq-ml").click(); });
+  $("v-arq-ml").addEventListener("change", function(){ var f = this.files && this.files[0]; if (f) importarML(f); });
   function abrirTextos(v, cab){
     desenharEntrega("modal-corpo", v, cab);
     $("modal-textos").hidden = false; document.body.classList.add("modal-aberto");
