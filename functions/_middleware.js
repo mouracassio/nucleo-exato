@@ -50,10 +50,8 @@ async function carregar(env, origem) {
     let cursor;
     do {
       const pag = await env.PRODUTOS.list({ prefix: "produto:", cursor, limit: 1000 });
-      for (const k of pag.keys) {
-        const txt = await env.PRODUTOS.get(k.name);
-        if (txt) { try { produtos.push(JSON.parse(txt)); } catch {} }
-      }
+      const textos = await Promise.all(pag.keys.map(k => env.PRODUTOS.get(k.name)));
+      for (const txt of textos) if (txt) { try { produtos.push(JSON.parse(txt)); } catch {} }
       cursor = pag.list_complete ? null : pag.cursor;
     } while (cursor);
   }

@@ -41,10 +41,9 @@ export async function listarProdutos(env) {
   let cursor;
   do {
     const pag = await env.PRODUTOS.list({ prefix: PREFIXO, cursor, limit: 1000 });
-    for (const k of pag.keys) {
-      const txt = await env.PRODUTOS.get(k.name);
-      if (txt) { try { lista.push({ ...CAMPOS, ...JSON.parse(txt) }); } catch {} }
-    }
+    // leituras em paralelo (antes eram uma por vez: lento com o cache frio)
+    const textos = await Promise.all(pag.keys.map(k => env.PRODUTOS.get(k.name)));
+    for (const txt of textos) if (txt) { try { lista.push({ ...CAMPOS, ...JSON.parse(txt) }); } catch {} }
     cursor = pag.list_complete ? null : pag.cursor;
   } while (cursor);
   lista.sort((a, b) => (a.ordem - b.ordem) || a.nome.localeCompare(b.nome, "pt-BR"));
