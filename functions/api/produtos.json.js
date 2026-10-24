@@ -6,7 +6,12 @@
 // Cache curto (30 s no navegador, 60 s na borda): preço novo aparece em até 1 minuto.
 import { listarProdutos } from "./admin/produtos.js";
 
+// Guarda o resultado por 30 s na memória do servidor (some quando ele reinicia).
+let guardado = { quando: 0, texto: null };
+
 export async function onRequestGet({ env }) {
+  const cabecalho = { "content-type": "application/json; charset=utf-8", "cache-control": "public, max-age=30, s-maxage=60, stale-while-revalidate=300" };
+  if (guardado.texto && Date.now() - guardado.quando < 30000) return new Response(guardado.texto, { headers: cabecalho });
   const saida = {};
   try {
     if (env.PRODUTOS) {
@@ -16,7 +21,7 @@ export async function onRequestGet({ env }) {
       }
     }
   } catch (e) { /* sem banco, devolve vazio e o site segue com o links.js */ }
-  return new Response(JSON.stringify(saida), {
-    headers: { "content-type": "application/json; charset=utf-8", "cache-control": "public, max-age=30, s-maxage=60, stale-while-revalidate=300" },
-  });
+  const texto = JSON.stringify(saida);
+  if (Object.keys(saida).length) guardado = { quando: Date.now(), texto };
+  return new Response(texto, { headers: cabecalho });
 }
