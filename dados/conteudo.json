@@ -236,26 +236,6 @@
       "sub": ""
     },
     {
-      "id": "combo",
-      "ativo": true,
-      "arquivado": false,
-      "destaqueHome": true,
-      "nome": "Combo — os três anos",
-      "resumo": "1º, 2º e 3º ano completos: 123 aulas com atividade e 123 planos de aula, no mesmo padrão.",
-      "preco": "97,90",
-      "capa": "img/capa-combo.jpg",
-      "alt": "Combo três anos",
-      "pagina": "matematica-combo.html",
-      "destino": {
-        "tipo": "kiwify",
-        "checkout": "https://pay.kiwify.com.br/MqMD7iJ",
-        "area": ""
-      },
-      "video": "",
-      "categoria": "educacao",
-      "sub": ""
-    },
-    {
       "id": "planilha",
       "ativo": true,
       "arquivado": false,

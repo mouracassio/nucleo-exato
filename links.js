@@ -36,11 +36,6 @@ checkout: "https://pay.kiwify.com.br/7LegsJT",
 preco: "57,90"
 },
 
-combo: {
-checkout: "https://pay.kiwify.com.br/MqMD7iJ",
-preco: "97,90"
-},
-
 planilha: {
 checkout: "https://pay.kiwify.com.br/tKkVv1A",
 preco: "34,90"

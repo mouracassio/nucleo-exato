@@ -23,7 +23,6 @@ contato.html                          ← o formulário de orçamento
 matematica-1ano.html                  ← as 6 páginas de venda
 matematica-2ano.html
 matematica-3ano.html
-matematica-combo.html
 planilha-de-notas.html
 niosh.html
 
@@ -97,7 +96,6 @@ a pessoa aperta enviar.
 https://nucleoexato.com.br/matematica-1ano.html
 https://nucleoexato.com.br/matematica-2ano.html
 https://nucleoexato.com.br/matematica-3ano.html
-https://nucleoexato.com.br/matematica-combo.html
 https://nucleoexato.com.br/planilha-de-notas.html
 https://nucleoexato.com.br/niosh.html
 ```

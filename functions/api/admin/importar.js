@@ -11,7 +11,6 @@ const EXTRAS = {
   mat1:                { arquivo: "entregas/matematica-1ano.zip",   sku: "MAT-EM-1ANO" },
   mat2:                { arquivo: "entregas/matematica-2ano.zip",   sku: "MAT-EM-2ANO" },
   mat3:                { arquivo: "entregas/matematica-3ano.zip",   sku: "MAT-EM-3ANO" },
-  combo:               { arquivo: "entregas/matematica-combo.zip",  sku: "MAT-EM-COMBO" },
   planilha:            { arquivo: "entregas/planilha-de-notas.zip", sku: "PLAN-NOTAS" },
   epi:                 { arquivo: "entregas/epi.zip",               sku: "SST-EPI-01" },
   "treinamentos-venc": { arquivo: "entregas/treinamentos-venc.zip", sku: "SST-TREIN-01" },
