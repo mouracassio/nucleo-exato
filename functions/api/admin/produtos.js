@@ -21,6 +21,7 @@ export const CAMPOS = {
   arquivo: "",         // 1º arquivo da entrega (compatibilidade com o cadastro antigo)
   arquivos: [],        // lista de chaves no R2 entregues pelo código: ["entregas/mat3-01.zip", ...]
   sku: "",             // SST-EPI-01
+  skuAnterior: "",     // SKU antigo (ate a migracao do padrao novo); a importacao de vendas do ML reconhece os dois
   categoria: "",       // seguranca-do-trabalho | educacao | gestao (ids de dados/conteudo.json)
   subcategoria: "",    // id da subcategoria dentro da categoria (ex.: riscos-pgr, matematica-em, financeira)
   tags: [],            // palavras-chave extras para a busca da loja: ["NR-35", "cinturão", "trava-quedas"]
@@ -90,7 +91,7 @@ export async function onRequestPost({ request, env }) {
   const p = { ...base };
   for (const k of Object.keys(CAMPOS)) if (k in corpo) p[k] = corpo[k];
   p.id = idPedido;
-  for (const k of ["nome", "resumo", "preco", "capa", "alt", "pagina", "checkout", "arquivo", "sku", "categoria", "subcategoria", "obs", "entrega", "comoUsar"]) p[k] = String(p[k] || "").trim();
+  for (const k of ["nome", "resumo", "preco", "capa", "alt", "pagina", "checkout", "arquivo", "sku", "skuAnterior", "categoria", "subcategoria", "obs", "entrega", "comoUsar"]) p[k] = String(p[k] || "").trim();
   p.arquivos = Array.isArray(p.arquivos) ? p.arquivos.map(a => String(a || "").trim()).filter(Boolean) : [];
   if (typeof p.tags === "string") p.tags = p.tags.split(/[;,]/);
   p.tags = Array.isArray(p.tags) ? [...new Set(p.tags.map(t => String(t || "").trim()).filter(Boolean))] : [];

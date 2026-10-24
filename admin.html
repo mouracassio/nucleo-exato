@@ -386,6 +386,7 @@ body.modal-aberto{overflow:hidden}
       <div class="campos">
         <div class="campo"><label>Identificador (id)</label><input type="text" id="pf-id" placeholder="epi, nr13, mat1"><small>S&oacute; letras min&uacute;sculas, n&uacute;meros e h&iacute;fen. N&atilde;o muda depois de criado.</small></div>
         <div class="campo"><label>SKU</label><input type="text" id="pf-sku" placeholder="SST-EPI-01"><small>O mesmo usado no Mercado Livre e na Shopee. &Eacute; por ele que a venda manual acha o produto.</small></div>
+        <div class="campo"><label>SKU anterior</label><input type="text" id="pf-skuAnterior" placeholder="SST-EPI-01"><small>O SKU antigo, enquanto o Mercado Livre ainda n&atilde;o foi trocado. A importa&ccedil;&atilde;o de vendas e a busca reconhecem os dois.</small></div>
         <div class="campo c2"><label>Nome</label><input type="text" id="pf-nome" placeholder="Gestor de EPI e CA"></div>
         <div class="campo c2"><label>Resumo (texto do cart&atilde;o)</label><textarea id="pf-resumo" placeholder="1 a 2 frases: o que &eacute; e o que entrega."></textarea></div>
         <div class="campo"><label>Pre&ccedil;o</label><input type="text" id="pf-preco" placeholder="34,90"><small>S&oacute; o n&uacute;mero, com v&iacute;rgula. O pre&ccedil;o de refer&ecirc;ncia &eacute; o da Kiwify.</small></div>
@@ -735,7 +736,7 @@ body.modal-aberto{overflow:hidden}
     estado.editando = p ? p.id : null;
     $("pf-titulo").textContent = p ? "Editar: "+p.nome : "Novo produto";
     $("pf-id").value = p?p.id:""; $("pf-id").disabled = !!p;
-    $("pf-sku").value = p?p.sku:""; $("pf-nome").value = p?p.nome:""; $("pf-resumo").value = p?p.resumo:"";
+    $("pf-sku").value = p?p.sku:""; $("pf-skuAnterior").value = p?(p.skuAnterior||""):""; $("pf-nome").value = p?p.nome:""; $("pf-resumo").value = p?p.resumo:"";
     $("pf-preco").value = p?p.preco:""; preencherCategoriasDoProduto(p?(p.categoria||"seguranca-do-trabalho"):"seguranca-do-trabalho");
     $("pf-checkout").value = p?p.checkout:""; $("pf-capa").value = p?p.capa:""; $("pf-pagina").value = p?p.pagina:"";
     preencherSelectArquivos(p?arquivosDe(p):[]);
@@ -749,7 +750,7 @@ body.modal-aberto{overflow:hidden}
   $("pf-cancelar").addEventListener("click", function(){ $("p-form").hidden = true; });
   $("pf-salvar").addEventListener("click", async function(){
     var p = {
-      id: $("pf-id").value.trim().toLowerCase(), sku: $("pf-sku").value, nome: $("pf-nome").value, resumo: $("pf-resumo").value,
+      id: $("pf-id").value.trim().toLowerCase(), sku: $("pf-sku").value, skuAnterior: $("pf-skuAnterior").value, nome: $("pf-nome").value, resumo: $("pf-resumo").value,
       preco: $("pf-preco").value.trim(), categoria: $("pf-categoria").value, checkout: $("pf-checkout").value.trim(), capa: $("pf-capa").value.trim(),
       pagina: $("pf-pagina").value.trim(), arquivos: arquivosMarcados(), arquivo: (arquivosMarcados()[0]||""), ordem: Number($("pf-ordem").value)||100, obs: $("pf-obs").value,
       entrega: $("pf-entrega").value, comoUsar: $("pf-comoUsar").value,
@@ -1137,7 +1138,7 @@ body.modal-aberto{overflow:hidden}
   function classificarML(linhas){
     var vs = estado.vendas || [];
     linhas.forEach(function(L){
-      var sku = L.sku.toLowerCase(), p = (estado.produtos || []).find(function(x){ return x.sku && String(x.sku).trim().toLowerCase() === sku; });
+      var sku = L.sku.toLowerCase(), p = (estado.produtos || []).find(function(x){ return x.sku && String(x.sku).trim().toLowerCase() === sku; }) || (estado.produtos || []).find(function(x){ return x.skuAnterior && String(x.skuAnterior).trim().toLowerCase() === sku; });
       L.produtoId = p ? p.id : ""; L.produtoNome = p ? p.nome : "";
       var ex = vs.find(function(x){ return x.canal === "Mercado Livre" && String(x.numeroVenda||"").replace(/\D/g, "") === L.numeroVenda && (!x.produtoId || !L.produtoId || x.produtoId === L.produtoId); });
       L.existente = ex || null; L.mudancas = [];
@@ -1489,16 +1490,17 @@ body.modal-aberto{overflow:hidden}
     var qs = q.replace(/[\s_-]+/g, ""), palavras = q.split(/\s+/).filter(Boolean);
     var res = [];
     lista.forEach(function(p){
-      var sku = norm(p.sku), skuC = sku.replace(/[\s_-]+/g, ""), nome = norm(p.nome);
+      var sku = norm(p.sku), skuC = sku.replace(/[\s_-]+/g, ""), skuAnt = norm(p.skuAnterior || ""), skuAntC = skuAnt.replace(/[\s_-]+/g, ""), nome = norm(p.nome);
       var extra = norm([nomeCategoria(p.categoria), nomeSub(p.categoria, p.subcategoria), (p.tags||[]).join(" "), p.entrega||""].join(" "));
       var pts = 0;
       if (skuC && skuC===qs) pts = 1000;
       else if (skuC && skuC.indexOf(qs)===0) pts = 500;
       else if (skuC && qs.length>=3 && skuC.indexOf(qs)>=0) pts = 300;
+      if (skuAntC && skuAntC===qs) pts = Math.max(pts, 990);
       if (nome.indexOf(q)===0) pts = Math.max(pts, 250);
       else if (nome.indexOf(q)>=0) pts = Math.max(pts, 200);
       if (!pts && palavras.length) {
-        var todas = palavras.every(function(w){ return nome.indexOf(w)>=0 || sku.indexOf(w)>=0 || extra.indexOf(w)>=0; });
+        var todas = palavras.every(function(w){ return nome.indexOf(w)>=0 || sku.indexOf(w)>=0 || skuAnt.indexOf(w)>=0 || extra.indexOf(w)>=0; });
         if (todas) pts = 100 + palavras.filter(function(w){ return nome.indexOf(w)>=0; }).length * 10;
       }
       if (pts) res.push({ p: p, pts: pts + (p.ativo?5:0) });
