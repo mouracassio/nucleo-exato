@@ -6,17 +6,17 @@ import { CAMPOS } from "./produtos.js";
 
 // o que o site estático não sabe: arquivo de entrega (R2) e SKU de cada id
 const EXTRAS = {
-  sst:                 { arquivo: "entregas/nr01.zip",              sku: "NR01-PSICO" },
-  niosh:               { arquivo: "entregas/niosh.zip",             sku: "AP-NIOSH-NR17-CALC-XLS-V1" },
-  mat1:                { arquivo: "entregas/matematica-1ano.zip",   sku: "MAT-EM-1ANO" },
-  mat2:                { arquivo: "entregas/matematica-2ano.zip",   sku: "MAT-EM-2ANO" },
-  mat3:                { arquivo: "entregas/matematica-3ano.zip",   sku: "MAT-EM-3ANO" },
-  planilha:            { arquivo: "entregas/planilha-de-notas.zip", sku: "PLAN-NOTAS" },
-  epi:                 { arquivo: "entregas/epi.zip",               sku: "SST-EPI-01" },
-  "treinamentos-venc": { arquivo: "entregas/treinamentos-venc.zip", sku: "SST-TREIN-01" },
-  "matriz-sst":        { arquivo: "entregas/matriz-sst.zip",        sku: "SST-DOC-01" },
-  "cartoes-operador":  { arquivo: "entregas/cartoes-operador.zip",  sku: "SST-CARD-01" },
-  nr13:                { arquivo: "entregas/nr13.zip",              sku: "SST-NR13-01" },
+  sst:                 { arquivo: "entregas/nr01.zip",              sku: "SST-TRE-PSICOSSOCIAL-TREINAMENTONR01-CUR-V1" },
+  niosh:               { arquivo: "entregas/niosh.zip",             sku: "SST-SAU-NIOSH-PACOTECOMPLETO-KIT-V1" },
+  mat1:                { arquivo: "entregas/matematica-1ano.zip",   sku: "EDU-MAT-MATEMATICA-1ANOENSINOMEDIO-KIT-V1" },
+  mat2:                { arquivo: "entregas/matematica-2ano.zip",   sku: "EDU-MAT-MATEMATICA-2ANOENSINOMEDIO-KIT-V1" },
+  mat3:                { arquivo: "entregas/matematica-3ano.zip",   sku: "EDU-MAT-MATEMATICA-3ANOENSINOMEDIO-KIT-V1" },
+  planilha:            { arquivo: "entregas/planilha-de-notas.zip", sku: "EDU-PRO-NOTAS-PLANILHATRIMESTRAL-XLS-V1" },
+  epi:                 { arquivo: "entregas/epi.zip",               sku: "SST-EPI-EPI-GESTORDEEPIECA-XLS-V1" },
+  "treinamentos-venc": { arquivo: "entregas/treinamentos-venc.zip", sku: "SST-TRE-TREINAMENTOS-CENTRALDEVENCIMENTOS-XLS-V1" },
+  "matriz-sst":        { arquivo: "entregas/matriz-sst.zip",        sku: "SST-DOC-DOCUMENTOS-MATRIZECALENDARIO-XLS-V1" },
+  "cartoes-operador":  { arquivo: "entregas/cartoes-operador.zip",  sku: "SST-EPI-OPERADORES-CARTOESEINSPECOES-XLS-V1" },
+  nr13:                { arquivo: "entregas/nr13.zip",              sku: "SST-EPI-NR13-INSPECOESDECALDEIRAS-XLS-V1" },
 };
 
 export async function onRequestPost({ request, env }) {
