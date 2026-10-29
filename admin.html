@@ -955,7 +955,15 @@ body.modal-aberto{overflow:hidden}
       var cx = raiz.querySelector("[data-anexar]"), anexar = !!(cx && cx.checked && !cx.disabled);
       var chaves = arquivosDaVenda(v), chave = anexar ? chaves[0] : "";
       if (!confirm("Enviar agora o e-mail para "+para+(anexar ? ", com o arquivo anexado" : ", s\u00f3 com o link")+"?")) return;
-      var texto = tx("email"); if (anexar) texto += "\n\nO arquivo segue em anexo neste e-mail.";
+      var texto = tx("email");
+      if (anexar) {
+        /* aviso do anexo logo no comeco, para o cliente ver antes de qualquer coisa */
+        var intro = "Seu acesso está liberado:";
+        var aviso = "O arquivo da sua compra segue ANEXADO neste e-mail: é só baixar o anexo. Se preferir, ele também está disponível pelo link abaixo, com o seu código de acesso:";
+        if (texto.indexOf(intro) >= 0) texto = texto.replace(intro, aviso);
+        else texto = texto.replace(/\n\n/, "\n\n"+aviso+"\n\n");
+        if (texto.indexOf("ANEXADO") < 0) texto += "\n\nO arquivo segue em anexo neste e-mail.";
+      }
       b.disabled = true; ok.textContent = "Enviando…";
       try { var r = await post("enviar-email", { para: para, assunto: tx("assunto"), texto: texto, anexarChave: chave }); ok.textContent = "E-mail enviado para "+para+(r && r.anexo ? " com o anexo "+r.anexo : "")+"."; marcarEntregue(v); }
       catch(e){ ok.textContent = e.pendente ? "Envio direto ainda n\u00e3o ligado: use o bot\u00e3o Enviar pelo Gmail." : (e.dados && e.dados.grande ? "Arquivo grande demais para anexar. Desmarque o anexo e envie s\u00f3 com o link." : ("Erro: "+e.message)); }
