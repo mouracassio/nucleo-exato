@@ -143,7 +143,7 @@
       "nome": "Riscos psicossociais — treinamento NR-01",
       "resumo": "Treinamento de 4 horas sobre o Capítulo 1.5 da NR-01. Apostila de 52 páginas nas versões do participante e do instrutor, 29 slides, planilha de inventário em Excel e certificado modelo.",
       "preco": "59,90",
-      "capa": "img/capa-sst.jpg",
+      "capa": "img/capa-sst-v2.jpg",
       "alt": "Riscos psicossociais no trabalho — treinamento NR-01",
       "pagina": "treinamento-nr01.html",
       "destino": {
@@ -163,7 +163,7 @@
       "nome": "Equação do NIOSH — Ergonomia",
       "resumo": "Apostila de 91 páginas, guia rápido de 33 e calculadora em Excel. Versões do aluno e do professor.",
       "preco": "64,90",
-      "capa": "img/capa-niosh.jpg",
+      "capa": "img/capa-niosh-v2.jpg",
       "alt": "Equação do NIOSH",
       "pagina": "niosh.html",
       "destino": {
@@ -183,7 +183,7 @@
       "nome": "Matemática — 1º ano",
       "resumo": "48 aulas com atividade e 48 planos de aula, tudo em Word editável. Conjuntos, funções, progressões e lógica.",
       "preco": "57,90",
-      "capa": "img/capa-mat1.jpg",
+      "capa": "img/capa-mat1-v2.jpg",
       "alt": "Matemática 1º ano",
       "pagina": "matematica-1ano.html",
       "destino": {
@@ -203,7 +203,7 @@
       "nome": "Matemática — 2º ano",
       "resumo": "37 aulas com atividade e 37 planos de aula, tudo em Word editável. Matrizes, combinatória, probabilidade, trigonometria e geometria espacial.",
       "preco": "57,90",
-      "capa": "img/capa-mat2.jpg",
+      "capa": "img/capa-mat2-v2.jpg",
       "alt": "Matemática 2º ano",
       "pagina": "matematica-2ano.html",
       "destino": {
@@ -223,7 +223,7 @@
       "nome": "Matemática — 3º ano",
       "resumo": "38 aulas com atividade e 38 planos de aula, tudo em Word editável. Geometria analítica, complexos, polinômios e matemática financeira.",
       "preco": "57,90",
-      "capa": "img/capa-mat3.jpg",
+      "capa": "img/capa-mat3-v2.jpg",
       "alt": "Matemática 3º ano",
       "pagina": "matematica-3ano.html",
       "destino": {
