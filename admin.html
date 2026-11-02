@@ -911,7 +911,7 @@ body.modal-aberto{overflow:hidden}
     var t = montarTextos(v);
     var h = '<div class="entrega"><h2>'+(cabecalho||"Textos de entrega")+'</h2>'+
       '<div class="cab"><span class="cod">'+esc(t.codigo)+'</span><a href="'+esc(t.link)+'" target="_blank" rel="noopener">'+esc(t.link)+'</a>'+(t.validade?'<span style="font-size:13px;color:var(--suave)">válido até '+esc(t.validade)+'</span>':'')+(v.codigoVenda?'<span style="font-size:13px;color:var(--suave)">venda '+esc(v.codigoVenda)+'</span>':'')+'</div>'+
-      htmlArquivo(v)+'<div class="canais"><button data-canal="ml" class="on">Mercado Livre ('+t.ml.length+' mensagens)</button><button data-canal="email">E-mail</button><button data-canal="zap">WhatsApp</button></div>';
+      '<div class="canais"><button data-canal="ml" class="on">Mercado Livre ('+t.ml.length+' mensagens)</button><button data-canal="email">E-mail</button><button data-canal="zap">WhatsApp</button><button data-canal="arq">Arquivo</button></div>';
     /* ML */
     h += '<div class="bloco-canal on" data-bloco="ml"><p class="sem">Cole no chat da venda, uma por vez e na ordem. Cada uma cabe nos '+LIMITE_ML+' caracteres do Mercado Livre. Sem e-mail, telefone ou WhatsApp: o ML bloqueia.</p>';
     t.ml.forEach(function(m, i){
@@ -931,6 +931,8 @@ body.modal-aberto{overflow:hidden}
       '<div class="campos" style="margin-bottom:10px"><div class="campo"><label>Número do WhatsApp</label><input type="tel" data-tx="zapPara" value="'+esc(fone(t.telefone))+'" placeholder="(34) 99999-9999"></div></div>'+
       '<div class="mensagem"><div class="topo"><b>Texto do WhatsApp</b><span class="cont">'+t.zap.length+' caracteres</span></div><textarea data-tx="zap" style="min-height:200px">'+esc(t.zap)+'</textarea>'+
       '<div class="acao"><button class="btn zap peq" data-enviar-zap="1">Enviar pelo WhatsApp</button><button class="btn cinza peq" data-copiar="zap">Copiar texto</button><span data-ok="zap"></span></div></div></div>';
+    /* Arquivo (caminhos no Mac e servidor) - so aparece quando a aba e escolhida */
+    h += '<div class="bloco-canal" data-bloco="arq">'+htmlArquivo(v)+'</div>';
     h += '</div>';
     alvo.innerHTML = h;
     ligarArquivo(alvo);
@@ -954,7 +956,7 @@ body.modal-aberto{overflow:hidden}
       var para = tx("emailPara").trim(); if (!para) { ok.textContent = "Informe o e-mail do cliente."; return; }
       var cx = raiz.querySelector("[data-anexar]"), anexar = !!(cx && cx.checked && !cx.disabled);
       var chaves = arquivosDaVenda(v), chave = anexar ? chaves[0] : "";
-      if (!confirm("Enviar agora o e-mail para "+para+(anexar ? ", com o arquivo anexado" : ", s\u00f3 com o link")+"?")) return;
+      /* sem janela de confirmacao: o clique no botao ja e a ordem de enviar (02/11) */
       var texto = tx("email");
       if (anexar) {
         /* aviso do anexo logo no comeco, para o cliente ver antes de qualquer coisa */
