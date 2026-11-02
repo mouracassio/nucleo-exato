@@ -3,7 +3,7 @@
 > **v4 · 15/08/2026 (fim da tarde).** O site é **uma empresa de engenharia com cinco áreas**.
 > A frente de Segurança do Trabalho começa só com treinamento e palestra — documentação (PGR,
 > AET, laudos) ficou para depois, e o texto está guardado em
-> `00_Empresa/ESCOPO ADIADO - documentacao de Seguranca do Trabalho.md`.
+> `02_Marca e identidade visual/ESCOPO ADIADO - documentacao de Seguranca do Trabalho.md`.
 > As versões anteriores deste arquivo estão na `_Quarentena`.
 
 Site em HTML puro: não precisa de servidor, banco de dados nem programa rodando.
@@ -160,7 +160,7 @@ Foram custosas, não desfaça sem motivo:
   alguma coisa.
 - **Documentação de Segurança do Trabalho** (PGR, AET, LTCAT) está fora do escopo por decisão
   de 15/08. O site diz isso com todas as letras, em `servicos.html`. O texto pronto para quando
-  voltar está em `00_Empresa/ESCOPO ADIADO - documentacao de Seguranca do Trabalho.md`.
+  voltar está em `02_Marca e identidade visual/ESCOPO ADIADO - documentacao de Seguranca do Trabalho.md`.
 - **Treinamentos que exigem estrutura prática** (NR-10, NR-33, NR-35, NR-11, NR-12, NR-13) estão
   declarados como fora da lista, na página de Treinamentos. Quando algum entrar, tire-o de lá.
 
