@@ -199,7 +199,7 @@ header.hero .cta.linha:hover{background:var(--verde);color:#fff}
 
 /* rodapé novo, com os dois registros */
 footer .regs{margin-top:6px;font-size:13.5px;color:var(--suave)}
-footer .links{margin-top:14px}
+footer .links{margin-top:14px;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 0} /* 04/11/2026: no celular os links quebram linha em vez de vazar */
 footer .links a{margin:0 9px;white-space:nowrap}
 
 /* cartão de frente do catálogo (com estado "em breve") */

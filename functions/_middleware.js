@@ -18,7 +18,7 @@
 
 import { lerCategorias } from "./api/admin/categorias.js";
 
-const VERSAO_CSS = "20261008c"; // mude quando css/estilo.css ou css/loja.css mudarem: força o navegador a baixar de novo
+const VERSAO_CSS = "20261104a"; // mude quando css/estilo.css ou css/loja.css mudarem: força o navegador a baixar de novo
 let cache = { quando: 0, produtos: null, categorias: null };
 const CACHE_MS = 30 * 1000;
 
@@ -160,8 +160,9 @@ function reescreverHtml(resposta, caminho, dados) {
 function cartao(p) {
   const nome = esc(p.nome), alt = esc(p.alt || p.nome), resumo = esc(p.resumo || "");
   const capa = p.capa ? '<img src="' + esc(p.capa) + '" alt="' + alt + '" loading="lazy">' : "";
-  const img = p.pagina ? '<a href="' + esc(p.pagina) + '">' + capa + "</a>" : capa;
-  const ver = p.pagina ? '<a class="ver" href="' + esc(p.pagina) + '">Ver tudo o que vem &rarr;</a>' : "";
+  const pag = p.pagina || ("produto.html?id=" + encodeURIComponent(p.id)); // pagina padrao de produto (04/11/2026)
+  const img = '<a href="' + esc(pag) + '">' + capa + "</a>";
+  const ver = '<a class="ver" href="' + esc(pag) + '">Ver todas as fotos e o que vem &rarr;</a>';
   const href = p.checkout ? ' href="' + esc(p.checkout) + '" rel="noopener"' : "";
   return '<div class="prod">' + img +
     '<div class="txt"><h3>' + nome + "</h3><p>" + resumo + "</p>" +

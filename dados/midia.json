@@ -1,0 +1,702 @@
+{
+"geradoEm": "2026-11-04",
+"base": "img/produtos/",
+"produtos": {
+"afastamentos-absenteismo": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"agenda-atendimentos": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"almoxarifado-requisicao": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"apr": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"aso": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"auditoria-pgr": {
+"fotos": 8,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"avaliacao-diagnostica-adaptada": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"avcb-exigencias-bombeiros": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"balanceamento": {
+"fotos": 8,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"brigada-incendio-extintores": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"calculadora-niosh": {
+"fotos": 9,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"calibracao": {
+"fotos": 8,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"canal-denuncias-assedio": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"cartao-de-ponto": {
+"fotos": 9,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"cartoes-operador": {
+"fotos": 8,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"cat-afastamentos": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"cep": {
+"fotos": 8,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"checklist-ergonomico-escritorio": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"cipa": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"clinica-estetica": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"comissao-metas-vendedores": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"comissoes-salao-barbearia": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"como-adaptar-prova": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"contas-a-pagar-e-receber": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"contratadas-sst": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"controle-andaimes-plataformas": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"controle-de-estoque": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"controle-de-frota": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"controle-de-vendas": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"controle-entregas-delivery": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"controle-fiado-crediario": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"controle-mei": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"controle-mensalidades": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"criterios-gro-nr01": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"cronoanalise": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"cronograma-pcmso": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"cronograma-sst": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"custo-clt-pj-mei": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"dds-livro": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"diagnostico-psicossocial-nr01": {
+"fotos": 11,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"diario-obra-medicao": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"epi": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"epi-altura": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"escadas-nr35": {
+"fotos": 8,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"escala-de-trabalho": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"esocial-sst": {
+"fotos": 8,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"espacos-confinados": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"extintores-nr23": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"fds": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"ferias-banco-horas": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"ferramentaria": {
+"fotos": 8,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"ficha-epi": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"ficha-tecnica-cmv": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"financeiro-pessoal": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"fluxo-de-caixa": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"fmea": {
+"fotos": 8,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"folha-de-pagamento-2026": {
+"fotos": 10,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"gestao-alugueis": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"gestao-de-condominio": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"guia-familia-estudante-atipico": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"ibutg": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"indicadores-sst": {
+"fotos": 8,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"insalubridade-periculosidade": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"inspecao-rotina": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"integracao-nr01": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"inventario-nr12": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"inventario-pgr": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"investigacao-acidente": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"kit-aep-nr17": {
+"fotos": 11,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"kit-paee-pei": {
+"fotos": 11,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"kit-relatorio-descritivo": {
+"fotos": 11,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"kit-sipat": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"laudos-programas": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"lista-certificado": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"manutencao-preventiva": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"mapa-cotacao-compras": {
+"fotos": 9,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"mat1": {
+"fotos": 10,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"mat2": {
+"fotos": 10,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"mat3": {
+"fotos": 10,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"matriz-risco": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"matriz-sst": {
+"fotos": 11,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"matriz-treinamentos": {
+"fotos": 9,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"metas-paee": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"nao-conformidades": {
+"fotos": 11,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"niosh": {
+"fotos": 10,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"nr13": {
+"fotos": 11,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"oee": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"orcamento-anual-empresa": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"orcamento-de-obra": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"orcamento-sst": {
+"fotos": 11,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"ordem-servico": {
+"fotos": 8,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"ordem-servico-oficina": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"paradas-maquina": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"pcp-ordens": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"permissao-trabalho": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"planilha": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"plano-acao": {
+"fotos": 9,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"plano-resposta-emergencias": {
+"fotos": 10,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"precificacao": {
+"fotos": 8,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"precificacao-confeitaria": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"precificacao-ml-shopee-2026": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"prontuario-nr10": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"quase-acidentes": {
+"fotos": 10,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"recuperacao-final-adaptada-matematica": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"registro-acidentes": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"simulador-simples-ibs-cbs": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"sst": {
+"fotos": 11,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"tesouraria-igreja": {
+"fotos": 11,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"treinamento-5s": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"treinamento-brigada-incendio": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"treinamento-lideranca-saude-mental": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"treinamento-nr06-epi": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"treinamento-pdca-7-ferramentas-qualidade": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"treinamento-prevencao-assedio": {
+"fotos": 11,
+"capaLimpa": true,
+"yt": "",
+"mp4": ""
+},
+"treinamentos-venc": {
+"fotos": 10,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+},
+"vencimentos-empresa": {
+"fotos": 11,
+"capaLimpa": false,
+"yt": "",
+"mp4": ""
+}
+}
+}

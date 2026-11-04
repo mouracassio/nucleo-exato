@@ -1,0 +1,42 @@
+/* produto.css - pagina padrao de produto (produto.html?id=...). Fable, 04/11/2026. */
+.pr-topo{max-width:1180px;margin:0 auto;padding:18px 22px 0;font-size:14px;color:var(--suave)}
+.pr-topo a{color:var(--suave);text-decoration:none}.pr-topo a:hover{color:var(--verde-esc)}
+.pr-topo span{margin:0 7px}
+.pr-corpo>*{min-width:0}
+.pr-corpo{max-width:1180px;margin:0 auto;padding:16px 22px 48px;display:grid;grid-template-columns:minmax(0,7fr) minmax(300px,5fr);gap:34px;align-items:start}
+@media (max-width:860px){.pr-corpo{grid-template-columns:minmax(0,1fr);gap:22px}}
+/* galeria */
+.gal{position:relative}
+.gal .palco{position:relative;background:#18261F;border-radius:14px;overflow:hidden;aspect-ratio:1/1;border:1px solid var(--borda)}
+.gal .palco img,.gal .palco iframe,.gal .palco video{width:100%;height:100%;object-fit:contain;display:block;background:#18261F}
+.gal .palco iframe,.gal .palco video{border:0}
+.gal .seta{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.92);color:var(--grafite);font-size:24px;line-height:44px;text-align:center;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.25)}
+.gal .seta:hover{background:#fff}.gal .seta.ant{left:12px}.gal .seta.prox{right:12px}
+.gal .conta{position:absolute;right:14px;bottom:12px;background:rgba(0,0,0,.55);color:#fff;font-size:13px;padding:3px 10px;border-radius:999px}
+.gal .miniaturas{display:flex;gap:8px;margin-top:10px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.gal .miniaturas button{flex:0 0 72px;width:72px;height:72px;border-radius:9px;border:2px solid var(--borda);padding:0;background:#18261F;overflow:hidden;cursor:pointer;position:relative}
+.gal .miniaturas button img{width:100%;height:100%;object-fit:cover;display:block}
+.gal .miniaturas button.on{border-color:var(--verde)}
+.gal .miniaturas button.vid::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.35) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='11' fill='white' opacity='.95'/><path d='M10 8l6 4-6 4z' fill='%232B333A'/></svg>") center/34px no-repeat}
+/* ficha */
+.ficha .eti{font-size:12px;letter-spacing:1.6px;text-transform:uppercase;font-weight:700;display:block;margin-bottom:8px}
+.ficha h1{font-size:clamp(24px,3.2vw,34px);letter-spacing:-.3px;margin-bottom:8px}
+.ficha .sku{font-size:12.5px;color:var(--suave);letter-spacing:.4px;margin-bottom:14px}
+.ficha .resumo{font-size:16.5px;line-height:1.6;margin-bottom:18px}
+.ficha .caixa{background:#fff;border:1px solid var(--borda);border-radius:14px;padding:20px 22px;margin-bottom:16px}
+.ficha .valor{font-family:Cambria,Georgia,serif;font-size:40px;color:var(--grafite);line-height:1}
+.ficha .valor small{font-size:18px;margin-right:4px}
+.ficha .cta{margin-top:14px;width:100%;text-align:center;box-sizing:border-box}
+.ficha .nota{font-size:13.5px;color:var(--suave);margin-top:10px}
+.ficha ul.itens{list-style:none;margin:0;padding:0}
+.ficha ul.itens li{padding:7px 0 7px 26px;position:relative;font-size:15px;border-bottom:1px solid #EEF2EF}
+.ficha ul.itens li:last-child{border-bottom:0}
+.ficha ul.itens li::before{content:"";position:absolute;left:2px;top:13px;width:14px;height:14px;border-radius:50%;background:var(--verde);box-shadow:inset 0 0 0 4px #fff;border:1px solid var(--verde)}
+.ficha h2{font-size:17px;margin-bottom:10px;color:var(--verde-esc)}
+.pr-mais{max-width:1180px;margin:0 auto;padding:0 22px 56px;display:grid;grid-template-columns:1fr 1fr;gap:26px}
+@media (max-width:860px){.pr-mais{grid-template-columns:minmax(0,1fr)}}
+.pr-mais .autor{display:flex;gap:18px;align-items:flex-start}
+.pr-mais .autor img{width:86px;height:86px;border-radius:50%;object-fit:cover;flex:0 0 86px}
+.pr-mais p{font-size:15px}
+.pr-aviso{max-width:760px;margin:60px auto;text-align:center;padding:0 22px}
+.barra .marca img{height:34px;display:block}

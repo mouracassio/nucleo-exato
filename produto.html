@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Produto | Núcleo Exato</title>
+<meta name="description" content="Planilhas, treinamentos e materiais do Núcleo Exato, feitos e assinados pelo Prof. Eng. Cássio Moura.">
+<link rel="stylesheet" href="css/estilo.css">
+<link rel="stylesheet" href="css/produto.css">
+</head>
+<body class="pagina-produto">
+
+<div class="barra"><div class="wrap">
+  <a class="marca" href="index.html"><img src="img/logo-nucleo-exato-horizontal.svg" alt="Núcleo Exato"></a>
+  <nav><a href="index.html">In&iacute;cio</a><a href="materiais.html" class="aqui">Loja</a><a href="servicos.html">Servi&ccedil;os</a><a href="quem-somos.html">Quem somos</a><a href="contato.html">Contato</a></nav>
+</div></div>
+
+<div class="pr-topo" id="trilha"><a href="materiais.html">Loja</a></div>
+
+<div class="pr-corpo" id="corpo" hidden>
+  <div class="gal" id="gal">
+    <div class="palco" id="palco"></div>
+    <button class="seta ant" id="ant" type="button" aria-label="Foto anterior">&lsaquo;</button>
+    <button class="seta prox" id="prox" type="button" aria-label="Próxima foto">&rsaquo;</button>
+    <div class="miniaturas" id="minis"></div>
+  </div>
+  <div class="ficha">
+    <span class="eti" id="eti"></span>
+    <h1 id="nome"></h1>
+    <div class="sku" id="sku"></div>
+    <p class="resumo" id="resumo"></p>
+    <div class="caixa">
+      <div class="valor"><small>R$</small><span id="preco">--</span></div>
+      <a class="cta" id="comprar" rel="noopener"><span>Comprar agora</span><small id="entrega">acesso imediato após o pagamento</small></a>
+      <div class="nota">Pagamento pela Kiwify (Pix ou cartão). Dúvidas: direct do Instagram <a href="https://ig.me/m/_nucleoexato">@_nucleoexato</a> ou e-mail <a data-email href="#">nucleoexato</a>.</div>
+    </div>
+    <div class="caixa">
+      <h2>O que você recebe</h2>
+      <ul class="itens" id="itens"></ul>
+    </div>
+  </div>
+</div>
+
+<div class="pr-mais" id="mais" hidden>
+  <div class="card autor">
+    <img src="img/cassio.jpg" alt="Prof. Eng. Cássio Moura" loading="lazy">
+    <div><h3>Quem assina</h3><p><b>Prof. Eng. Cássio Moura</b> — Engenheiro de Produção e Engenheiro de Segurança do Trabalho (CREA-MG 401683), professor de Matemática. Cada material é feito, testado e assinado por ele: quem responde a sua dúvida é quem fez o arquivo.</p></div>
+  </div>
+  <div class="card">
+    <h3>Como funciona</h3>
+    <p>O pagamento é confirmado pela Kiwify e o acesso chega no seu e-mail na hora. O arquivo abre no Excel 2016 ou mais novo e no Google Planilhas (documentos: Word e Google Docs). Se não for o que você esperava, o reembolso é pedido pela própria Kiwify dentro do prazo de devolução.</p>
+  </div>
+</div>
+
+<div class="pr-aviso" id="aviso" hidden><h2>Produto não encontrado</h2><p>Esse endereço não corresponde a um produto da loja. <a href="materiais.html">Ver todos os materiais</a>.</p></div>
+
+<footer><div class="wrap">
+  <div class="frase">"Tudo que &eacute; verdadeiro respeita o tempo."</div>
+  <div>N&uacute;cleo Exato &mdash; Engenharia e Educa&ccedil;&atilde;o T&eacute;cnica &middot; 2026</div>
+  <div class="regs">Eng. C&aacute;ssio Resende de Moura (CREA-MG 401683)</div>
+  <div class="regs">N&uacute;cleo Exato &eacute; uma marca do Grupo Meridiano &middot; CNPJ 49.324.954/0001-49</div>
+  <div class="links"><a href="servicos.html">Servi&ccedil;os</a><a href="materiais.html">Materiais</a><a href="quem-somos.html">Quem somos</a><a href="contato.html">Contato</a><a href="acesso.html">J&aacute; comprei</a><a data-email href="#">contato</a></div>
+</div></footer>
+
+<script src="links.js"></script>
+<script>
+/* Pagina padrao de produto. Fonte unica: /api/produtos (banco do painel) + dados/midia.json (fotos e video).
+   Endereco: produto.html?id=<id_painel>  (ex.: produto.html?id=ficha-epi). Fable, 04/11/2026. */
+(function () {
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  var id = (new URLSearchParams(location.search).get("id") || "").trim();
+  if (!id) { $("aviso").hidden = false; return; }
+
+  Promise.all([
+    fetch("/api/produtos", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : { produtos: [] }; }).catch(function () { return { produtos: [] }; }),
+    fetch("/api/categorias", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; }),
+    fetch("dados/midia.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; })
+  ]).then(function (r) {
+    var p = (r[0].produtos || []).filter(function (x) { return x && x.id === id; })[0];
+    if (!p) { $("aviso").hidden = false; return; }
+    var cats = r[1].categorias || [];
+    var cat = cats.filter(function (c) { return c.id === p.categoria; })[0];
+    var sub = cat && (cat.subs || []).filter(function (s) { return s.id === p.subcategoria; })[0];
+    var midia = ((r[2].produtos || {})[id]) || { fotos: 0 };
+    var base = (r[2].base || "img/produtos/") + id + "/";
+    montar(p, cat, sub, midia, base);
+  });
+
+  function montar(p, cat, sub, midia, base) {
+    document.title = p.nome + " | Núcleo Exato";
+    var md = document.querySelector('meta[name="description"]'); if (md && p.resumo) md.setAttribute("content", p.resumo);
+    var cor = cat && cat.cor ? cat.cor : "var(--verde-esc)";
+    var trilha = '<a href="materiais.html">Loja</a>';
+    if (cat) trilha += '<span>&rsaquo;</span><a href="materiais.html?cat=' + esc(cat.id) + '">' + esc(cat.nome) + "</a>";
+    if (sub) trilha += '<span>&rsaquo;</span><a href="materiais.html?cat=' + esc(cat.id) + '&sub=' + esc(sub.id) + '">' + esc(sub.nome) + "</a>";
+    $("trilha").innerHTML = trilha;
+    $("eti").textContent = sub ? sub.nome : (cat ? cat.nome : ""); $("eti").style.color = cor;
+    $("nome").textContent = p.nome;
+    $("sku").textContent = p.sku ? "Código: " + p.sku : "";
+    $("resumo").textContent = p.resumo || "";
+    $("preco").textContent = p.preco || "--"; $("preco").setAttribute("data-preco", p.id);
+    var bt = $("comprar"); bt.setAttribute("data-produto", p.id); if (p.checkout) bt.href = p.checkout;
+    if (p.entrega) $("entrega").textContent = p.entrega;
+
+    var sku = p.sku || "", fmt = (sku.match(/-(XLS|DOC|PPT|PDF|KIT|ZIP)-V\d+$/) || [])[1] || "";
+    var itens = [];
+    if (fmt === "XLS" || !fmt) itens.push("Arquivo em Excel (.xlsx), pronto para usar; abre também no Google Planilhas");
+    if (fmt === "DOC") itens.push("Documento em Word (.docx), editável; abre também no Google Docs");
+    if (fmt === "PPT") itens.push("Apresentação em PowerPoint (.pptx), editável");
+    if (fmt === "PDF") itens.push("Material em PDF, pronto para imprimir");
+    if (fmt === "KIT" || fmt === "ZIP") itens.push("Kit completo em um único arquivo .zip (planilhas, documentos e modelos)");
+    itens.push("Células de entrada destacadas e cálculos automáticos: você só preenche, a planilha faz o resto");
+    itens.push("Feito e assinado pelo Prof. Eng. Cássio Moura (CREA-MG 401683)");
+    itens.push("Acesso imediato por e-mail e suporte de quem fez o material");
+    $("itens").innerHTML = itens.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("");
+
+    /* galeria: fotos C 01..NN + video (YouTube nao listado ou mp4 no R2) */
+    var slides = [];
+    for (var i = 1; i <= (midia.fotos || 0); i++) slides.push({ tipo: "foto", src: base + (i < 10 ? "0" + i : i) + ".jpg" });
+    if (!slides.length && p.capa) slides.push({ tipo: "foto", src: p.capa });
+    if (midia.yt) slides.push({ tipo: "yt", id: midia.yt, capa: "https://i.ytimg.com/vi/" + midia.yt + "/hqdefault.jpg" });
+    else if (midia.mp4) slides.push({ tipo: "mp4", src: midia.mp4, capa: slides.length ? slides[0].src : "" });
+    var atual = 0, palco = $("palco"), minis = $("minis");
+    minis.innerHTML = slides.map(function (s, k) {
+      var img = s.tipo === "foto" ? s.src : s.capa;
+      return '<button type="button" data-k="' + k + '" class="' + (s.tipo === "foto" ? "" : "vid") + '" aria-label="' + (s.tipo === "foto" ? "Foto " + (k + 1) : "Vídeo") + '">' + (img ? '<img src="' + esc(img) + '" alt="" loading="lazy">' : "") + "</button>";
+    }).join("");
+    function mostrar(k) {
+      if (!slides.length) return;
+      atual = (k + slides.length) % slides.length; var s = slides[atual];
+      if (s.tipo === "foto") palco.innerHTML = '<img src="' + esc(s.src) + '" alt="' + esc(p.alt || p.nome) + '">';
+      else if (s.tipo === "yt") palco.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + esc(s.id) + '?rel=0&modestbranding=1&autoplay=1" title="Vídeo do produto" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+      else palco.innerHTML = '<video src="' + esc(s.src) + '" controls autoplay playsinline' + (s.capa ? ' poster="' + esc(s.capa) + '"' : "") + "></video>";
+      palco.insertAdjacentHTML("beforeend", '<div class="conta">' + (atual + 1) + " / " + slides.length + "</div>");
+      var bs = minis.querySelectorAll("button"); for (var i = 0; i < bs.length; i++) bs[i].classList.toggle("on", i === atual);
+      if (bs[atual] && bs[atual].scrollIntoView) bs[atual].scrollIntoView({ block: "nearest", inline: "nearest" });
+    }
+    minis.addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) mostrar(+b.getAttribute("data-k")); });
+    $("ant").addEventListener("click", function () { mostrar(atual - 1); });
+    $("prox").addEventListener("click", function () { mostrar(atual + 1); });
+    document.addEventListener("keydown", function (e) { if (e.key === "ArrowLeft") mostrar(atual - 1); if (e.key === "ArrowRight") mostrar(atual + 1); });
+    var x0 = null; palco.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    palco.addEventListener("touchend", function (e) { if (x0 == null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 40) mostrar(dx < 0 ? atual + 1 : atual - 1); }, { passive: true });
+    if (slides.length < 2) { $("ant").hidden = true; $("prox").hidden = true; }
+    mostrar(0);
+    $("corpo").hidden = false; $("mais").hidden = false;
+  }
+})();
+</script>
+</body>
+</html>
