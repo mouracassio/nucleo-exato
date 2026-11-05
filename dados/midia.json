@@ -1,5 +1,5 @@
 {
-"geradoEm": "2026-11-04",
+"geradoEm": "2026-11-05",
 "base": "img/produtos/",
 "produtos": {
 "afastamentos-absenteismo": {
@@ -23,13 +23,13 @@
 "apr": {
 "fotos": 9,
 "capaLimpa": false,
-"yt": "",
+"yt": "PRkqma8zY5I",
 "mp4": "https://media.nucleoexato.com.br/videos/apr.mp4"
 },
 "aso": {
 "fotos": 9,
 "capaLimpa": false,
-"yt": "",
+"yt": "iHZHXxc7L7E",
 "mp4": "https://media.nucleoexato.com.br/videos/aso.mp4"
 },
 "auditoria-pgr": {
@@ -167,7 +167,7 @@
 "controle-de-frota": {
 "fotos": 10,
 "capaLimpa": false,
-"yt": "",
+"yt": "MyJlLtDP6ak",
 "mp4": "https://media.nucleoexato.com.br/videos/controle-de-frota.mp4"
 },
 "controle-de-vendas": {
@@ -287,7 +287,7 @@
 "extintores-nr23": {
 "fotos": 10,
 "capaLimpa": false,
-"yt": "",
+"yt": "k39QJE3zBQU",
 "mp4": "https://media.nucleoexato.com.br/videos/extintores-nr23.mp4"
 },
 "fds": {
@@ -401,7 +401,7 @@
 "inventario-pgr": {
 "fotos": 9,
 "capaLimpa": false,
-"yt": "",
+"yt": "9q8Luu9WNcQ",
 "mp4": "https://media.nucleoexato.com.br/videos/inventario-pgr.mp4"
 },
 "investigacao-acidente": {
@@ -479,13 +479,13 @@
 "matriz-risco": {
 "fotos": 10,
 "capaLimpa": false,
-"yt": "",
+"yt": "G9Kq-fl-TYs",
 "mp4": "https://media.nucleoexato.com.br/videos/matriz-risco.mp4"
 },
 "matriz-sst": {
 "fotos": 11,
 "capaLimpa": true,
-"yt": "",
+"yt": "zhkAp9-aRMs",
 "mp4": "https://media.nucleoexato.com.br/videos/matriz-sst.mp4"
 },
 "matriz-treinamentos": {
@@ -545,7 +545,7 @@
 "ordem-servico": {
 "fotos": 8,
 "capaLimpa": false,
-"yt": "",
+"yt": "tk9Zfbro6bY",
 "mp4": "https://media.nucleoexato.com.br/videos/ordem-servico.mp4"
 },
 "ordem-servico-oficina": {
@@ -569,7 +569,7 @@
 "permissao-trabalho": {
 "fotos": 10,
 "capaLimpa": false,
-"yt": "",
+"yt": "NUoO5OmHhtg",
 "mp4": "https://media.nucleoexato.com.br/videos/permissao-trabalho.mp4"
 },
 "planilha": {
@@ -581,7 +581,7 @@
 "plano-acao": {
 "fotos": 9,
 "capaLimpa": false,
-"yt": "",
+"yt": "wmUOyfCL_GI",
 "mp4": "https://media.nucleoexato.com.br/videos/plano-acao.mp4"
 },
 "plano-resposta-emergencias": {
@@ -629,7 +629,7 @@
 "registro-acidentes": {
 "fotos": 10,
 "capaLimpa": false,
-"yt": "",
+"yt": "EOfpxyhs8nc",
 "mp4": "https://media.nucleoexato.com.br/videos/registro-acidentes.mp4"
 },
 "simulador-simples-ibs-cbs": {
@@ -689,7 +689,7 @@
 "treinamentos-venc": {
 "fotos": 10,
 "capaLimpa": false,
-"yt": "",
+"yt": "ZJOiMO0D6hg",
 "mp4": "https://media.nucleoexato.com.br/videos/treinamentos-venc.mp4"
 },
 "vencimentos-empresa": {
