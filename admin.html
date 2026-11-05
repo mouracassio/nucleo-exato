@@ -167,7 +167,7 @@ input.loc-invalido{border-color:#BE2828!important}
 .conf-res .ok-linha{color:var(--verde-esc);font-weight:700}
 /* janela (pop-up) dos textos de entrega */
 .modal{position:fixed;inset:0;z-index:100;background:rgba(20,30,25,.55);display:flex;align-items:flex-start;justify-content:center;padding:28px 14px;overflow:auto}
-.modal[hidden]{display:none}
+.modal[hidden],.login[hidden],.adm[hidden]{display:none} /* 05/11/2026: sem balao "Preencha este campo" do navegador no painel */
 .modal-caixa{position:relative;width:100%;max-width:920px;background:#fff;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
 .modal-caixa .entrega{margin:0;border:0;border-radius:14px}
 .modal-caixa .entrega h2{padding-right:52px}
@@ -210,7 +210,7 @@ body.modal-aberto{overflow:hidden}
   <span class="mk"><i class="a"></i><i class="b"></i><i class="c"></i><i class="d"></i></span>
   <h1>Painel do N&uacute;cleo Exato</h1>
   <p class="sub">Produtos, arquivos, vendas, clientes e c&oacute;digos de acesso.</p>
-  <form id="f-login">
+  <form id="f-login" novalidate>
     <div class="campo"><label>Usu&aacute;rio</label><input type="text" id="l-usuario" autocomplete="username" required></div>
     <div class="campo"><label>Senha</label><input type="password" id="l-senha" autocomplete="current-password" required></div>
     <div id="l-msg"></div>
@@ -520,7 +520,9 @@ body.modal-aberto{overflow:hidden}
   function mostrarPainel(usuario){ $("tela-login").hidden = true; $("tela-adm").hidden = false; $("quem").textContent = usuario; carregarTudo(); }
 
   $("f-login").addEventListener("submit", async function(e){
-    e.preventDefault(); $("l-btn").disabled = true; msg("l-msg","");
+    e.preventDefault(); msg("l-msg","");
+    if (!$("l-usuario").value.trim() || !$("l-senha").value) { msg("l-msg", "Preencha usu&aacute;rio e senha.", "erro"); return; }
+    $("l-btn").disabled = true;
     try {
       var j = await post("entrar", { usuario: $("l-usuario").value, senha: $("l-senha").value });
       $("l-senha").value = ""; mostrarPainel(j.usuario);
